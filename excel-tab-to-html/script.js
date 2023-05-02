@@ -43,7 +43,7 @@ function excelDataToBacklog(input) {
     for (const row of rows) {
         const cells = row.split('\t');
         if (isHeaderRow) {
-            backlog += cells.join('|h|') + '|h\n|';
+            backlog += cells.join('|') + '|h\n|';
             isHeaderRow = false;
         } else {
             backlog += cells.join('|') + '|\n|';
