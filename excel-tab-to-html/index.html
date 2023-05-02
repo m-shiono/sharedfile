@@ -3,17 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel to HTML</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to HTML/Markdown/Backlog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    </style>   
+    <title>Excel Table Styel Converter for HTML / Markdown / Backlog</title>
 </head>
 <body>
-    <h1>Excel to HTML Converter</h1>
-    <textarea id="excel-data" rows="10" cols="150" placeholder="Excelデータをここに貼り付けてください"></textarea>
-    <br>
+    <h1>Excel Table Styel Converter<br />
+          for HTML / Markdown / Backlog</h1>
+    <div></div>
+    <h2>使用方法</h2>
+    <div>
+        １．Excelの表の必要な個所を選択し、コピーします。<br />
+        ２．テキストエリアにカーソルを置き、貼り付けます。<br />
+        ３．「変換」ボタンをクリックします。<br />
+        ４．下のテキストエリアに選択した形式のコードが表示されます。<br />
+    </div>
+    
+    <h3>注意事項</h3>
+    このシステムは単純な表データに対してのみ機能し、Excelの書式設定やセルの結合に対応していません。
+
+    <!-- input zone-->
+    <h3>Input Zone</h3>
+    <textarea id="excel-data" rows="20" cols="150" placeholder="Excelデータをここに貼り付けてください"></textarea>
+    <br />
+
+    <!-- for html-->
+    <label>
+        <input type="radio" name="output-format" id="html-format" value="html" checked> HTML
+    </label>
+
+    <!-- for markdown-->
+    <label>
+        <input type="radio" name="output-format" id="markdown-format" value="markdown"> Markdown
+    </label>
+
+    <!-- for backlog-->
+    <label>
+        <input type="radio" name="output-format" id="backlog-format" value="backlog"> Backlog
+    </label>
+    
+    <br />
     <button id="convert">変換</button>
-    <br>
-    <h2>HTML Output</h2>
-    <textarea id="html-output" rows="10" cols="150" readonly></textarea>
+    <br />
+
+    <!-- output zone-->
+    <h3>Output Zone</h3>
+    <textarea id="output" rows="20" cols="150" readonly></textarea>
 
     <script src="script.js"></script>
+
+    <br /><br />
+    <hr>
+    <center>Copyright(C) </center><br />
 </body>
 </html>
+
