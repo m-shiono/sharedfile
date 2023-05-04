@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             font-family: Arial, sans-serif;
             max-width: 1200px;
             margin: 0 auto;
+            background-color: #f1f1f1;
+            color: #444;
+            position: relative;
+            padding-bottom: 50px;
+        }
+
+        main {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin: 20px 0;
         }
 
         table {
@@ -50,25 +60,57 @@
             width: 100%;
             box-sizing: border-box;
         }
-    </style>   
+
+        h1, h2, h3 {
+            text-align: center;
+            margin-top: 30px;
+            color: #4CAF50;
+        }
+
+        h3 {
+            font-size: 20px;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        label {
+            font-size: 16px;
+        }
+
+        footer {
+            background-color: #ccc;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+        }
+    </style>
     <title>Excel Table Styel Converter for HTML / Markdown / Backlog</title>
 </head>
 <body>
-    <h1>Excel Table Styel Converter for HTML / Markdown / Backlog</h1>
-    <div></div>
-    <h2>使用方法</h2>
-    <div>
-        １．Excelの表の必要な個所を選択し、コピーします。<br />
-        ２．テキストエリアにカーソルを置き、貼り付けます。<br />
-        ３．「変換」ボタンをクリックします。<br />
-        ４．下のテキストエリアに選択した形式のコードが表示されます。<br />
-    </div>
-    
-    <h3>注意事項</h3>
-    このシステムは単純な表データに対してのみ機能し、Excelの書式設定やセルの結合に対応していません。
+    <header>
+        <h1>Excel Table Styel Converter for HTML / Markdown / Backlog</h1>
+    </header>
 
-    <!-- input zone-->
-    <h3>Input Zone</h3>
+    <main>
+        <h2>使用方法</h2>
+        <div>
+            １．Excelの表の必要な個所を選択し、コピーします。<br />
+            ２．テキストエリアにカーソルを置き、貼り付けます。<br />
+            ３．「変換」ボタンをクリックします。<br />
+            ４．下のテキストエリアに選択した形式のコードが表示されます。<br />
+        </div>
+
+        <h3>注意事項</h3>
+        <p>このシステムは単純な表データに対してのみ機能し、Excelの書式設定やセルの結合に対応していません。</p>
+
+        <!-- input zone-->
+            <h3>Input Zone</h3>
     <textarea id="excel-data" rows="20" cols="150" placeholder="Excelデータをここに貼り付けてください"></textarea>
     <br />
 
@@ -86,7 +128,7 @@
     <label>
         <input type="radio" name="output-format" id="backlog-format" value="backlog"> Backlog
     </label>
-    
+
     <br />
     <button id="convert">変換</button>
     <br />
@@ -94,12 +136,12 @@
     <!-- output zone-->
     <h3>Output Zone</h3>
     <textarea id="output" rows="20" cols="150" readonly></textarea>
+</main>
 
-    <script src="script.js"></script>
+<footer>
+    personal project for m.shiono
+</footer>
 
-    <br /><br />
-    <hr>
-    <center>personal project for m.shiono</center><br />
+<script src="script.js"></script>
 </body>
 </html>
-
