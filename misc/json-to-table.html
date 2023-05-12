@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON Data to Table</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <textarea id="jsonInput" rows="10" cols="50"></textarea>
+    <button onclick="createTable()">Create Table</button>
+    <table id="jsonTable">
+        <tr>
+            <th>Title</th>
+            <th>ID</th>
+            <th>Query</th>
+        </tr>
+    </table>
+
+    <script>
+        function searchKeyInObject(obj, key, results = []) {
+            if (!obj || typeof obj !== 'object') {
+                return results;
+            }
+            if (obj.hasOwnProperty(key)) {
+                results.push(obj[key]);
+            }
+            for (let i in obj) {
+                if (obj.hasOwnProperty(i)){
+                    searchKeyInObject(obj[i], key, results);
+                }
+            }
+            return results;
+        }
+
+        function createTable() {
+            // テキストエリアからJSONデータを取得
+            var data = JSON.parse(document.getElementById('jsonInput').value);
+
+            // テーブルの要素を取得
+            var table = document.getElementById('jsonTable');
+
+            // テーブルをクリア
+            for(var i = table.rows.length - 1; i > 0; i--)
+            {
+                table.deleteRow(i);
+            }
+
+            for(var i = 0; i < data.pages.length; i++) {
+                var page = data.pages[i];
+                var titles = searchKeyInObject(page, 'title');
+                var ids = searchKeyInObject(page, 'id');
+                var queries = searchKeyInObject(page, 'query');
+
+                // Ensure that the arrays have the same length
+                if (titles.length === ids.length && ids.length === queries.length) {
+                    for (let i = 0; i < titles.length; i++) {
+                        var row = table.insertRow(-1);
+
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        var cell3 = row.insertCell(2);
+
+                        cell1.innerHTML = titles[i];
+                        cell2.innerHTML = ids[i];
+                        cell3.innerHTML = queries[i];
+                    }
+                } else {
+                    //alert('The JSON structure is not consistent. The number of titles, ids, and queries should be the same.');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
