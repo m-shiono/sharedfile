@@ -61,7 +61,7 @@
                 var line2 = diff_target[i] || '';
                 
                 if (line1 !== line2) {
-                    resultDiv.innerHTML += '<span class="diff">【' + line2 + '】 ← 【' + line1 + '】</span>\n';
+                    resultDiv.innerHTML += '<span class="diff">比較元【' + line1 + '】<br />比較先【' + line2 + '】</span>\n';
                 } else {
                     resultDiv.innerHTML += line2 + '\n';
                 }
