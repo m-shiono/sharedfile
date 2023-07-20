@@ -12,26 +12,38 @@
 <body>
     <h1>テキスト比較ツール</h1>
     <hr>
+    <h2>説明</h2>
+    このツールはHTMLとJavascriptのみで構成されており、比較した内容がどこかに保存されることはありません。
+
+    <h3>使い方</h3>
+    「原本（比較元）の情報」と「設定済み（比較先）の情報」にDiffしたいテキストを貼り付けて、比較ボタンをクリックしてください。
+    テキストが比較され、差分がある行に色がつきどのような差分があるか表示されます。
+
+    <h3>制限事項</h3>
+    簡易Diffツールのため、同じ内容が別の行に書かれているような行をまたいだ比較はできません。
+
     <table>
         <tr>
             <td>
                 <div>
-                    <h2>原本（比較元）の情報</h2>
+                    <h3>原本（比較元）の情報</h3>
                     ※元となる設定を貼り付けてください
-                    <textarea id="diff_source" rows="25" cols="120"></textarea>
+                    <textarea id="diff_source" rows="20" cols="120"></textarea>
                 </div>
              </td>
              <td>
                 <div>
-                    <h2>設定済み（比較先）の情報</h2>
+                    <h3>設定済み（比較先）の情報</h3>
                     ※設定済みの設定を貼り付けてください
-                    <textarea id="diff_target" rows="25" cols="120"></textarea>
+                    <textarea id="diff_target" rows="20" cols="120"></textarea>
                 </div>
              </td>
         </tr>
     </table>
 
     <button onclick="compareTexts()">比較</button>
+    <button onclick="resetTexts()">初期化</button>
+
     <div>
         <h2>比較結果の表示</h2>
         <pre id="diff-result"></pre>
@@ -54,6 +66,11 @@
                     resultDiv.innerHTML += line2 + '\n';
                 }
             }
+        }
+        function resetTexts() {
+            document.getElementById('diff_source').value = '';
+            document.getElementById('diff_target').value = '';
+            document.getElementById('diff-result').innerHTML = '';
         }
     </script>
 </body>
