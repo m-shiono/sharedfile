@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <title>テキスト比較ツール</title>
-    <style>
-        .diff {
-            background-color: #FFDDDD; 
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>テキスト比較ツール</title>
+  <style>
+    .diff {
+      background-color: #FFDDDD;
+    }
+  </style>
 </head>
 <body>
     <h1>テキスト比較ツール</h1>
@@ -43,35 +43,12 @@
 
     <button onclick="compareTexts()">比較</button>
     <button onclick="resetTexts()">初期化</button>
-
     <div>
-        <h2>比較結果の表示</h2>
-        <pre id="diff-result"></pre>
+      <h2>比較結果の表示</h2>
+      <pre id="diff-result"></pre>
     </div>
+    <script src="diff.js"></script>
+  </body>
+  </html>
 
-    <script>
-        function compareTexts() {
-            var diff_source = document.getElementById('diff_source').value.split('\n');
-            var diff_target = document.getElementById('diff_target').value.split('\n');
-            var resultDiv = document.getElementById('diff-result');
-            resultDiv.innerHTML = '';
-
-            for (var i = 0; i < Math.max(diff_source.length, diff_target.length); i++) {
-                var line1 = diff_source[i] || '';
-                var line2 = diff_target[i] || '';
-                
-                if (line1 !== line2) {
-                    resultDiv.innerHTML += '<span class="diff">比較元【' + line1 + '】<br />比較先【' + line2 + '】</span>\n';
-                } else {
-                    resultDiv.innerHTML += line2 + '\n';
-                }
-            }
-        }
-        function resetTexts() {
-            document.getElementById('diff_source').value = '';
-            document.getElementById('diff_target').value = '';
-            document.getElementById('diff-result').innerHTML = '';
-        }
-    </script>
-</body>
-</html>
+  
