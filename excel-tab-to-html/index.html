@@ -3,145 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #f1f1f1;
-            color: #444;
-            position: relative;
-            padding-bottom: 50px;
-        }
-
-        main {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            margin: 20px 0;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 20px 0;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        textarea {
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        h1, h2, h3 {
-            text-align: center;
-            margin-top: 30px;
-            color: #4CAF50;
-        }
-
-        h3 {
-            font-size: 20px;
-        }
-
-        input[type="radio"] {
-            margin-right: 10px;
-        }
-
-        label {
-            font-size: 16px;
-        }
-
-        footer {
-            background-color: #ccc;
-            padding: 10px;
-            text-align: center;
-            font-size: 14px;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-        }
-    </style>
-    <title>Excel Table Styel Converter for HTML / Markdown / Backlog</title>
+    <title>Excel Table Style Converter - Web開発者向けユーティリティ</title>
+    <link rel="stylesheet" href="style.css"> 
+    <title>Excel Table Style Converter (HTML / Markdown / Backlog) - Web開発者向けユーティリティ</title>
 </head>
 <body>
     <header>
-        <h1>Excel Table Styel Converter for HTML / Markdown / Backlog</h1>
+        <h1>Excel Table Style Converter</h1>
+        <p>HTML / Markdown / Backlog 形式に変換</p>
     </header>
-
+    <nav>
+        <ul>
+            <li><a href="/">home</a></li>
+        </ul>
+    </nav>
     <main>
-        <h2>使用方法</h2>
-        <div>
-            １．Excelの表の必要な個所を選択し、コピーします。<br />
-            ２．テキストエリアにカーソルを置き、貼り付けます。<br />
-            ３．「変換」ボタンをクリックします。<br />
-            ４．下のテキストエリアに選択した形式のコードが表示されます。<br />
+        <div class="tool-card">
+            <h2>使用方法</h2>
+            <ol>
+                <li>Excelの表の必要な個所を選択し、コピーします。</li>
+                <li>テキストエリアにカーソルを置き、貼り付けます。</li>
+                <li>出力形式を選択し、「変換」ボタンをクリックします。</li>
+                <li>下のテキストエリアに選択した形式のコードが表示されます。</li>
+            </ol>
+
+            <h3>注意事項</h3>
+            <p>このシステムは単純な表データに対してのみ機能し、Excelの書式設定やセルの結合に対応していません。</p>
+
+            <h3>入力</h3>
+            <textarea id="excel-data" placeholder="Excelデータをここに貼り付けてください"></textarea>
+
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="output-format" id="html-format" value="html" checked> HTML
+                </label>
+                <label>
+                    <input type="radio" name="output-format" id="markdown-format" value="markdown"> Markdown
+                </label>
+                <label>
+                    <input type="radio" name="output-format" id="backlog-format" value="backlog"> Backlog
+                </label>
+            </div>
+
+            <button id="convert">変換</button>
+
+            <h3>出力</h3>
+            <textarea id="output" readonly placeholder="変換データはここに出力されます"></textarea>
         </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 personal project for m-shiono</p>
+    </footer>
+    <script src="script.js"></script>
 
-        <h3>注意事項</h3>
-        <p>このシステムは単純な表データに対してのみ機能し、Excelの書式設定やセルの結合に対応していません。</p>
-
-        <!-- input zone-->
-            <h3>Input Zone</h3>
-    <textarea id="excel-data" rows="20" cols="150" placeholder="Excelデータをここに貼り付けてください"></textarea>
-    <br />
-
-    <!-- for html-->
-    <label>
-        <input type="radio" name="output-format" id="html-format" value="html" checked> HTML
-    </label>
-
-    <!-- for markdown-->
-    <label>
-        <input type="radio" name="output-format" id="markdown-format" value="markdown"> Markdown
-    </label>
-
-    <!-- for backlog-->
-    <label>
-        <input type="radio" name="output-format" id="backlog-format" value="backlog"> Backlog
-    </label>
-
-    <br />
-    <button id="convert">変換</button>
-    <br />
-
-    <!-- output zone-->
-    <h3>Output Zone</h3>
-    <textarea id="output" rows="20" cols="150" readonly></textarea>
-</main>
-
-<footer>
-    personal project for m.shiono
-</footer>
-
-<script src="script.js"></script>
 </body>
 </html>

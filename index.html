@@ -1,120 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="UTF-8">
-    <title>My Tools</title>
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        color: #333;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-      header {
-        background-color: #5cb85c;
-        padding: 20px;
-        text-align: center;
-        color: white;
-      }
-      h1 {
-        margin: 0;
-        font-size: 36px;
-      }
-
-      nav {
-        background-color: #eee;
-        padding: 10px;
-      }
-      nav ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: flex-end;
-      }
-      nav li {
-        display: inline-block;
-        margin: 0 10px;
-      }
-      nav a {
-        text-decoration: none;
-        color: #333;
-        font-weight: bold;
-        font-size: 18px;
-      }
-      nav a:hover {
-        color: #5cb85c;
-      }
-      main {
-        padding: 20px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-      section {
-        background-color: white;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        overflow: hidden;
-        width: 800px;
-      }
-      section h2 {
-        margin: 10px;
-        font-size: 24px;
-      }
-      section p {
-        margin: 10px;
-        text-align: justify;
-        font-size: 16px;
-      }
-      footer {
-        position: absolute;
-        bottom: 0;
-        width: 98%;
-        background-color: #5cb85c;
-        padding: 10px;
-        text-align: center;
-        font-size: 14px;
-      }
-      a {
-        color : gray;
-        text-decoration: none;
-        font-weight: bold;
-      }    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web開発者向けユーティリティツール</title>
+    <link rel="stylesheet" href="style.css"> <!-- CSSファイルへのリンクを追加 -->
   </head>
   <body>
     <header>
-      <h1>Web tools</h1>
+        <h1>Web開発者向けユーティリティツール</h1>
+        <p>効率的な開発をサポートする便利なツール集</p>
     </header>
     <nav>
-      <ul>
-        <li>トップに戻る</li>
-      </ul>
+        <ul>
+            <li><a href="/">home</a></li>
+        </ul>
     </nav>
     <main>
-      <section>
-        <a href="https://m-shiono.github.io/sharedfile/excel-tab-to-html/index.html">
-            <p>Excel Table Styel Converter for HTML / Markdown / Backlog</p>
-        </a>
-      </section>
-      <section>
-        <a href="https://m-shiono.github.io/sharedfile/markdown-to-html/index.html">
-            <p>Markdown to html converter</p>
-        </a>
-      </section>
-      <section>
-        <a href="https://m-shiono.github.io/sharedfile/difftools/index.html">
-            <p>Text diff tool</p>
-        </a>
-      </section>
-
+        <div class="tool-card">
+            <h2>Excel Table Style Converter</h2>
+            <p>
+              Excelの表データを HTML、Markdown、Backlog 形式に変換するツールです。<br />
+              シンプルな表データの変換に適しており、複雑な書式設定やセル結合には対応していません。
+            </p>
+            <p>特徴：</p>
+            <ul>
+                <li>シンプルで使いやすいインターフェース</li>
+                <li>クライアントサイドでの変換（データは保存されません）</li>
+            </ul>
+            <br />
+            <p>使用方法：</p>
+            <ol>
+                <li>Excelから必要な表データをコピー</li>
+                <li>テキストエリアにデータを貼り付け</li>
+                <li>出力形式を選択し、「変換」ボタンをクリック</li>
+                <li>変換結果を確認し、必要に応じてコピー</li>
+            </ol>
+            <br />
+            <a href="./excel-tab-to-html/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card">
+            <h2>Markdown to HTML Converter</h2>
+            <p>
+              Markdown形式のテキストをHTMLに変換するツールです。<br />
+              入力したMarkdownのプレビューを確認しながら、対応するHTMLコードを生成します。
+            </p>
+            <p>特徴：</p>
+            <ul>
+                <li>リアルタイムプレビュー機能</li>
+                <li>シンプルで使いやすいインターフェース</li>
+                <li>クライアントサイドでの変換（データは保存されません）</li>
+            </ul>
+            <br />
+            <p>使用方法：</p>
+            <ol>
+                <li>Markdown入力欄にMarkdown形式のテキストを貼り付け</li>
+                <li>「変換」ボタンをクリック</li>
+                <li>変換結果を確認し、必要に応じてコピー</li>
+            </ol>
+            <br />
+            <a href="./markdown-to-html/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card">
+            <h2>テキスト差分比較ツール</h2>
+            <p>
+              2つのテキストの差分を簡単に比較できるツールです。<br />
+              行ごとの比較を行い、差分がある箇所を視覚的に表示します。
+            </p>
+            <p>特徴：</p>
+            <ul>
+                <li>シンプルで使いやすいインターフェース</li>
+                <li>クライアントサイドでの変換（データは保存されません）</li>
+            </ul>
+            <br />
+            <p>使用方法：</p>
+            <ol>
+                <li>「比較元」と「比較先」のテキストエリアにそれぞれテキストを入力</li>
+                <li>「比較」ボタンをクリック</li>
+                <li>差分がある行が強調表示され、変更内容を確認可能</li>
+            </ol>
+            <p>注意：このツールは簡易的な比較を行うため、行をまたいだ複雑な差分の検出には適していません。</p>
+            <br />
+            <a href="./difftools/index.html">ツールを使用する</a>
+        </div>
     </main>
     <footer>
-      &copy; 2023 / m-shiono personal project
+        <p>&copy; 2024 m-shiono personal project</p>
     </footer>
-  </body>
+</body>
 </html>

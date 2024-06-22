@@ -1,54 +1,63 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>テキスト比較ツール</title>
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>テキスト比較ツール - Web開発者向けユーティリティ</title>
+  <link rel="stylesheet" href="style.css"> <!-- CSSファイルへのリンクを追加 -->
+
+<style>
     .diff {
       background-color: #FFDDDD;
     }
   </style>
 </head>
 <body>
-    <h1>テキスト比較ツール</h1>
-    <hr>
-    <h2>説明</h2>
-    このツールはHTMLとJavascriptのみで構成されており、比較した内容がどこかに保存されることはありません。
+    <header>
+        <h1>テキスト比較ツール</h1>
+        <p>Web開発者向けユーティリティ</p>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="/">home</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="tool-card">
+            <h2>説明</h2>
+            <p>このツールはHTMLとJavascriptのみで構成されており、比較した内容がどこかに保存されることはありません。</p>
 
-    <h3>使い方</h3>
-    「原本（比較元）の情報」と「設定済み（比較先）の情報」にDiffしたいテキストを貼り付けて、比較ボタンをクリックしてください。
-    テキストが比較され、差分がある行に色がつきどのような差分があるか表示されます。
+            <h3>使い方</h3>
+            <p>「原本（比較元）の情報」と「設定済み（比較先）の情報」にDiffしたいテキストを貼り付けて、比較ボタンをクリックしてください。
+            テキストが比較され、差分がある行に色がつきどのような差分があるか表示されます。</p>
 
-    <h3>制限事項</h3>
-    簡易Diffツールのため、同じ内容が別の行に書かれているような行をまたいだ比較はできません。
+            <h3>制限事項</h3>
+            <p>簡易Diffツールのため、同じ内容が別の行に書かれているような行をまたいだ比較はできません。</p>
 
-    <table>
-        <tr>
-            <td>
-                <div>
+            <div class="input-container">
+                <div class="input-box">
                     <h3>原本（比較元）の情報</h3>
-                    ※元となる設定を貼り付けてください
-                    <textarea id="diff_source" rows="20" cols="120"></textarea>
+                    <p>※元となる設定を貼り付けてください</p>
+                    <textarea id="diff_source"></textarea>
                 </div>
-             </td>
-             <td>
-                <div>
+                <div class="input-box">
                     <h3>設定済み（比較先）の情報</h3>
-                    ※設定済みの設定を貼り付けてください
-                    <textarea id="diff_target" rows="20" cols="120"></textarea>
+                    <p>※設定済みの設定を貼り付けてください</p>
+                    <textarea id="diff_target"></textarea>
                 </div>
-             </td>
-        </tr>
-    </table>
+            </div>
 
-    <button onclick="compareTexts()">比較</button>
-    <button onclick="resetTexts()">初期化</button>
-    <div>
-      <h2>比較結果の表示</h2>
-      <pre id="diff-result"></pre>
-    </div>
+            <button onclick="compareTexts()">比較</button>
+            <button onclick="resetTexts()">初期化</button>
+
+            <h3>比較結果の表示</h3>
+            <pre id="diff-result"></pre>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
     <script src="diff.js"></script>
-  </body>
-  </html>
-
+</body>
+</html>
   

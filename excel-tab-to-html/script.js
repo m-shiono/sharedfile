@@ -1,4 +1,5 @@
 function excelDataToHTML(input) {
+    input = input.trim();  // 末尾の空白行を削除
     const rows = input.split('\n');
     let html = '<table>\n';
 
@@ -18,6 +19,7 @@ function excelDataToHTML(input) {
 }
 
 function excelDataToMarkdown(input) {
+    input = input.trim();  // 末尾の空白行を削除
     const rows = input.split('\n');
     let markdown = '';
 
@@ -36,6 +38,7 @@ function excelDataToMarkdown(input) {
 }
 
 function excelDataToBacklog(input) {
+    input = input.trim();  // 末尾の空白行を削除
     const rows = input.split('\n');
     let backlog = '|';
     let isHeaderRow = true;
@@ -85,4 +88,3 @@ document.querySelectorAll('input[name="output-format"]').forEach((radio) => {
         }
     });
 });
-
