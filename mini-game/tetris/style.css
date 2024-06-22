@@ -6,10 +6,10 @@
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
+    margin: 0; /* bodyのマージンを0に設定 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #2c3e50;
@@ -18,11 +18,13 @@ body {
 }
 
 header {
+    width: 100%; /* ヘッダーの幅を100%に設定 */
     background: linear-gradient(to right, #43a047, #66bb6a);
     color: white;
     text-align: center;
     padding: 2rem 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin: 0; /* ヘッダーのマージンを0に設定 */
 }
 
 header h1 {
@@ -33,6 +35,7 @@ header h1 {
 
 /* ナビゲーションのスタイルを変更 */
 nav {
+    width: 100%; /* ヘッダーの幅を100%に設定 */
     background: linear-gradient(to right, #66bb6a, #81c784);
     padding: 1rem 0;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -141,4 +144,55 @@ footer {
     nav ul {
         padding: 0 1rem; /* モバイル表示時のパディングを調整 */
     }
+}
+
+
+#gameContainer {
+    width: 202px; /* キャンバスの幅 + 枠の幅 */
+    height: 402px; /* キャンバスの高さ + 枠の幅 */
+    border: 1px solid #000; /* 黒い枠線を追加 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    width: 200px;
+    height: 400px;
+    border: 1px solid black;
+}
+
+#controls {
+    width: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+button {
+    font-size: 20px;
+    margin: 5px;
+    padding: 10px;
+    width: 60px;
+}
+
+#startStop {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#startStop button {
+    width: 90px;
+}
+
+#control-block {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#control-block button{
+    width: 90px;
 }

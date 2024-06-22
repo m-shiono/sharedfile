@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>クラシックテトリス</title>
+    <link rel="stylesheet" href="style.css"> <!-- スタイルシートのパスを同じ階層に修正 -->
+</head>
+<body>
+    <header>
+        <h1>クラシックテトリス</h1>
+        <p>クラシックなテトリスゲームをお楽しみください</p>
+    </header>
+    <nav>
+        <ul>
+            <li>
+                <a href="../../index.html">ホームに戻る</a>
+                <a href="../index.html">ミニゲームコレクションに戻る</a>
+            </li> <!-- ナビゲーションリンクを追加 -->
+        </ul>
+    </nav>
+    <main>
+        <div id="gameContainer">
+            <!--
+            <div id="score">得点: 0</div>
+            -->
+            <canvas id="game" width="200" height="400"></canvas>
+        </div>
+        <div id="controls">
+            <div id="startStop">
+                <button id="start">開始</button>
+                <button id="stop">停止</button>
+            </div>
+            <div id="control-block">
+                <button id="left">←</button>
+                <button id="right">→</button>
+            </div>
+            <div id="control-block">
+                <button id="rotate">回転</button>
+                <button id="down">落下</button>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
