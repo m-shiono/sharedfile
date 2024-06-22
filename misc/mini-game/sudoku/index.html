@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>モダンナンプレ（数独マスター）</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-title">
+        数独マスター
+    </div>
+    <div class="container fade-in">
+        <div id="board"></div>
+        <div class="controls">
+            <select id="difficulty">
+                <option value="4">4x4</option>
+                <option value="9" selected>9x9</option>
+                <option value="16">16x16</option>
+            </select>
+            <button id="check">チェック</button>
+            <button id="solve">解く</button>
+            <button id="new">新しいゲーム</button>
+        </div>
+    </div>
+    <div id="number-pad" class="number-pad"></div>
+    <script src="script.js"></script>
+</body>
+</html>
