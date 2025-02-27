@@ -186,48 +186,6 @@
             width: 100%;
             margin-top: 30px;
         }
-        .form-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .form-column {
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-        }
-        
-        .form-column h3 {
-            margin-top: 0;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        @media (max-width: 768px) {
-            .form-container {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 <body>
@@ -260,73 +218,75 @@
         <div class="input-section">
             <div class="section-title">入力</div>
             
-            <div class="form-container">
-                <!-- 文字の種類 -->
-                <div class="form-column">
-                    <h3>文字の種類</h3>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" name="charType" value="hiragana"> ひらがな
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" name="charType" value="katakana"> カタカナ
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" name="charType" value="kanji"> 漢字
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" name="charType" value="alphabet"> アルファベット
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" name="charType" value="number"> 数字
-                        </label>
-                    </div>
+            <div class="option-group">
+                <div class="option-title">文字の種類</div>
+                <div class="option-item">
+                    <input type="checkbox" id="use-numbers" checked>
+                    <label for="use-numbers">数字を使用する (0-9)</label>
                 </div>
-                
-                <!-- 文字数 -->
-                <div class="form-column">
-                    <h3>文字数</h3>
-                    <div class="form-group">
-                        <label for="charCount">文字数を選択</label>
-                        <select id="charCount" name="charCount">
-                            <option value="5">5文字</option>
-                            <option value="10">10文字</option>
-                            <option value="15">15文字</option>
-                            <option value="20">20文字</option>
-                            <option value="custom">カスタム</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="customCharCount">カスタム文字数</label>
-                        <input type="number" id="customCharCount" name="customCharCount" min="1" max="100">
-                    </div>
+                <div class="option-item">
+                    <input type="checkbox" id="use-uppercase" checked>
+                    <label for="use-uppercase">アルファベット大文字を使用する (A-Z)</label>
                 </div>
-                
-                <!-- 生成個数 -->
-                <div class="form-column">
-                    <h3>生成個数</h3>
-                    <div class="form-group">
-                        <label for="generateCount">生成する個数</label>
-                        <select id="generateCount" name="generateCount">
-                            <option value="1">1個</option>
-                            <option value="5">5個</option>
-                            <option value="10">10個</option>
-                            <option value="20">20個</option>
-                            <option value="custom">カスタム</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="customGenerateCount">カスタム生成個数</label>
-                        <input type="number" id="customGenerateCount" name="customGenerateCount" min="1" max="100">
-                    </div>
+                <div class="option-item">
+                    <input type="checkbox" id="use-lowercase" checked>
+                    <label for="use-lowercase">アルファベット小文字を使用する (a-z)</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="use-symbols" checked>
+                    <label for="use-symbols">記号文字を使用する</label>
+                </div>
+                <div id="symbols-container">
+                    <div>使用可能な記号：</div>
+                    <input type="text" id="custom-symbols" value="!@#$%^&*()_+-=[]{}|;:,.<>?/~`">
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="avoid-similar">
+                    <label for="avoid-similar">似ている文字を使用しない (例: l, 1, I, 0, O)</label>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">文字数</div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-8" value="8">
+                    <label for="length-8">8 文字</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-12" value="12">
+                    <label for="length-12">12 文字</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-14" value="14" checked>
+                    <label for="length-14">14 文字</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-20" value="20">
+                    <label for="length-20">20 文字</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-30" value="30">
+                    <label for="length-30">30 文字</label>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">生成個数</div>
+                <div class="option-item">
+                    <input type="radio" name="count" id="count-10" value="10">
+                    <label for="count-10">10 個</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="count" id="count-50" value="50" checked>
+                    <label for="count-50">50 個</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="count" id="count-100" value="100">
+                    <label for="count-100">100 個</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="count" id="count-200" value="200">
+                    <label for="count-200">200 個</label>
                 </div>
             </div>
             
