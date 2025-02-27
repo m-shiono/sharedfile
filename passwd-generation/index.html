@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パスワード生成ツール</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #edf7ed;
+            color: #333;
+            line-height: 1.6;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            margin-bottom: 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .sub-header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 5px 0 15px 0;
+            margin-top: 0;
+        }
+        .nav {
+            background-color: #8BC34A;
+            padding: 10px 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #2E7D32;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .option-list {
+            list-style-type: decimal;
+            padding-left: 20px;
+        }
+        .option-list li {
+            margin-bottom: 10px;
+        }
+        .note-section {
+            margin: 20px 0;
+        }
+        .note-title {
+            color: #2E7D32;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .note-content {
+            color: #555;
+        }
+        .input-section, .output-section {
+            margin-top: 30px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            min-height: 120px;
+            font-family: 'Courier New', monospace;
+        }
+        .option-group {
+            margin-bottom: 20px;
+        }
+        .option-item {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+        input[type="checkbox"], input[type="radio"] {
+            margin-right: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #388E3C;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        .password-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-gap: 10px;
+        }
+        .password-item {
+            padding: 8px;
+            background-color: white;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .password-text {
+            word-break: break-all;
+            margin-bottom: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .copy-btn {
+            background-color: #8BC34A;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            width: 100%;
+        }
+        .copy-btn:hover {
+            background-color: #689F38;
+        }
+        #symbols-container {
+            margin-left: 25px;
+            margin-top: 5px;
+        }
+        #custom-symbols {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        /* レスポンシブデザイン */
+        @media (max-width: 900px) {
+            .password-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .password-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 400px) {
+            .password-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>パスワード生成ツール</h1>
+    </div>
+    <div class="sub-header">
+        安全で強固なパスワードを簡単に生成
+    </div>
+    <div class="nav">
+        <a href="#">ホームに戻る</a>
+    </div>
+    
+    <div class="container">
+        <div class="section-title">使用方法</div>
+        <ol class="option-list">
+            <li>必要なオプションを選択します。</li>
+            <li>「パスワードを生成する」ボタンをクリックします。</li>
+            <li>生成されたパスワードが表示されます。</li>
+            <li>必要に応じて「コピー」ボタンでクリップボードにコピーできます。</li>
+        </ol>
+        
+        <div class="note-section">
+            <div class="note-title">注意事項</div>
+            <div class="note-content">
+                このツールはブラウザ上で動作し、パスワードはサーバーに送信されません。JavaScriptを使用して完全にクライアントサイドで動作します。
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <div class="section-title">入力</div>
+            
+            <div class="option-group">
+                <div class="option-title">文字の種類</div>
+                <div class="option-item">
+                    <input type="checkbox" id="use-numbers" checked>
+                    <label for="use-numbers">数字を使用する (0-9)</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="use-uppercase" checked>
+                    <label for="use-uppercase">アルファベット大文字を使用する (A-Z)</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="use-lowercase" checked>
+                    <label for="use-lowercase">アルファベット小文字を使用する (a-z)</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="use-symbols" checked>
+                    <label for="use-symbols">記号文字を使用する</label>
+                </div>
+                <div id="symbols-container">
+                    <div>使用可能な記号：</div>
+                    <input type="text" id="custom-symbols" value="!@#$%^&*()_+-=[]{}|;:,.<>?/~`">
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="avoid-similar">
+                    <label for="avoid-similar">似ている文字を使用しない (例: l, 1, I, 0, O)</label>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">文字数</div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-8" value="8">
+                    <label for="length-8">8 文字</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-12" value="12" checked>
+                    <label for="length-12">12 文字</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-14" value="14">
+                    <label for="length-14">14 文字</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-20" value="20">
+                    <label for="length-20">20 文字</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="length" id="length-30" value="30">
+                    <label for="length-30">30 文字</label>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">生成個数</div>
+                <div class="option-item">
+                    <input type="radio" name="count" id="count-10" value="10" checked>
+                    <label for="count-10">10 個</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="count" id="count-50" value="50">
+                    <label for="count-50">50 個</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="count" id="count-100" value="100">
+                    <label for="count-100">100 個</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="count" id="count-200" value="200">
+                    <label for="count-200">200 個</label>
+                </div>
+            </div>
+            
+            <button id="generate-btn">パスワードを生成する</button>
+            <div id="error-message" class="error"></div>
+        </div>
+        
+        <div class="output-section">
+            <div class="section-title">出力</div>
+            <div id="result">
+                <div style="color: #666; font-style: italic;">生成されたパスワードはここに表示されます</div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        © 2025 パスワード生成ツール
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateBtn = document.getElementById('generate-btn');
+            const resultDiv = document.getElementById('result');
+            const errorMessage = document.getElementById('error-message');
+            const useSymbolsCheckbox = document.getElementById('use-symbols');
+            const symbolsContainer = document.getElementById('symbols-container');
+            
+            // 記号チェックボックスの状態に応じて記号入力欄の表示/非表示を切り替え
+            useSymbolsCheckbox.addEventListener('change', () => {
+                symbolsContainer.style.display = useSymbolsCheckbox.checked ? 'block' : 'none';
+            });
+            
+            generateBtn.addEventListener('click', generatePasswords);
+            
+            function generatePasswords() {
+                errorMessage.textContent = '';
+                
+                // 各オプションの取得
+                const useNumbers = document.getElementById('use-numbers').checked;
+                const useUppercase = document.getElementById('use-uppercase').checked;
+                const useLowercase = document.getElementById('use-lowercase').checked;
+                const useSymbols = document.getElementById('use-symbols').checked;
+                const customSymbols = document.getElementById('custom-symbols').value;
+                const avoidSimilar = document.getElementById('avoid-similar').checked;
+                
+                // 文字数の取得
+                const lengthRadios = document.getElementsByName('length');
+                let passwordLength = 12;
+                for (const radio of lengthRadios) {
+                    if (radio.checked) {
+                        passwordLength = parseInt(radio.value);
+                        break;
+                    }
+                }
+                
+                // 生成個数の取得
+                const countRadios = document.getElementsByName('count');
+                let passwordCount = 10;
+                for (const radio of countRadios) {
+                    if (radio.checked) {
+                        passwordCount = parseInt(radio.value);
+                        break;
+                    }
+                }
+                
+                // 文字セットの作成
+                let charset = '';
+                if (useNumbers) charset += '0123456789';
+                if (useUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                if (useLowercase) charset += 'abcdefghijklmnopqrstuvwxyz';
+                if (useSymbols && customSymbols) charset += customSymbols;
+                
+                // 似ている文字を除外
+                if (avoidSimilar) {
+                    charset = charset.replace(/[Il1O0]/g, '');
+                }
+                
+                // 文字セットが空の場合はエラー
+                if (!charset) {
+                    errorMessage.textContent = '少なくとも1つの文字タイプを選択してください。';
+                    return;
+                }
+                
+                // パスワード生成
+                const passwords = [];
+                for (let i = 0; i < passwordCount; i++) {
+                    passwords.push(generatePassword(charset, passwordLength));
+                }
+                
+                // 結果の表示
+                displayPasswords(passwords);
+            }
+            
+            function generatePassword(charset, length) {
+                let password = '';
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * charset.length);
+                    password += charset[randomIndex];
+                }
+                return password;
+            }
+            
+            function displayPasswords(passwords) {
+                resultDiv.innerHTML = '';
+                
+                // パスワードグリッドコンテナの作成
+                const passwordGrid = document.createElement('div');
+                passwordGrid.className = 'password-grid';
+                resultDiv.appendChild(passwordGrid);
+                
+                for (let i = 0; i < passwords.length; i++) {
+                    const passwordItem = document.createElement('div');
+                    passwordItem.className = 'password-item';
+                    
+                    const passwordText = document.createElement('div');
+                    passwordText.className = 'password-text';
+                    passwordText.textContent = passwords[i];
+                    
+                    const copyBtn = document.createElement('button');
+                    copyBtn.className = 'copy-btn';
+                    copyBtn.textContent = 'コピー';
+                    copyBtn.addEventListener('click', () => {
+                        navigator.clipboard.writeText(passwords[i])
+                            .then(() => {
+                                copyBtn.textContent = 'コピー済み';
+                                setTimeout(() => {
+                                    copyBtn.textContent = 'コピー';
+                                }, 2000);
+                            })
+                            .catch(err => {
+                                console.error('クリップボードへのコピーに失敗しました:', err);
+                            });
+                    });
+                    
+                    passwordItem.appendChild(passwordText);
+                    passwordItem.appendChild(copyBtn);
+                    passwordGrid.appendChild(passwordItem);
+                }
+            }
+            
+            // 初期状態での表示設定
+            if (!useSymbolsCheckbox.checked) {
+                symbolsContainer.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
