@@ -4,259 +4,290 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QRコード作成ツール</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
         body {
-            font-family: 'Noto Sans JP', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
             margin: 0;
-            background-color: #f0f0f0;
+            padding: 0;
+            background-color: #e8f5e9;
+            color: #333;
+            line-height: 1.6;
         }
 
-        .container {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        header {
+            background-color: #4caf50;
+            color: white;
             text-align: center;
-            max-width: 90%;
-            width: 500px;
+            padding: 20px 0;
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 28px;
-            font-weight: 700;
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        nav {
+            background-color: #43a047;
+            padding: 10px 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+
+        h2 {
+            color: #2e7d32;
+            border-bottom: 1px solid #81c784;
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .description {
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .instructions {
+            margin-bottom: 20px;
+        }
+
+        .qrcode-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
         }
 
         #qrcodeCanvas {
-            margin-bottom: 30px;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            max-width: 100%;
-            height: auto;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
-            background-color: #f8f8f8; /* QRコードの背景色を薄いグレーに */
-        }
-
-        input[type="text"] {
-            padding: 15px;
-            width: calc(100% - 50px);
-            margin-bottom: 25px;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-            background-color: #f8f8f8;
+            border-radius: 4px;
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 20px;
         }
 
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-            background-color: #fff;
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2e7d32;
+            font-size: 14px;
+        }
+
+        .note {
+            color: #2e7d32;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .button-group {
+            margin-top: 20px;
         }
 
         button {
-            padding: 15px 30px;
-            background-color: #4CAF50;
+            padding: 8px 16px;
+            background-color: #4caf50;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s ease;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #43a047;
+        }
+        
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .color-btn:hover, .color-btn.active {
+            border: 2px solid #333;
+            transform: scale(1.1);
+        }
+        
+        .color-btn.active {
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4caf50;
+        }
+        
+        input[type="color"] {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 50%;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 5px;
+        }
+        
+        .custom-color-label {
+            margin-left: 5px;
+            font-size: 12px;
+            color: #555;
+            display: inline-block;
+        }
+
+        .result-area {
+            margin-top: 30px;
+        }
+
+        #error {
+            color: #e53935;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        footer {
+            background-color: #4caf50;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 12px;
+            position: fixed;
+            bottom: 0;
             width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
-            font-weight: 500;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        button:hover {
-            background-color: #45a049;
-            transform: translateY(-2px);
-            box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.15);
-        }
-
-        button:active {
-            background-color: #388E3C;
-            transform: translateY(0);
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        #error {
-            color: #e53e3e;
-            margin-top: 20px;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        @media (max-width: 768px) {
+        @media (max-width: 640px) {
             .container {
-                padding: 30px;
-                width: 95%;
+                margin: 10px;
+                padding: 15px;
             }
-            input[type="text"] {
-                font-size: 16px;
-                padding: 12px;
-            }
-            button {
-                font-size: 16px;
-                padding: 12px 24px;
-            }
-            h1 {
-                font-size: 24px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 20px;
-            }
+            
             input[type="text"] {
                 font-size: 14px;
-                padding: 10px;
             }
+            
             button {
                 font-size: 14px;
-                padding: 10px 20px;
-            }
-            h1 {
-                font-size: 20px;
-            }
-        }
-
-        /* 追加スタイル */
-        body {
-            background-color: #f0f4f0; /* 全体背景色を調整 */
-        }
-
-        .container {
-            background-color: #ffffff; /* コンテナ背景色を白に */
-            border: 1px solid #e0e0e0; /* コンテナ枠線を追加 */
-        }
-
-        h1 {
-            color: #2c3e50; /* タイトル色を濃い青緑系に */
-            font-size: 2.2em; /* タイトルサイズを大きく */
-            margin-bottom: 0.8em; /* タイトル下の余白を調整 */
-            text-align: left; /* タイトルを左寄せ */
-        }
-
-        #qrcodeCanvas {
-            border: 2px solid #d3d3d3; /* QRコード枠線を調整 */
-            border-radius: 8px; /* QRコード角丸を調整 */
-            margin-bottom: 1.2em; /* QRコード下の余白を調整 */
-            background-color: #ffffff; /* QRコード背景色を白に */
-        }
-
-        input[type="text"] {
-            padding: 0.8em; /* 入力欄パディングを調整 */
-            font-size: 1.1em; /* 入力欄フォントサイズを調整 */
-            border-radius: 6px; /* 入力欄角丸を調整 */
-            margin-bottom: 1.5em; /* 入力欄下の余白を調整 */
-            border: 1px solid #b0bec5; /* 入力欄枠線を調整 */
-            background-color: #ffffff; /* 入力欄背景色を白に */
-            width: calc(100% - 1.6em); /* 入力欄の幅を再計算 */
-        }
-
-        input[type="text"]:focus {
-            border-color: #4CAF50; /* 入力欄フォーカス時の色を緑に */
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2); /* フォーカス時の影を調整 */
-        }
-
-        button {
-            padding: 0.8em 1.8em; /* ボタンパディングを調整 */
-            font-size: 1.1em; /* ボタンフォントサイズを調整 */
-            border-radius: 6px; /* ボタン角丸を調整 */
-            background-color: #4CAF50; /* ボタン色を緑に */
-            color: #ffffff; /* ボタン文字色を白に */
-            border: none; /* ボタン枠線をなくす */
-            cursor: pointer; /* カーソルをポインターに */
-            transition: background-color 0.3s ease; /* 滑らかな色変化 */
-            width: auto; /* ボタン幅を自動に */
-            margin: 0 auto; /* 中央配置 */
-            display: block; /* ブロック要素にする */
-        }
-
-        button:hover {
-            background-color: #45a049; /* ホバー時のボタン色を濃い緑に */
-        }
-
-        button:active {
-            background-color: #388E3C; /* アクティブ時のボタン色をさらに濃い緑に */
-        }
-
-        #error {
-            color: #e53935; /* エラーメッセージ色を赤に */
-            margin-top: 1.2em; /* エラーメッセージ上の余白を調整 */
-            font-size: 0.9em; /* エラーメッセージフォントサイズを調整 */
-        }
-
-        /* レスポンシブ対応 */
-        @media (max-width: 768px) {
-            .container {
-                padding: 2.5em;
-                width: 95%;
-            }
-
-            h1 {
-                font-size: 2em;
-            }
-
-            input[type="text"] {
-                font-size: 1em;
-                padding: 0.6em;
-            }
-
-            button {
-                font-size: 1em;
-                padding: 0.6em 1.5em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 1.5em;
-            }
-
-            h1 {
-                font-size: 1.75em;
-            }
-
-            input[type="text"] {
-                font-size: 0.9em;
-                padding: 0.5em;
-            }
-
-            button {
-                font-size: 0.9em;
-                padding: 0.5em 1.2em;
+                padding: 8px 12px;
             }
         }
     </style>
 </head>
 <body>
+    <header>
+        <h1>QRコード作成ツール</h1>
+        <div class="subtitle">Web開発者向けユーティリティ</div>
+    </header>
+
+    <nav>
+        <a href="#">ホームに戻る</a>
+    </nav>
+    
     <div class="container">
-        <h1>QRコードを作成</h1>
-        <canvas id="qrcodeCanvas"></canvas>
-        <input type="text" id="text" placeholder="ここにテキストを入力してください" />
-        <div id="error"></div>
-        <button id="generateQrCode">QRコードを生成</button>
+        <h2>説明</h2>
+        <div class="description">
+            このツールはHTMLとJavascriptのみで構成されており、生成したQRコードがどこかに保存されることはありません。
+        </div>
+        
+        <h2>使い方</h2>
+        <div class="instructions">
+            「テキスト / URL」の入力欄にQRコードにしたいテキストを貼り付けて、「QRコードを生成」ボタンをクリックしてください。
+            テキストが変換され、QRコードが生成されます。
+        </div>
+        
+        <div class="qrcode-area">
+            <canvas id="qrcodeCanvas" width="200" height="200"></canvas>
+        </div>
+        
+        <div class="input-group">
+            <label for="text">テキスト / URL</label>
+            <input type="text" id="text" placeholder="テキストまたはURLを入力してください" />
+            <div class="note">※QRコードにしたいテキストを貼り付けてください</div>
+            <div id="error"></div>
+        </div>
+        
+        <div class="input-group">
+            <label for="qrcolor">QRコードの色</label>
+            <div class="color-options">
+                <button class="color-btn active" data-color="#000000" style="background-color: #000000;"></button>
+                <button class="color-btn" data-color="#2e7d32" style="background-color: #2e7d32;"></button>
+                <button class="color-btn" data-color="#1976d2" style="background-color: #1976d2;"></button>
+                <button class="color-btn" data-color="#e53935" style="background-color: #e53935;"></button>
+                <button class="color-btn" data-color="#ff9800" style="background-color: #ff9800;"></button>
+                <button class="color-btn" data-color="#9c27b0" style="background-color: #9c27b0;"></button>
+                <input type="color" id="customColor" value="#000000">
+                <label for="customColor" class="custom-color-label">カスタム</label>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="generateQrCode">QRコードを生成</button>
+            <button id="reset">初期化</button>
+        </div>
     </div>
+    
+    <footer>
+        © 2025 QRコード作成ツール
+    </footer>
 
     <script>
         const qrcodeCanvas = document.getElementById("qrcodeCanvas");
         const textInput = document.getElementById("text");
         const generateQrCodeButton = document.getElementById("generateQrCode");
+        const resetButton = document.getElementById("reset");
         const errorDiv = document.getElementById("error");
+        const colorButtons = document.querySelectorAll(".color-btn");
+        const customColorInput = document.getElementById("customColor");
+        
+        // 選択されたQRコードの色
+        let selectedQrColor = "#000000";
+        
+        // 初期状態ではキャンバスを非表示
+        qrcodeCanvas.style.display = "none";
 
         generateQrCodeButton.addEventListener("click", () => {
             const text = textInput.value.trim();
@@ -271,21 +302,67 @@
             qrcodeCanvas.style.display = "block";
 
             try {
+                // QRiousが読み込まれたか確認
+                if (typeof QRious === 'undefined') {
+                    throw new Error('QRiousライブラリが読み込まれていません');
+                }
+                
                 const qrcode = new QRious({
                     element: qrcodeCanvas,
                     value: text,
-                    size: 250,
-                    level: "H",
+                    size: 200, // QRコードのサイズ
+                    level: "H", // エラー訂正レベル
+                    background: 'white',
+                    foreground: selectedQrColor, // 選択された色のQRコード
+                    padding: 10
                 });
             } catch (error) {
-                errorDiv.textContent = "無効な文字列です。";
+                errorDiv.textContent = "QRコードの生成に失敗しました: " + error.message;
                 qrcodeCanvas.style.display = "none";
                 console.error("QRコード生成エラー:", error);
             }
         });
 
+        resetButton.addEventListener("click", () => {
+            textInput.value = "";
+            errorDiv.textContent = "";
+            qrcodeCanvas.style.display = "none";
+        });
+
         textInput.addEventListener("keydown", (event) => {
             if (event.key === "Enter") {
+                generateQrCodeButton.click();
+            }
+        });
+        
+        // カラーボタンのイベント設定
+        colorButtons.forEach(button => {
+            button.addEventListener("click", function() {
+                // アクティブクラスを全てのボタンから削除
+                colorButtons.forEach(btn => btn.classList.remove("active"));
+                // クリックされたボタンにアクティブクラスを追加
+                this.classList.add("active");
+                // 選択された色を更新
+                selectedQrColor = this.getAttribute("data-color");
+                // カスタムカラー入力も同期
+                customColorInput.value = selectedQrColor;
+                
+                // 既にQRコードが生成されている場合は再生成
+                if (qrcodeCanvas.style.display === "block") {
+                    generateQrCodeButton.click();
+                }
+            });
+        });
+        
+        // カスタムカラー入力のイベント設定
+        customColorInput.addEventListener("input", function() {
+            // 選択された色を更新
+            selectedQrColor = this.value;
+            // アクティブクラスを全てのボタンから削除
+            colorButtons.forEach(btn => btn.classList.remove("active"));
+            
+            // 既にQRコードが生成されている場合は再生成
+            if (qrcodeCanvas.style.display === "block") {
                 generateQrCodeButton.click();
             }
         });
