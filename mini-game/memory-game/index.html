@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神経衰弱（メモリーカード）</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>神経衰弱</h1>
+        <p>カードをめくって同じ絵柄のペアを見つけよう！</p>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="../index.html">ミニゲームコレクションに戻る</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="game-container">
+            <div class="game-info">
+                <div id="moves">手数: 0</div>
+                <div id="time">経過時間: 0秒</div>
+                <div id="pairs">見つけたペア: 0/8</div>
+            </div>
+            <div id="game-board"></div>
+            <div class="controls">
+                <div class="difficulty-selector">
+                    <label for="difficulty">難易度:</label>
+                    <select id="difficulty">
+                        <option value="easy">簡単 (4x3)</option>
+                        <option value="medium" selected>普通 (4x4)</option>
+                        <option value="hard">難しい (6x4)</option>
+                    </select>
+                </div>
+                <button id="restart">ゲームをリスタート</button>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

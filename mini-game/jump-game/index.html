@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シンプルジャンプゲーム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>シンプルジャンプゲーム</h1>
+        <p>障害物を避けてハイスコアを目指そう！</p>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="../index.html">ミニゲームコレクションに戻る</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="game-container">
+            <div class="game-info">
+                <div id="score">スコア: 0</div>
+                <div id="high-score">ハイスコア: 0</div>
+            </div>
+            <canvas id="game-canvas" width="800" height="300"></canvas>
+            <div class="controls">
+                <button id="start-button">ゲーム開始</button>
+                <p class="instructions"><strong>スペースキーまたは画面タップでジャンプ！</strong></p>
+                <p class="instructions">（モバイル端末では画面のどこをタップしてもジャンプします）</p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
