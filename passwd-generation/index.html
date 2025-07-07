@@ -5,82 +5,141 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>パスワード生成ツール</title>
     <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            background-color: #edf7ed;
-            color: #333;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            min-height: 100vh;
         }
-        .header {
-            background-color: #4CAF50;
+        
+        header {
+            background: linear-gradient(to right, #43a047, #66bb6a);
             color: white;
             text-align: center;
-            padding: 25px 0;
-            margin-bottom: 0;
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .header h1 {
-            margin: 0;
-            font-size: 28px;
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-        .sub-header {
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            padding: 5px 0 15px 0;
-            margin-top: 0;
+        
+        nav {
+            background: linear-gradient(to right, #66bb6a, #81c784);
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        .nav {
-            background-color: #8BC34A;
-            padding: 10px 0;
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: flex-start;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
-        .nav a {
+        
+        nav ul li {
+            margin-right: 1rem;
+        }
+        
+        nav ul li a {
             color: white;
             text-decoration: none;
-            margin-left: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
         }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        
+        nav ul li a:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
         }
+        
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .tool-card {
+            background: linear-gradient(135deg, #ffffff, #e8f5e9);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            padding: 2rem;
+        }
+        .tool-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #2e7d32;
+            border-bottom: 2px solid #4caf50;
+            padding-bottom: 0.5rem;
+        }
+        
+        .tool-card h3 {
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #388e3c;
+        }
+        
+        .tool-card p, .tool-card li {
+            font-size: 1rem;
+            color: #388e3c;
+            margin-bottom: 1rem;
+        }
+        
         .section-title {
-            color: #2E7D32;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 8px;
-            margin-top: 20px;
-            margin-bottom: 15px;
-            font-size: 18px;
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #388e3c;
         }
+        
         .option-list {
             list-style-type: decimal;
             padding-left: 20px;
         }
+        
         .option-list li {
             margin-bottom: 10px;
+            color: #388e3c;
         }
+        
         .note-section {
             margin: 20px 0;
         }
+        
         .note-title {
-            color: #2E7D32;
+            color: #388e3c;
             font-weight: bold;
             margin-bottom: 5px;
         }
+        
         .note-content {
-            color: #555;
+            color: #388e3c;
         }
+        
         .input-section, .output-section {
             margin-top: 30px;
         }
         textarea {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #81c784;
             border-radius: 4px;
             box-sizing: border-box;
             min-height: 120px;
@@ -98,17 +157,25 @@
             margin-right: 10px;
         }
         button {
-            background-color: #4CAF50;
+            display: inline-block;
+            background: linear-gradient(to right, #4caf50, #45a049);
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 0.7rem 1.5rem;
             font-size: 16px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-top: 10px;
         }
+        
         button:hover {
-            background-color: #388E3C;
+            background: linear-gradient(to right, #45a049, #4caf50);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
         }
         #result {
             margin-top: 20px;
@@ -122,7 +189,7 @@
             padding: 8px;
             background-color: white;
             border-radius: 4px;
-            border: 1px solid #ddd;
+            border: 1px solid #81c784;
         }
         .password-text {
             word-break: break-all;
@@ -131,7 +198,7 @@
             font-size: 14px;
         }
         .copy-btn {
-            background-color: #8BC34A;
+            background: linear-gradient(to right, #81c784, #66bb6a);
             color: white;
             border: none;
             padding: 3px 8px;
@@ -139,9 +206,12 @@
             border-radius: 4px;
             font-size: 12px;
             width: 100%;
+            transition: all 0.3s ease;
         }
+        
         .copy-btn:hover {
-            background-color: #689F38;
+            background: linear-gradient(to right, #66bb6a, #81c784);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         #symbols-container {
             margin-left: 25px;
@@ -151,7 +221,7 @@
             width: 250px;
             padding: 8px;
             margin-top: 5px;
-            border: 1px solid #ddd;
+            border: 1px solid #81c784;
             border-radius: 4px;
         }
         .error {
@@ -177,30 +247,44 @@
             }
         }
         footer {
-            background-color: #4CAF50;
+            background: linear-gradient(to right, #43a047, #66bb6a);
             color: white;
             text-align: center;
-            padding: 15px 0;
+            padding: 1rem 0;
             position: relative;
             bottom: 0;
             width: 100%;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            main {
+                padding: 0 1rem;
+            }
+            .tool-card {
+                padding: 1.5rem;
+            }
+            nav ul {
+                padding: 0 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
+    <header>
         <h1>パスワード生成ツール</h1>
-    </div>
-    <div class="sub-header">
-        安全で強固なパスワードを簡単に生成
-    </div>
-    <div class="nav">
-        <a href="../index.html">ホームに戻る</a>
-    </div>
+        <p>安全で強固なパスワードを簡単に生成</p>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
     
-    <div class="container">
-        <div class="section-title">使用方法</div>
+    <main>
+        <div class="tool-card">
+        <h2>使用方法</h2>
         <ol class="option-list">
             <li>必要なオプションを選択します。</li>
             <li>「パスワードを生成する」ボタンをクリックします。</li>
@@ -208,15 +292,11 @@
             <li>必要に応じて「コピー」ボタンでクリップボードにコピーできます。</li>
         </ol>
         
-        <div class="note-section">
-            <div class="note-title">注意事項</div>
-            <div class="note-content">
-                このツールはブラウザ上で動作し、パスワードはサーバーに送信されません。JavaScriptを使用して完全にクライアントサイドで動作します。
-            </div>
-        </div>
+        <h3>注意事項</h3>
+        <p>このツールはブラウザ上で動作し、パスワードはサーバーに送信されません。JavaScriptを使用して完全にクライアントサイドで動作します。</p>
         
         <div class="input-section">
-            <div class="section-title">入力</div>
+            <h3>入力</h3>
             
             <div class="option-group">
                 <div class="option-title">文字の種類</div>
@@ -280,12 +360,13 @@
         </div>
         
         <div class="output-section">
-            <div class="section-title">出力</div>
+            <h3>出力</h3>
             <div id="result">
                 <div style="color: #666; font-style: italic;">生成されたパスワードはここに表示されます</div>
             </div>
         </div>
-    </div>
+        </div>
+    </main>
     
     <footer>
         <p>&copy; 2024 m-shiono personal project</p>
