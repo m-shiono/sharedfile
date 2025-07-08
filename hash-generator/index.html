@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ハッシュ生成ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>ハッシュ生成ツール</h1>
+        <p>様々なハッシュアルゴリズムでデータを変換</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>入力データ</h2>
+                <div class="input-mode-selector">
+                    <label class="radio-label">
+                        <input type="radio" name="inputMode" value="text" checked>
+                        <span>テキスト入力</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="inputMode" value="file">
+                        <span>ファイル入力</span>
+                    </label>
+                </div>
+                
+                <div class="input-text-area" id="textInputArea">
+                    <textarea id="inputText" placeholder="ハッシュ化したいテキストを入力してください..."></textarea>
+                </div>
+                
+                <div class="input-file-area" id="fileInputArea" style="display: none;">
+                    <div class="file-drop-zone" id="fileDropZone">
+                        <div class="drop-zone-content">
+                            <div class="upload-icon">📁</div>
+                            <p>ファイルをドラッグ＆ドロップまたはクリックして選択</p>
+                            <input type="file" id="fileInput" hidden>
+                        </div>
+                    </div>
+                    <div class="file-info" id="fileInfo" style="display: none;"></div>
+                </div>
+                
+                <div class="input-controls">
+                    <button id="generateBtn">ハッシュ生成</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>ハッシュ結果</h2>
+                <div class="hash-outputs" id="hashOutputs">
+                    <div class="hash-item">
+                        <div class="hash-label">
+                            <span class="hash-name">MD5</span>
+                            <span class="hash-description">128bit - 高速だが推奨されない</span>
+                        </div>
+                        <div class="hash-output">
+                            <input type="text" id="md5Hash" readonly>
+                            <button class="copy-btn" data-target="md5Hash">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="hash-item">
+                        <div class="hash-label">
+                            <span class="hash-name">SHA-1</span>
+                            <span class="hash-description">160bit - Git等で使用（非推奨）</span>
+                        </div>
+                        <div class="hash-output">
+                            <input type="text" id="sha1Hash" readonly>
+                            <button class="copy-btn" data-target="sha1Hash">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="hash-item">
+                        <div class="hash-label">
+                            <span class="hash-name">SHA-256</span>
+                            <span class="hash-description">256bit - 現在推奨される標準</span>
+                        </div>
+                        <div class="hash-output">
+                            <input type="text" id="sha256Hash" readonly>
+                            <button class="copy-btn" data-target="sha256Hash">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="hash-item">
+                        <div class="hash-label">
+                            <span class="hash-name">SHA-384</span>
+                            <span class="hash-description">384bit - 中程度のセキュリティ</span>
+                        </div>
+                        <div class="hash-output">
+                            <input type="text" id="sha384Hash" readonly>
+                            <button class="copy-btn" data-target="sha384Hash">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="hash-item">
+                        <div class="hash-label">
+                            <span class="hash-name">SHA-512</span>
+                            <span class="hash-description">512bit - 高セキュリティ</span>
+                        </div>
+                        <div class="hash-output">
+                            <input type="text" id="sha512Hash" readonly>
+                            <button class="copy-btn" data-target="sha512Hash">コピー</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hash-summary" id="hashSummary"></div>
+            </div>
+        </div>
+        
+        <div class="compare-section">
+            <h2>ハッシュ比較・検証</h2>
+            <div class="compare-inputs">
+                <div class="compare-input">
+                    <label>生成されたハッシュ:</label>
+                    <select id="hashSelector">
+                        <option value="">ハッシュを選択...</option>
+                        <option value="md5">MD5</option>
+                        <option value="sha1">SHA-1</option>
+                        <option value="sha256">SHA-256</option>
+                        <option value="sha384">SHA-384</option>
+                        <option value="sha512">SHA-512</option>
+                    </select>
+                </div>
+                <div class="compare-input">
+                    <label>比較対象ハッシュ:</label>
+                    <input type="text" id="compareHash" placeholder="比較したいハッシュ値を入力...">
+                </div>
+                <button id="compareBtn">比較</button>
+            </div>
+            <div class="compare-result" id="compareResult"></div>
+        </div>
+        
+        <div class="utils-section">
+            <h2>ユーティリティ</h2>
+            <div class="utils-grid">
+                <div class="util-card">
+                    <h3>ランダム文字列生成</h3>
+                    <div class="random-controls">
+                        <label>長さ:</label>
+                        <input type="number" id="randomLength" value="32" min="1" max="128">
+                        <label>文字種:</label>
+                        <select id="randomType">
+                            <option value="hex">16進数</option>
+                            <option value="base64">Base64</option>
+                            <option value="alphanumeric">英数字</option>
+                        </select>
+                        <button id="generateRandomBtn">生成</button>
+                    </div>
+                    <input type="text" id="randomResult" readonly>
+                    <button class="copy-btn" data-target="randomResult">コピー</button>
+                </div>
+                
+                <div class="util-card">
+                    <h3>ハッシュ情報</h3>
+                    <div class="hash-info">
+                        <p><strong>入力サイズ:</strong> <span id="inputSize">0 bytes</span></p>
+                        <p><strong>処理時間:</strong> <span id="processingTime">0 ms</span></p>
+                        <p><strong>エンコーディング:</strong> UTF-8</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h3>ハッシュアルゴリズムについて</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>MD5</h4>
+                    <ul>
+                        <li><strong>出力長:</strong> 128bit (32文字)</li>
+                        <li><strong>用途:</strong> チェックサム、レガシーシステム</li>
+                        <li><strong>セキュリティ:</strong> 脆弱性あり</li>
+                        <li><strong>推奨:</strong> 新規開発では非推奨</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>SHA-1</h4>
+                    <ul>
+                        <li><strong>出力長:</strong> 160bit (40文字)</li>
+                        <li><strong>用途:</strong> Git、レガシーSSL/TLS</li>
+                        <li><strong>セキュリティ:</strong> 衝突攻撃が可能</li>
+                        <li><strong>推奨:</strong> 段階的廃止予定</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>SHA-256</h4>
+                    <ul>
+                        <li><strong>出力長:</strong> 256bit (64文字)</li>
+                        <li><strong>用途:</strong> 暗号化、ブロックチェーン</li>
+                        <li><strong>セキュリティ:</strong> 現在安全</li>
+                        <li><strong>推奨:</strong> 一般的な用途に最適</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>SHA-512</h4>
+                    <ul>
+                        <li><strong>出力長:</strong> 512bit (128文字)</li>
+                        <li><strong>用途:</strong> 高セキュリティ用途</li>
+                        <li><strong>セキュリティ:</strong> 最高レベル</li>
+                        <li><strong>推奨:</strong> 機密性の高いデータ</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
