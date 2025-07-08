@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON フォーマッター・バリデーター</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>JSON フォーマッター・バリデーター</h1>
+        <p>JSONデータの整形・検証を行うツール</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>JSON入力</h2>
+                <textarea id="jsonInput" placeholder="JSONデータを入力してください..."></textarea>
+                <div class="button-group">
+                    <button id="formatBtn">フォーマット</button>
+                    <button id="validateBtn">バリデート</button>
+                    <button id="minifyBtn">圧縮</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>結果</h2>
+                <div id="statusBar" class="status-bar"></div>
+                <textarea id="jsonOutput" readonly></textarea>
+                <div class="button-group">
+                    <button id="copyBtn">コピー</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
