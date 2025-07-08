@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>環境変数管理ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>環境変数管理ツール</h1>
+        <p>.env形式の生成・検証・管理ツール</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>環境変数入力</h2>
+                <div class="input-mode">
+                    <label>
+                        <input type="radio" name="inputMode" value="editor" checked>
+                        エディタモード
+                    </label>
+                    <label>
+                        <input type="radio" name="inputMode" value="form">
+                        フォームモード
+                    </label>
+                </div>
+                
+                <div id="editorMode" class="input-container">
+                    <textarea id="envInput" placeholder="環境変数を.env形式で入力してください...
+例:
+NODE_ENV=production
+DATABASE_URL=postgresql://user:pass@localhost/db
+PORT=3000
+DEBUG=true"></textarea>
+                </div>
+                
+                <div id="formMode" class="input-container" style="display: none;">
+                    <div class="form-controls">
+                        <button id="addRowBtn" class="add-btn">行を追加</button>
+                        <button id="clearFormBtn" class="clear-btn">フォームクリア</button>
+                    </div>
+                    <div id="envForm" class="env-form">
+                        <div class="env-row">
+                            <input type="text" placeholder="変数名" class="env-key">
+                            <input type="text" placeholder="値" class="env-value">
+                            <button class="remove-btn">削除</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="validateBtn">検証</button>
+                    <button id="generateBtn">生成</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>結果</h2>
+                <div id="statusBar" class="status-bar"></div>
+                <div class="output-tabs">
+                    <button class="tab-btn active" data-tab="env">ENV</button>
+                    <button class="tab-btn" data-tab="json">JSON</button>
+                    <button class="tab-btn" data-tab="yaml">YAML</button>
+                    <button class="tab-btn" data-tab="docker">Docker</button>
+                    <button class="tab-btn" data-tab="shell">Shell</button>
+                </div>
+                <textarea id="outputText" readonly></textarea>
+                <div class="button-group">
+                    <button id="copyBtn">コピー</button>
+                    <button id="downloadBtn">ダウンロード</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="validation-section">
+            <h2>検証結果</h2>
+            <div id="validationResults" class="validation-results"></div>
+        </div>
+        
+        <div class="templates-section">
+            <h2>テンプレート</h2>
+            <div class="template-grid">
+                <div class="template-card">
+                    <h3>Node.js アプリケーション</h3>
+                    <p>基本的なNode.js環境変数</p>
+                    <button class="template-btn" data-template="nodejs">使用</button>
+                </div>
+                <div class="template-card">
+                    <h3>データベース接続</h3>
+                    <p>PostgreSQL/MySQL接続設定</p>
+                    <button class="template-btn" data-template="database">使用</button>
+                </div>
+                <div class="template-card">
+                    <h3>Redis / キャッシュ</h3>
+                    <p>Redis接続設定</p>
+                    <button class="template-btn" data-template="redis">使用</button>
+                </div>
+                <div class="template-card">
+                    <h3>AWS設定</h3>
+                    <p>AWS関連の環境変数</p>
+                    <button class="template-btn" data-template="aws">使用</button>
+                </div>
+                <div class="template-card">
+                    <h3>JWT / セキュリティ</h3>
+                    <p>認証・セキュリティ設定</p>
+                    <button class="template-btn" data-template="security">使用</button>
+                </div>
+                <div class="template-card">
+                    <h3>メール / 通知</h3>
+                    <p>メール・通知サービス設定</p>
+                    <button class="template-btn" data-template="email">使用</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

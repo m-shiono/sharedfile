@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPアドレス計算ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>IPアドレス計算ツール</h1>
+        <p>CIDR計算とサブネットマスク変換を行うツール</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>IPアドレス・CIDR入力</h2>
+                <div class="input-group">
+                    <label for="ipInput">IPアドレス (例: 192.168.1.0/24):</label>
+                    <input type="text" id="ipInput" placeholder="192.168.1.0/24" value="192.168.1.0/24">
+                </div>
+                <div class="button-group">
+                    <button id="calculateBtn">計算実行</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>計算結果</h2>
+                <div id="statusBar" class="status-bar"></div>
+                <div id="results" class="results-container">
+                    <div class="result-item">
+                        <label>ネットワークアドレス:</label>
+                        <span id="networkAddress">-</span>
+                    </div>
+                    <div class="result-item">
+                        <label>ブロードキャストアドレス:</label>
+                        <span id="broadcastAddress">-</span>
+                    </div>
+                    <div class="result-item">
+                        <label>サブネットマスク:</label>
+                        <span id="subnetMask">-</span>
+                    </div>
+                    <div class="result-item">
+                        <label>利用可能IP範囲:</label>
+                        <span id="ipRange">-</span>
+                    </div>
+                    <div class="result-item">
+                        <label>総IPアドレス数:</label>
+                        <span id="totalHosts">-</span>
+                    </div>
+                    <div class="result-item">
+                        <label>利用可能IPアドレス数:</label>
+                        <span id="availableHosts">-</span>
+                    </div>
+                    <div class="result-item">
+                        <label>IPアドレスクラス:</label>
+                        <span id="ipClass">-</span>
+                    </div>
+                    <div class="result-item">
+                        <label>プライベートアドレス:</label>
+                        <span id="privateAddress">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="subnet-calculator">
+            <h2>サブネット分割計算</h2>
+            <div class="input-group">
+                <label for="baseNetwork">ベースネットワーク:</label>
+                <input type="text" id="baseNetwork" placeholder="192.168.1.0/24">
+            </div>
+            <div class="input-group">
+                <label for="subnetCount">必要なサブネット数:</label>
+                <input type="number" id="subnetCount" min="2" max="256" value="4">
+            </div>
+            <div class="button-group">
+                <button id="subnetCalculateBtn">サブネット計算</button>
+            </div>
+            <div id="subnetResults" class="subnet-results"></div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
