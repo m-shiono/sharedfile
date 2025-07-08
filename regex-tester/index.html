@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正規表現テスター</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>正規表現テスター</h1>
+        <p>正規表現のパターンマッチングをテストするツール</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="regex-section">
+                <h2>正規表現パターン</h2>
+                <div class="regex-input-wrapper">
+                    <span class="regex-delimiter">/</span>
+                    <input type="text" id="regexInput" placeholder="正規表現を入力してください">
+                    <span class="regex-delimiter">/</span>
+                    <div class="flags-section">
+                        <label class="flag-label">
+                            <input type="checkbox" id="flagGlobal" value="g">
+                            <span>g</span>
+                        </label>
+                        <label class="flag-label">
+                            <input type="checkbox" id="flagIgnoreCase" value="i">
+                            <span>i</span>
+                        </label>
+                        <label class="flag-label">
+                            <input type="checkbox" id="flagMultiline" value="m">
+                            <span>m</span>
+                        </label>
+                        <label class="flag-label">
+                            <input type="checkbox" id="flagDotAll" value="s">
+                            <span>s</span>
+                        </label>
+                        <label class="flag-label">
+                            <input type="checkbox" id="flagUnicode" value="u">
+                            <span>u</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="regex-status" id="regexStatus"></div>
+                
+                <div class="quick-patterns">
+                    <h3>クイックパターン</h3>
+                    <div class="pattern-buttons">
+                        <button data-pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">メール</button>
+                        <button data-pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)">URL</button>
+                        <button data-pattern="\d{3}-\d{4}-\d{4}">電話番号</button>
+                        <button data-pattern="\d{4}-\d{2}-\d{2}">日付</button>
+                        <button data-pattern="^\d+$">数字のみ</button>
+                        <button data-pattern="^[a-zA-Z]+$">英字のみ</button>
+                        <button data-pattern="^[ひらがな]+$">ひらがな</button>
+                        <button data-pattern="^[カタカナ]+$">カタカナ</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h2>テストテキスト</h2>
+                <textarea id="testText" placeholder="テストしたいテキストを入力してください..."></textarea>
+                <div class="test-controls">
+                    <button id="testBtn">テスト実行</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <h2>マッチ結果</h2>
+            <div class="results-summary" id="resultsSummary"></div>
+            <div class="results-display">
+                <div class="highlighted-text" id="highlightedText"></div>
+                <div class="matches-list" id="matchesList"></div>
+            </div>
+        </div>
+        
+        <div class="replace-section">
+            <h2>置換テスト</h2>
+            <div class="replace-controls">
+                <div class="replace-input">
+                    <label>置換文字列:</label>
+                    <input type="text" id="replaceInput" placeholder="置換する文字列">
+                </div>
+                <button id="replaceBtn">置換実行</button>
+            </div>
+            <div class="replace-result" id="replaceResult"></div>
+        </div>
+        
+        <div class="info-section">
+            <h3>正規表現について</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>基本文字</h4>
+                    <ul>
+                        <li><code>.</code> - 任意の一文字</li>
+                        <li><code>*</code> - 0回以上の繰り返し</li>
+                        <li><code>+</code> - 1回以上の繰り返し</li>
+                        <li><code>?</code> - 0回または1回</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>文字クラス</h4>
+                    <ul>
+                        <li><code>[abc]</code> - a、b、cのいずれか</li>
+                        <li><code>[a-z]</code> - a～zの範囲</li>
+                        <li><code>[^abc]</code> - a、b、c以外</li>
+                        <li><code>\d</code> - 数字 (0-9)</li>
+                        <li><code>\w</code> - 単語文字</li>
+                        <li><code>\s</code> - 空白文字</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>アンカー</h4>
+                    <ul>
+                        <li><code>^</code> - 行の開始</li>
+                        <li><code>$</code> - 行の終了</li>
+                        <li><code>\b</code> - 単語境界</li>
+                        <li><code>\B</code> - 非単語境界</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>フラグ</h4>
+                    <ul>
+                        <li><code>g</code> - グローバル検索</li>
+                        <li><code>i</code> - 大文字小文字を無視</li>
+                        <li><code>m</code> - 複数行モード</li>
+                        <li><code>s</code> - . が改行にもマッチ</li>
+                        <li><code>u</code> - Unicode対応</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

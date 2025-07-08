@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>テキストケース変換ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>テキストケース変換ツール</h1>
+        <p>プログラミングに便利な変数名・テキストの命名規則変換</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>入力テキスト</h2>
+                <textarea id="inputText" placeholder="変換したいテキストを入力してください..."></textarea>
+                <div class="input-controls">
+                    <button id="clearBtn">クリア</button>
+                    <button id="convertAllBtn">全形式に変換</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>変換結果</h2>
+                <div class="conversion-grid" id="conversionGrid">
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">camelCase</span>
+                            <span class="case-description">変数名・関数名（JavaScript、Java等）</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="camelCase" readonly>
+                            <button class="copy-btn" data-target="camelCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">PascalCase</span>
+                            <span class="case-description">クラス名・型名（C#、Pascal等）</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="pascalCase" readonly>
+                            <button class="copy-btn" data-target="pascalCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">snake_case</span>
+                            <span class="case-description">変数名・関数名（Python、Ruby等）</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="snakeCase" readonly>
+                            <button class="copy-btn" data-target="snakeCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">SCREAMING_SNAKE_CASE</span>
+                            <span class="case-description">定数名（多くの言語）</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="screamingSnakeCase" readonly>
+                            <button class="copy-btn" data-target="screamingSnakeCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">kebab-case</span>
+                            <span class="case-description">URL・CSS クラス名・HTML属性</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="kebabCase" readonly>
+                            <button class="copy-btn" data-target="kebabCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">SCREAMING-KEBAB-CASE</span>
+                            <span class="case-description">環境変数・設定項目</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="screamingKebabCase" readonly>
+                            <button class="copy-btn" data-target="screamingKebabCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">Train-Case</span>
+                            <span class="case-description">ヘッダー名・タイトル</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="trainCase" readonly>
+                            <button class="copy-btn" data-target="trainCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">dot.case</span>
+                            <span class="case-description">設定ファイル・オブジェクトパス</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="dotCase" readonly>
+                            <button class="copy-btn" data-target="dotCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">path/case</span>
+                            <span class="case-description">ファイルパス・URL パス</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="pathCase" readonly>
+                            <button class="copy-btn" data-target="pathCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">Title Case</span>
+                            <span class="case-description">見出し・タイトル</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="titleCase" readonly>
+                            <button class="copy-btn" data-target="titleCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">Sentence case</span>
+                            <span class="case-description">通常の文章</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="sentenceCase" readonly>
+                            <button class="copy-btn" data-target="sentenceCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">lowercase</span>
+                            <span class="case-description">全て小文字</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="lowerCase" readonly>
+                            <button class="copy-btn" data-target="lowerCase">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="conversion-item">
+                        <div class="conversion-label">
+                            <span class="case-name">UPPERCASE</span>
+                            <span class="case-description">全て大文字</span>
+                        </div>
+                        <div class="conversion-output">
+                            <input type="text" id="upperCase" readonly>
+                            <button class="copy-btn" data-target="upperCase">コピー</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-examples-section">
+            <h2>クイック例文</h2>
+            <div class="examples-grid">
+                <button class="example-btn" data-text="user name validation">user name validation</button>
+                <button class="example-btn" data-text="get user by id">get user by id</button>
+                <button class="example-btn" data-text="database connection string">database connection string</button>
+                <button class="example-btn" data-text="http response handler">http response handler</button>
+                <button class="example-btn" data-text="create new account">create new account</button>
+                <button class="example-btn" data-text="validate email address">validate email address</button>
+                <button class="example-btn" data-text="api rate limit">api rate limit</button>
+                <button class="example-btn" data-text="user interface component">user interface component</button>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h3>命名規則について</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>JavaScript/TypeScript</h4>
+                    <ul>
+                        <li><strong>変数・関数:</strong> camelCase</li>
+                        <li><strong>クラス・型:</strong> PascalCase</li>
+                        <li><strong>定数:</strong> SCREAMING_SNAKE_CASE</li>
+                        <li><strong>ファイル名:</strong> kebab-case または camelCase</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>Python</h4>
+                    <ul>
+                        <li><strong>変数・関数:</strong> snake_case</li>
+                        <li><strong>クラス:</strong> PascalCase</li>
+                        <li><strong>定数:</strong> SCREAMING_SNAKE_CASE</li>
+                        <li><strong>モジュール:</strong> snake_case</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>Java/C#</h4>
+                    <ul>
+                        <li><strong>変数・メソッド:</strong> camelCase</li>
+                        <li><strong>クラス・インターフェース:</strong> PascalCase</li>
+                        <li><strong>定数:</strong> SCREAMING_SNAKE_CASE</li>
+                        <li><strong>パッケージ:</strong> lowercase</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>Web開発</h4>
+                    <ul>
+                        <li><strong>CSS クラス:</strong> kebab-case</li>
+                        <li><strong>HTML 属性:</strong> kebab-case</li>
+                        <li><strong>URL:</strong> kebab-case</li>
+                        <li><strong>環境変数:</strong> SCREAMING_SNAKE_CASE</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
