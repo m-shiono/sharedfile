@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL エンコーダー・デコーダー</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>URL エンコーダー・デコーダー</h1>
+        <p>URLの安全な文字列変換を行うツール</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>入力</h2>
+                <div class="mode-selector">
+                    <label class="radio-label">
+                        <input type="radio" name="mode" value="encode" checked>
+                        <span>テキスト → URL エンコード</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="mode" value="decode">
+                        <span>URL → テキスト デコード</span>
+                    </label>
+                </div>
+                <div class="encoding-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="encodeSpaces" checked>
+                        <span>スペースを + に変換</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="encodeReserved">
+                        <span>予約文字もエンコード</span>
+                    </label>
+                </div>
+                <textarea id="inputText" placeholder="変換したいテキストを入力してください..."></textarea>
+                <div class="button-group">
+                    <button id="convertBtn">変換</button>
+                    <button id="clearBtn">クリア</button>
+                    <button id="swapBtn">入出力を入れ替え</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>結果</h2>
+                <div id="statusBar" class="status-bar"></div>
+                <textarea id="outputText" readonly></textarea>
+                <div class="button-group">
+                    <button id="copyBtn">コピー</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h3>URLエンコーディングについて</h3>
+            <p>URLエンコーディングは、URL内で安全に使用するために特殊文字を変換する仕組みです。</p>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>予約文字</h4>
+                    <p>URL内で特別な意味を持つ文字</p>
+                    <code>! * ' ( ) ; : @ & = + $ , / ? # [ ]</code>
+                </div>
+                <div class="info-card">
+                    <h4>非安全文字</h4>
+                    <p>必ずエンコードが必要な文字</p>
+                    <code>スペース " < > # % { } | \ ^ ~ ` [ ]</code>
+                </div>
+                <div class="info-card">
+                    <h4>エンコード例</h4>
+                    <p>よく使われる文字の変換例</p>
+                    <code>スペース → %20 または +<br>
+                    日本語 → %E3%81%82 (あ)</code>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
