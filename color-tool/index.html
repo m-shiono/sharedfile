@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>カラーパレット・カラーコード変換ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>カラーパレット・カラーコード変換ツール</h1>
+        <p>色の変換とパレット生成を行うツール</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="color-picker-section">
+                <h2>カラーピッカー</h2>
+                <div class="color-picker-wrapper">
+                    <input type="color" id="colorPicker" value="#4caf50">
+                    <div class="color-preview" id="colorPreview"></div>
+                </div>
+                <div class="color-info">
+                    <h3>色情報</h3>
+                    <div class="color-codes">
+                        <div class="color-code-item">
+                            <label>HEX:</label>
+                            <input type="text" id="hexInput" placeholder="#FFFFFF">
+                        </div>
+                        <div class="color-code-item">
+                            <label>RGB:</label>
+                            <input type="text" id="rgbInput" placeholder="rgb(255, 255, 255)">
+                        </div>
+                        <div class="color-code-item">
+                            <label>HSL:</label>
+                            <input type="text" id="hslInput" placeholder="hsl(0, 0%, 100%)">
+                        </div>
+                        <div class="color-code-item">
+                            <label>HSV:</label>
+                            <input type="text" id="hsvInput" placeholder="hsv(0, 0%, 100%)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="palette-section">
+                <h2>カラーパレット</h2>
+                <div class="palette-controls">
+                    <button id="generateComplementary">補色</button>
+                    <button id="generateTriadic">トライアド</button>
+                    <button id="generateAnalogous">類似色</button>
+                    <button id="generateMonochromatic">単色階調</button>
+                    <button id="generateRandom">ランダム</button>
+                </div>
+                <div class="palette-display" id="paletteDisplay"></div>
+                <div class="palette-actions">
+                    <button id="copyPalette">パレットをコピー</button>
+                    <button id="savePalette">パレットを保存</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="contrast-section">
+            <h2>コントラスト チェッカー</h2>
+            <div class="contrast-checker">
+                <div class="contrast-inputs">
+                    <div class="contrast-color">
+                        <label>前景色:</label>
+                        <input type="color" id="foregroundColor" value="#000000">
+                        <input type="text" id="foregroundHex" placeholder="#000000">
+                    </div>
+                    <div class="contrast-color">
+                        <label>背景色:</label>
+                        <input type="color" id="backgroundColor" value="#ffffff">
+                        <input type="text" id="backgroundHex" placeholder="#ffffff">
+                    </div>
+                </div>
+                <div class="contrast-result">
+                    <div class="contrast-preview" id="contrastPreview">
+                        <span>サンプルテキスト</span>
+                    </div>
+                    <div class="contrast-ratio" id="contrastRatio">
+                        <span>コントラスト比: 21:1</span>
+                        <div class="wcag-compliance">
+                            <span class="wcag-aa" id="wcagAA">WCAG AA: ✓</span>
+                            <span class="wcag-aaa" id="wcagAAA">WCAG AAA: ✓</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="saved-palettes-section">
+            <h2>保存されたパレット</h2>
+            <div class="saved-palettes" id="savedPalettes"></div>
+        </div>
+        
+        <div class="info-section">
+            <h3>カラーコードについて</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>HEX</h4>
+                    <p>16進数カラーコード</p>
+                    <code>#RRGGBB (例: #FF0000)</code>
+                </div>
+                <div class="info-card">
+                    <h4>RGB</h4>
+                    <p>Red, Green, Blue の値</p>
+                    <code>rgb(255, 0, 0)</code>
+                </div>
+                <div class="info-card">
+                    <h4>HSL</h4>
+                    <p>Hue, Saturation, Lightness</p>
+                    <code>hsl(0, 100%, 50%)</code>
+                </div>
+                <div class="info-card">
+                    <h4>HSV</h4>
+                    <p>Hue, Saturation, Value</p>
+                    <code>hsv(0, 100%, 100%)</code>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
