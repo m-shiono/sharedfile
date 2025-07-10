@@ -1,0 +1,105 @@
+name: Gemini CLI with Strict Owner Check
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  run-gemini:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.body, '@gemini')
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check repository ownership
+        id: check_ownership
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueAuthor = context.payload.issue.user.login;
+            
+            // レポジトリ情報を取得
+            const { data: repo } = await github.rest.repos.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            
+            let isAuthorized = false;
+            
+            // 個人レポジトリの場合
+            if (repo.owner.type === 'User') {
+              isAuthorized = issueAuthor === repo.owner.login;
+              console.log(`個人レポジトリ - オーナー: ${repo.owner.login}, 発行者: ${issueAuthor}`);
+            }
+            // 組織レポジトリの場合
+            else if (repo.owner.type === 'Organization') {
+              try {
+                const { data: membership } = await github.rest.orgs.getMembershipForUser({
+                  org: context.repo.owner,
+                  username: issueAuthor
+                });
+                isAuthorized = membership.role === 'admin';
+                console.log(`組織レポジトリ - 発行者の権限: ${membership.role}`);
+              } catch (error) {
+                console.log(`組織メンバーシップ確認エラー: ${error.message}`);
+                isAuthorized = false;
+              }
+            }
+            
+            core.setOutput('is_authorized', isAuthorized);
+            
+            if (!isAuthorized) {
+              console.log(`❌ 権限不足: ${issueAuthor} はレポジトリオーナー/管理者ではありません`);
+            }
+      
+      - name: Extract and validate command
+        if: steps.check_ownership.outputs.is_authorized == 'true'
+        id: extract_command
+        run: |
+          COMMAND=$(echo '${{ github.event.issue.body }}' | grep -oP '(?<=@gemini ).*' | head -1 | tr -d '\n\r')
+          if [ -z "$COMMAND" ]; then
+            echo "❌ @geminiの後にコマンドが指定されていません"
+            exit 1
+          fi
+          echo "GEMINI_COMMAND=$COMMAND" >> $GITHUB_ENV
+          echo "✅ 実行コマンド: $COMMAND"
+      
+      - name: Install Gemini CLI
+        if: steps.check_ownership.outputs.is_authorized == 'true'
+        run: npm install -g @google/gemini-cli
+      
+      - name: Execute Gemini CLI
+        if: steps.check_ownership.outputs.is_authorized == 'true'
+        id: run_gemini
+        run: |
+          echo "🚀 Gemini CLIを実行中..."
+          OUTPUT=$(gemini "$GEMINI_COMMAND" 2>&1)
+          echo "GEMINI_OUTPUT<<EOF" >> $GITHUB_ENV
+          echo "$OUTPUT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      
+      - name: Post results to issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const isAuthorized = '${{ steps.check_ownership.outputs.is_authorized }}' === 'true';
+            const runSuccess = '${{ steps.run_gemini.outcome }}' === 'success';
+            
+            let body;
+            if (!isAuthorized) {
+              body = '❌ **アクセス拒否**\n\nこのコマンドはレポジトリオーナーまたは組織管理者のみが実行できます。\n\n**発行者:** @${{ github.event.issue.user.login }}\n**権限:** 不十分';
+            } else if (runSuccess) {
+              body = '✅ **Gemini CLIコマンド実行完了**\n\n**実行者:** @${{ github.event.issue.user.login }} ✨ (認証済みオーナー)\n**コマンド:** `${{ env.GEMINI_COMMAND }}`\n**実行時刻:** ' + new Date().toISOString() + '\n\n**実行結果:**\n```\n${{ env.GEMINI_OUTPUT }}\n```';
+            } else {
+              body = '❌ **実行エラー**\n\nGemini CLIコマンドの実行に失敗しました。\n詳細はワークフローログをご確認ください。\n\n**実行者:** @${{ github.event.issue.user.login }}\n**コマンド:** `${{ env.GEMINI_COMMAND }}`';
+            }
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
