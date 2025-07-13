@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cron式生成・検証ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Cron式生成・検証ツール</h1>
+        <p>Cronスケジュールの作成と検証を行うツール</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="builder-section">
+                <h2>Cron式生成</h2>
+                <div class="input-group">
+                    <label for="minute">分:</label>
+                    <select id="minute"></select>
+                </div>
+                <div class="input-group">
+                    <label for="hour">時:</label>
+                    <select id="hour"></select>
+                </div>
+                <div class="input-group">
+                    <label for="day">日:</label>
+                    <select id="day"></select>
+                </div>
+                <div class="input-group">
+                    <label for="month">月:</label>
+                    <select id="month"></select>
+                </div>
+                <div class="input-group">
+                    <label for="weekday">曜日:</label>
+                    <select id="weekday"></select>
+                </div>
+                <div class="button-group">
+                    <button id="generateBtn">生成</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+                <input type="text" id="cronOutput" readonly placeholder="生成されたCron式">
+                <div class="button-group">
+                    <button id="copyBtn">コピー</button>
+                </div>
+            </div>
+
+            <div class="validator-section">
+                <h2>Cron式検証</h2>
+                <div class="input-group">
+                    <label for="cronInput">Cron式:</label>
+                    <input type="text" id="cronInput" placeholder="*/5 * * * *">
+                </div>
+                <div class="button-group">
+                    <button id="validateBtn">検証</button>
+                </div>
+                <div id="statusBar" class="status-bar"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
