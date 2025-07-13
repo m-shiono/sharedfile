@@ -1,110 +1,98 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const githubIdentityFileInput = document.getElementById('githubIdentityFile');
+    const hostsTableBody = document.querySelector('#hostsTable tbody');
+    const addRowBtn = document.getElementById('addRowBtn');
     const generateBtn = document.getElementById('generateBtn');
     const clearBtn = document.getElementById('clearBtn');
     const copyBtn = document.getElementById('copyBtn');
-    const copySuCommandBtn = document.getElementById('copySuCommandBtn');
-    const githubCheck = document.getElementById('githubCheck');
-
-    const hostNameInput = document.getElementById('hostName');
-    const ipAddressInput = document.getElementById('ipAddress');
-    const userInput = document.getElementById('user');
-    const portInput = document.getElementById('port');
-    const identityFileInput = document.getElementById('identityFile');
-    const suUserInput = document.getElementById('suUser');
     const outputTextarea = document.getElementById('output');
-    const suCommandOutputTextarea = document.getElementById('suCommandOutput');
 
-    function initialize() {
-        identityFileInput.disabled = true;
-        githubCheck.checked = false;
-        clearForm();
+    const initialRows = 1;
+
+    function createRow() {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="text" placeholder="my-server" class="hostName"></td>
+            <td><input type="text" placeholder="192.168.1.100" class="ipAddress"></td>
+            <td><input type="text" placeholder="ec2-user" class="user"></td>
+            <td><input type="number" placeholder="22" value="22" class="port"></td>
+            <td><input type="text" placeholder="~/.ssh/id_rsa" class="identityFile"></td>
+            <td><input type="text" placeholder="root" class="suUser"></td>
+            <td><button class="deleteRowBtn">削除</button></td>
+        `;
+        hostsTableBody.appendChild(row);
     }
 
-    function clearForm() {
-        hostNameInput.value = '';
-        ipAddressInput.value = '';
-        userInput.value = '';
-        portInput.value = '22';
-        identityFileInput.value = '';
-        suUserInput.value = '';
-        outputTextarea.value = '';
-        suCommandOutputTextarea.value = '';
-        identityFileInput.disabled = !githubCheck.checked;
+    function initializeTable() {
+        hostsTableBody.innerHTML = '';
+        for (let i = 0; i < initialRows; i++) {
+            createRow();
+        }
     }
 
-    githubCheck.addEventListener('change', () => {
-        if (githubCheck.checked) {
-            hostNameInput.value = 'github.com';
-            ipAddressInput.value = 'github.com';
-            userInput.value = 'git';
-            identityFileInput.disabled = false;
-            identityFileInput.placeholder = '~/.ssh/id_rsa_github';
-        } else {
-            clearForm();
+    addRowBtn.addEventListener('click', createRow);
+
+    hostsTableBody.addEventListener('click', (e) => {
+        if (e.target.classList.contains('deleteRowBtn')) {
+            if (hostsTableBody.rows.length > 1) {
+                e.target.closest('tr').remove();
+            } else {
+                alert('最後の行は削除できません。');
+            }
         }
     });
 
     generateBtn.addEventListener('click', () => {
-        const hostName = hostNameInput.value.trim();
-        const ipAddress = ipAddressInput.value.trim();
-        const user = userInput.value.trim();
-        const port = portInput.value.trim();
-        const identityFile = identityFileInput.value.trim();
-        const suUser = suUserInput.value.trim();
+        let fullConfig = '';
+        const githubIdentityFile = githubIdentityFileInput.value.trim();
 
-        if (!hostName || !ipAddress) {
-            alert('ホスト名とIPアドレス/ホスト名は必須です。');
-            return;
+        if (githubIdentityFile) {
+            fullConfig += `Host github.com\n`;
+            fullConfig += `  HostName github.com\n`;
+            fullConfig += `  User git\n`;
+            fullConfig += `  IdentityFile ${githubIdentityFile}\n\n`;
         }
 
-        let config = `Host ${hostName}\n`;
-        config += `  HostName ${ipAddress}\n`;
+        const rows = hostsTableBody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const hostName = row.querySelector('.hostName').value.trim();
+            const ipAddress = row.querySelector('.ipAddress').value.trim();
+            const user = row.querySelector('.user').value.trim();
+            const port = row.querySelector('.port').value.trim();
+            const identityFile = row.querySelector('.identityFile').value.trim();
+            const suUser = row.querySelector('.suUser').value.trim();
 
-        if (user) {
-            config += `  User ${user}\n`;
-        }
-        if (port && port !== '22') {
-            config += `  Port ${port}\n`;
-        }
-        if (identityFile && !identityFileInput.disabled) {
-            config += `  IdentityFile ${identityFile}\n`;
-        }
+            if (hostName && ipAddress) {
+                let hostConfig = `Host ${hostName}\n`;
+                hostConfig += `  HostName ${ipAddress}\n`;
+                if (user) hostConfig += `  User ${user}\n`;
+                if (port && port !== '22') hostConfig += `  Port ${port}\n`;
+                if (identityFile) hostConfig += `  IdentityFile ${identityFile}\n`;
+                if (suUser) hostConfig += `  # su command: ssh -t ${hostName} "su - ${suUser}"\n`;
 
-        outputTextarea.value = config;
+                fullConfig += hostConfig + '\n';
+            }
+        });
 
-        if (suUser) {
-            const suCommand = `ssh -t ${hostName} "su - ${suUser}"`;
-            suCommandOutputTextarea.value = suCommand;
-        } else {
-            suCommandOutputTextarea.value = '';
-        }
+        outputTextarea.value = fullConfig;
     });
 
     clearBtn.addEventListener('click', () => {
-        githubCheck.checked = false;
-        clearForm();
+        githubIdentityFileInput.value = '';
+        initializeTable();
+        outputTextarea.value = '';
     });
 
     copyBtn.addEventListener('click', () => {
-        copyToClipboard(outputTextarea.value, '設定をクリップボードにコピーしました。');
-    });
-
-    copySuCommandBtn.addEventListener('click', () => {
-        copyToClipboard(suCommandOutputTextarea.value, 'suコマンドをクリップボードにコピーしました。');
-    });
-
-    function copyToClipboard(text, successMessage) {
-        if (text) {
-            navigator.clipboard.writeText(text)
-                .then(() => {
-                    alert(successMessage);
-                })
+        if (outputTextarea.value) {
+            navigator.clipboard.writeText(outputTextarea.value)
+                .then(() => alert('設定をクリップボードにコピーしました。'))
                 .catch(err => {
                     alert('コピーに失敗しました。');
                     console.error('Copy failed', err);
                 });
         }
-    }
+    });
 
-    initialize();
+    initializeTable();
 });

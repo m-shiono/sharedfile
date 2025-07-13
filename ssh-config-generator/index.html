@@ -9,7 +9,7 @@
 <body>
     <header>
         <h1>SSH Config ジェネレーター</h1>
-        <p>SSH接続の設定ファイルを生成するツール</p>
+        <p>複数のSSH接続設定を効率的に生成するツール</p>
     </header>
 
     <nav>
@@ -19,52 +19,46 @@
     </nav>
 
     <main>
-        <div class="tool-container">
-            <div class="input-section">
-                <h2>SSH接続情報入力</h2>
-                <div class="input-group-checkbox">
-                    <input type="checkbox" id="githubCheck">
-                    <label for="githubCheck">GitHub設定を追加</label>
-                </div>
-                <div class="input-group">
-                    <label for="hostName">ホスト名 (例: my-server):</label>
-                    <input type="text" id="hostName" placeholder="my-server">
-                </div>
-                <div class="input-group">
-                    <label for="ipAddress">IPアドレス/ホスト名:</label>
-                    <input type="text" id="ipAddress" placeholder="192.168.1.100">
-                </div>
-                <div class="input-group">
-                    <label for="user">ユーザー名:</label>
-                    <input type="text" id="user" placeholder="ec2-user">
-                </div>
-                <div class="input-group">
-                    <label for="port">ポート (デフォルト: 22):</label>
-                    <input type="number" id="port" placeholder="22" value="22">
-                </div>
-                <div class="input-group">
-                    <label for="identityFile">秘密鍵のパス (例: ~/.ssh/id_rsa):</label>
-                    <input type="text" id="identityFile" placeholder="~/.ssh/id_rsa" disabled>
-                </div>
-                <div class="input-group">
-                    <label for="suUser">su先ユーザー (任意):</label>
-                    <input type="text" id="suUser" placeholder="root">
-                </div>
-                <div class="button-group">
-                    <button id="generateBtn">生成</button>
-                    <button id="clearBtn">クリア</button>
-                </div>
+        <div class="config-section">
+            <h2>GitHub 設定</h2>
+            <div class="input-group">
+                <label for="githubIdentityFile">GitHub用 秘密鍵のパス (例: ~/.ssh/id_rsa_github)</label>
+                <input type="text" id="githubIdentityFile" placeholder="未入力の場合は生成されません">
             </div>
+        </div>
 
-            <div class="output-section">
-                <h2>生成されたSSH Config</h2>
-                <textarea id="output" readonly></textarea>
-                <button id="copyBtn">コピー</button>
-
-                <h2 class="sub-header">suコマンド</h2>
-                <textarea id="suCommandOutput" readonly></textarea>
-                <button id="copySuCommandBtn">コマンドをコピー</button>
+        <div class="config-section">
+            <h2>ホスト設定</h2>
+            <table id="hostsTable">
+                <thead>
+                    <tr>
+                        <th>ホスト名</th>
+                        <th>IPアドレス/ホスト名</th>
+                        <th>ユーザー名</th>
+                        <th>ポート</th>
+                        <th>秘密鍵パス</th>
+                        <th>su先ユーザー</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JavaScriptで動的に行が追加される -->
+                </tbody>
+            </table>
+            <div class="table-actions">
+                <button id="addRowBtn">行を追加</button>
             </div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="generateBtn" class="primary-action">生成</button>
+            <button id="clearBtn">すべてクリア</button>
+        </div>
+
+        <div class="output-section">
+            <h2>生成されたSSH Config</h2>
+            <textarea id="output" readonly></textarea>
+            <button id="copyBtn">コピー</button>
         </div>
     </main>
 
