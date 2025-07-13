@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSH Config ジェネレーター</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>SSH Config ジェネレーター</h1>
+        <p>複数のSSH接続設定を効率的に生成するツール</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="config-section">
+            <h2>GitHub 設定</h2>
+            <div class="input-group">
+                <label for="githubIdentityFile">GitHub用 秘密鍵のパス (例: ~/.ssh/id_rsa_github)</label>
+                <input type="text" id="githubIdentityFile" placeholder="未入力の場合は生成されません">
+            </div>
+        </div>
+
+        <div class="config-section">
+            <h2>ホスト設定</h2>
+            <table id="hostsTable">
+                <thead>
+                    <tr>
+                        <th>ホスト名</th>
+                        <th>IPアドレス/ホスト名</th>
+                        <th>ユーザー名</th>
+                        <th>ポート</th>
+                        <th>秘密鍵パス</th>
+                        <th>su先ユーザー</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JavaScriptで動的に行が追加される -->
+                </tbody>
+            </table>
+            <div class="table-actions">
+                <button id="addRowBtn">行を追加</button>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="generateBtn" class="primary-action">生成</button>
+            <button id="clearBtn">すべてクリア</button>
+        </div>
+
+        <div class="output-section">
+            <h2>生成されたSSH Config</h2>
+            <textarea id="output" readonly></textarea>
+            <button id="copyBtn">コピー</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
