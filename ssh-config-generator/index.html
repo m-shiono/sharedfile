@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSH Config ジェネレーター</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>SSH Config ジェネレーター</h1>
+        <p>SSH接続の設定ファイルを生成するツール</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>SSH接続情報入力</h2>
+                <div class="input-group-checkbox">
+                    <input type="checkbox" id="githubCheck">
+                    <label for="githubCheck">GitHub設定を追加</label>
+                </div>
+                <div class="input-group">
+                    <label for="hostName">ホスト名 (例: my-server):</label>
+                    <input type="text" id="hostName" placeholder="my-server">
+                </div>
+                <div class="input-group">
+                    <label for="ipAddress">IPアドレス/ホスト名:</label>
+                    <input type="text" id="ipAddress" placeholder="192.168.1.100">
+                </div>
+                <div class="input-group">
+                    <label for="user">ユーザー名:</label>
+                    <input type="text" id="user" placeholder="ec2-user">
+                </div>
+                <div class="input-group">
+                    <label for="port">ポート (デフォルト: 22):</label>
+                    <input type="number" id="port" placeholder="22" value="22">
+                </div>
+                <div class="input-group">
+                    <label for="identityFile">秘密鍵のパス (例: ~/.ssh/id_rsa):</label>
+                    <input type="text" id="identityFile" placeholder="~/.ssh/id_rsa" disabled>
+                </div>
+                <div class="input-group">
+                    <label for="suUser">su先ユーザー (任意):</label>
+                    <input type="text" id="suUser" placeholder="root">
+                </div>
+                <div class="button-group">
+                    <button id="generateBtn">生成</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <h2>生成されたSSH Config</h2>
+                <textarea id="output" readonly></textarea>
+                <button id="copyBtn">コピー</button>
+
+                <h2 class="sub-header">suコマンド</h2>
+                <textarea id="suCommandOutput" readonly></textarea>
+                <button id="copySuCommandBtn">コマンドをコピー</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
