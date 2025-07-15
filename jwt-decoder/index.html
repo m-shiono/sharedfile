@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT デコーダー・バリデーター</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>JWT デコーダー・バリデーター</h1>
+        <p>JSON Web Token（JWT）のデコード・検証を行うツール</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>JWT トークン入力</h2>
+                <textarea id="jwtInput" placeholder="JWT トークンを入力してください..."></textarea>
+                <div class="button-group">
+                    <button id="decodeBtn">デコード</button>
+                    <button id="validateBtn">バリデート</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>デコード結果</h2>
+                <div id="statusBar" class="status-bar"></div>
+                
+                <div class="jwt-parts">
+                    <div class="jwt-part">
+                        <h3>Header</h3>
+                        <textarea id="headerOutput" readonly></textarea>
+                        <div class="button-group">
+                            <button id="copyHeaderBtn">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="jwt-part">
+                        <h3>Payload</h3>
+                        <textarea id="payloadOutput" readonly></textarea>
+                        <div class="button-group">
+                            <button id="copyPayloadBtn">コピー</button>
+                        </div>
+                    </div>
+                    
+                    <div class="jwt-part">
+                        <h3>Signature</h3>
+                        <textarea id="signatureOutput" readonly></textarea>
+                        <div class="button-group">
+                            <button id="copySignatureBtn">コピー</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="claims-info">
+                    <h3>Claims Information</h3>
+                    <div id="claimsInfo"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
