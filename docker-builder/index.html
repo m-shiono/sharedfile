@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker コマンドビルダー</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Docker コマンドビルダー</h1>
+        <p>Dockerコマンドを簡単に作成できるビジュアルツール</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>Docker設定</h2>
+                
+                <div class="config-group">
+                    <h3>基本設定</h3>
+                    <div class="form-group">
+                        <label for="imageName">イメージ名</label>
+                        <input type="text" id="imageName" placeholder="例: nginx:latest">
+                    </div>
+                    <div class="form-group">
+                        <label for="containerName">コンテナ名</label>
+                        <input type="text" id="containerName" placeholder="例: my-container">
+                    </div>
+                    <div class="form-group">
+                        <label for="runMode">実行モード</label>
+                        <select id="runMode">
+                            <option value="detached">デタッチモード (-d)</option>
+                            <option value="interactive">インタラクティブモード (-it)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="config-group">
+                    <h3>ポート設定</h3>
+                    <div class="form-group">
+                        <label for="portMappings">ポートマッピング</label>
+                        <textarea id="portMappings" placeholder="例:&#10;80:80&#10;443:443&#10;3000:3000"></textarea>
+                    </div>
+                </div>
+                
+                <div class="config-group">
+                    <h3>ボリューム設定</h3>
+                    <div class="form-group">
+                        <label for="volumeMounts">ボリュームマウント</label>
+                        <textarea id="volumeMounts" placeholder="例:&#10;/host/path:/container/path&#10;my-volume:/data"></textarea>
+                    </div>
+                </div>
+                
+                <div class="config-group">
+                    <h3>環境変数</h3>
+                    <div class="form-group">
+                        <label for="envVars">環境変数</label>
+                        <textarea id="envVars" placeholder="例:&#10;NODE_ENV=production&#10;PORT=3000&#10;DATABASE_URL=postgres://..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="config-group">
+                    <h3>ネットワーク設定</h3>
+                    <div class="form-group">
+                        <label for="networkMode">ネットワークモード</label>
+                        <select id="networkMode">
+                            <option value="">デフォルト</option>
+                            <option value="host">ホストネットワーク</option>
+                            <option value="bridge">ブリッジネットワーク</option>
+                            <option value="none">ネットワークなし</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customNetwork">カスタムネットワーク</label>
+                        <input type="text" id="customNetwork" placeholder="例: my-network">
+                    </div>
+                </div>
+                
+                <div class="config-group">
+                    <h3>その他設定</h3>
+                    <div class="form-group">
+                        <label for="restartPolicy">再起動ポリシー</label>
+                        <select id="restartPolicy">
+                            <option value="">なし</option>
+                            <option value="no">再起動しない</option>
+                            <option value="always">常に再起動</option>
+                            <option value="unless-stopped">停止されるまで再起動</option>
+                            <option value="on-failure">失敗時のみ再起動</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="workingDir">作業ディレクトリ</label>
+                        <input type="text" id="workingDir" placeholder="例: /app">
+                    </div>
+                    <div class="form-group">
+                        <label for="command">コマンド</label>
+                        <input type="text" id="command" placeholder="例: npm start">
+                    </div>
+                </div>
+                
+                <div class="config-group">
+                    <h3>クイックテンプレート</h3>
+                    <div class="button-group">
+                        <button id="nginxTemplate">Nginx</button>
+                        <button id="mysqlTemplate">MySQL</button>
+                        <button id="nodeTemplate">Node.js</button>
+                        <button id="redisTemplate">Redis</button>
+                        <button id="ubuntuTemplate">Ubuntu</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>生成されたコマンド</h2>
+                <div id="statusBar" class="status-bar"></div>
+                
+                <div class="output-group">
+                    <h3>Docker Run コマンド</h3>
+                    <textarea id="dockerCommand" readonly></textarea>
+                    <div class="button-group">
+                        <button id="copyCommand">コマンドをコピー</button>
+                        <button id="generateCommand">コマンド生成</button>
+                    </div>
+                </div>
+                
+                <div class="output-group">
+                    <h3>コマンド詳細</h3>
+                    <div id="commandBreakdown"></div>
+                </div>
+                
+                <div class="output-group">
+                    <h3>Docker Compose版</h3>
+                    <textarea id="dockerCompose" readonly></textarea>
+                    <div class="button-group">
+                        <button id="copyCompose">Composeをコピー</button>
+                        <button id="generateCompose">Compose生成</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
