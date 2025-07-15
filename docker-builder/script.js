@@ -1,0 +1,456 @@
+class DockerBuilder {
+    constructor() {
+        this.initializeElements();
+        this.initializeEventListeners();
+        this.templates = this.initializeTemplates();
+        this.generateCommand();
+    }
+    
+    initializeElements() {
+        // Input elements
+        this.imageName = document.getElementById('imageName');
+        this.containerName = document.getElementById('containerName');
+        this.runMode = document.getElementById('runMode');
+        this.portMappings = document.getElementById('portMappings');
+        this.volumeMounts = document.getElementById('volumeMounts');
+        this.envVars = document.getElementById('envVars');
+        this.networkMode = document.getElementById('networkMode');
+        this.customNetwork = document.getElementById('customNetwork');
+        this.restartPolicy = document.getElementById('restartPolicy');
+        this.workingDir = document.getElementById('workingDir');
+        this.command = document.getElementById('command');
+        
+        // Output elements
+        this.statusBar = document.getElementById('statusBar');
+        this.dockerCommand = document.getElementById('dockerCommand');
+        this.dockerCompose = document.getElementById('dockerCompose');
+        this.commandBreakdown = document.getElementById('commandBreakdown');
+        
+        // Buttons
+        this.copyCommand = document.getElementById('copyCommand');
+        this.copyCompose = document.getElementById('copyCompose');
+        this.generateCommand = document.getElementById('generateCommand');
+        this.generateCompose = document.getElementById('generateCompose');
+        
+        // Template buttons
+        this.nginxTemplate = document.getElementById('nginxTemplate');
+        this.mysqlTemplate = document.getElementById('mysqlTemplate');
+        this.nodeTemplate = document.getElementById('nodeTemplate');
+        this.redisTemplate = document.getElementById('redisTemplate');
+        this.ubuntuTemplate = document.getElementById('ubuntuTemplate');
+    }
+    
+    initializeEventListeners() {
+        // Input change listeners
+        const inputs = [
+            this.imageName, this.containerName, this.runMode, this.portMappings,
+            this.volumeMounts, this.envVars, this.networkMode, this.customNetwork,
+            this.restartPolicy, this.workingDir, this.command
+        ];
+        
+        inputs.forEach(input => {
+            input.addEventListener('input', () => this.generateCommand());
+            input.addEventListener('change', () => this.generateCommand());
+        });
+        
+        // Button listeners
+        this.copyCommand.addEventListener('click', () => this.copyToClipboard(this.dockerCommand.value));
+        this.copyCompose.addEventListener('click', () => this.copyToClipboard(this.dockerCompose.value));
+        this.generateCommand.addEventListener('click', () => this.generateCommand());
+        this.generateCompose.addEventListener('click', () => this.generateDockerCompose());
+        
+        // Template listeners
+        this.nginxTemplate.addEventListener('click', () => this.loadTemplate('nginx'));
+        this.mysqlTemplate.addEventListener('click', () => this.loadTemplate('mysql'));
+        this.nodeTemplate.addEventListener('click', () => this.loadTemplate('node'));
+        this.redisTemplate.addEventListener('click', () => this.loadTemplate('redis'));
+        this.ubuntuTemplate.addEventListener('click', () => this.loadTemplate('ubuntu'));
+    }
+    
+    initializeTemplates() {
+        return {
+            nginx: {
+                imageName: 'nginx:latest',
+                containerName: 'nginx-server',
+                runMode: 'detached',
+                portMappings: '80:80\n443:443',
+                volumeMounts: '/host/nginx.conf:/etc/nginx/nginx.conf:ro\n/host/html:/usr/share/nginx/html:ro',
+                envVars: '',
+                networkMode: '',
+                customNetwork: '',
+                restartPolicy: 'unless-stopped',
+                workingDir: '',
+                command: ''
+            },
+            mysql: {
+                imageName: 'mysql:8.0',
+                containerName: 'mysql-db',
+                runMode: 'detached',
+                portMappings: '3306:3306',
+                volumeMounts: 'mysql-data:/var/lib/mysql',
+                envVars: 'MYSQL_ROOT_PASSWORD=yourpassword\nMYSQL_DATABASE=myapp\nMYSQL_USER=myuser\nMYSQL_PASSWORD=mypassword',
+                networkMode: '',
+                customNetwork: '',
+                restartPolicy: 'unless-stopped',
+                workingDir: '',
+                command: ''
+            },
+            node: {
+                imageName: 'node:18-alpine',
+                containerName: 'node-app',
+                runMode: 'detached',
+                portMappings: '3000:3000',
+                volumeMounts: '/host/app:/app\n/app/node_modules',
+                envVars: 'NODE_ENV=production\nPORT=3000',
+                networkMode: '',
+                customNetwork: '',
+                restartPolicy: 'unless-stopped',
+                workingDir: '/app',
+                command: 'npm start'
+            },
+            redis: {
+                imageName: 'redis:7-alpine',
+                containerName: 'redis-cache',
+                runMode: 'detached',
+                portMappings: '6379:6379',
+                volumeMounts: 'redis-data:/data',
+                envVars: '',
+                networkMode: '',
+                customNetwork: '',
+                restartPolicy: 'unless-stopped',
+                workingDir: '',
+                command: ''
+            },
+            ubuntu: {
+                imageName: 'ubuntu:22.04',
+                containerName: 'ubuntu-container',
+                runMode: 'interactive',
+                portMappings: '',
+                volumeMounts: '/host/data:/data',
+                envVars: '',
+                networkMode: '',
+                customNetwork: '',
+                restartPolicy: '',
+                workingDir: '',
+                command: '/bin/bash'
+            }
+        };
+    }
+    
+    loadTemplate(templateName) {
+        const template = this.templates[templateName];
+        if (!template) return;
+        
+        this.imageName.value = template.imageName;
+        this.containerName.value = template.containerName;
+        this.runMode.value = template.runMode;
+        this.portMappings.value = template.portMappings;
+        this.volumeMounts.value = template.volumeMounts;
+        this.envVars.value = template.envVars;
+        this.networkMode.value = template.networkMode;
+        this.customNetwork.value = template.customNetwork;
+        this.restartPolicy.value = template.restartPolicy;
+        this.workingDir.value = template.workingDir;
+        this.command.value = template.command;
+        
+        this.generateCommand();
+        this.showStatus(`${templateName.toUpperCase()}テンプレートが読み込まれました`, 'success');
+    }
+    
+    generateCommand() {
+        const imageName = this.imageName.value.trim();
+        
+        if (!imageName) {
+            this.dockerCommand.value = '';
+            this.commandBreakdown.innerHTML = '';
+            return;
+        }
+        
+        let command = 'docker run';
+        let breakdown = [];
+        
+        // Run mode
+        if (this.runMode.value === 'detached') {
+            command += ' -d';
+            breakdown.push({
+                flag: '-d',
+                value: '',
+                description: 'デタッチモード（バックグラウンドで実行）'
+            });
+        } else if (this.runMode.value === 'interactive') {
+            command += ' -it';
+            breakdown.push({
+                flag: '-it',
+                value: '',
+                description: 'インタラクティブモード（対話的実行）'
+            });
+        }
+        
+        // Container name
+        if (this.containerName.value.trim()) {
+            command += ` --name ${this.containerName.value.trim()}`;
+            breakdown.push({
+                flag: '--name',
+                value: this.containerName.value.trim(),
+                description: 'コンテナ名を指定'
+            });
+        }
+        
+        // Port mappings
+        if (this.portMappings.value.trim()) {
+            const ports = this.portMappings.value.trim().split('\n');
+            ports.forEach(port => {
+                const mapping = port.trim();
+                if (mapping) {
+                    command += ` -p ${mapping}`;
+                    breakdown.push({
+                        flag: '-p',
+                        value: mapping,
+                        description: 'ポートマッピング（ホスト:コンテナ）'
+                    });
+                }
+            });
+        }
+        
+        // Volume mounts
+        if (this.volumeMounts.value.trim()) {
+            const volumes = this.volumeMounts.value.trim().split('\n');
+            volumes.forEach(volume => {
+                const mapping = volume.trim();
+                if (mapping) {
+                    command += ` -v ${mapping}`;
+                    breakdown.push({
+                        flag: '-v',
+                        value: mapping,
+                        description: 'ボリュームマウント'
+                    });
+                }
+            });
+        }
+        
+        // Environment variables
+        if (this.envVars.value.trim()) {
+            const envs = this.envVars.value.trim().split('\n');
+            envs.forEach(env => {
+                const variable = env.trim();
+                if (variable) {
+                    command += ` -e ${variable}`;
+                    breakdown.push({
+                        flag: '-e',
+                        value: variable,
+                        description: '環境変数'
+                    });
+                }
+            });
+        }
+        
+        // Network mode
+        if (this.networkMode.value) {
+            command += ` --network ${this.networkMode.value}`;
+            breakdown.push({
+                flag: '--network',
+                value: this.networkMode.value,
+                description: 'ネットワークモード'
+            });
+        }
+        
+        // Custom network
+        if (this.customNetwork.value.trim()) {
+            command += ` --network ${this.customNetwork.value.trim()}`;
+            breakdown.push({
+                flag: '--network',
+                value: this.customNetwork.value.trim(),
+                description: 'カスタムネットワーク'
+            });
+        }
+        
+        // Restart policy
+        if (this.restartPolicy.value) {
+            command += ` --restart ${this.restartPolicy.value}`;
+            breakdown.push({
+                flag: '--restart',
+                value: this.restartPolicy.value,
+                description: '再起動ポリシー'
+            });
+        }
+        
+        // Working directory
+        if (this.workingDir.value.trim()) {
+            command += ` -w ${this.workingDir.value.trim()}`;
+            breakdown.push({
+                flag: '-w',
+                value: this.workingDir.value.trim(),
+                description: '作業ディレクトリ'
+            });
+        }
+        
+        // Image name
+        command += ` ${imageName}`;
+        breakdown.push({
+            flag: 'IMAGE',
+            value: imageName,
+            description: 'Dockerイメージ名'
+        });
+        
+        // Command
+        if (this.command.value.trim()) {
+            command += ` ${this.command.value.trim()}`;
+            breakdown.push({
+                flag: 'CMD',
+                value: this.command.value.trim(),
+                description: 'コンテナ内で実行するコマンド'
+            });
+        }
+        
+        this.dockerCommand.value = command;
+        this.renderCommandBreakdown(breakdown);
+        this.generateDockerCompose();
+    }
+    
+    renderCommandBreakdown(breakdown) {
+        const html = breakdown.map(item => `
+            <div class="breakdown-item">
+                <span class="breakdown-flag">${item.flag}</span>
+                ${item.value ? `<span class="breakdown-value"> ${item.value}</span>` : ''}
+                <div class="breakdown-description">${item.description}</div>
+            </div>
+        `).join('');
+        
+        this.commandBreakdown.innerHTML = html;
+    }
+    
+    generateDockerCompose() {
+        const imageName = this.imageName.value.trim();
+        const containerName = this.containerName.value.trim() || 'app';
+        
+        if (!imageName) {
+            this.dockerCompose.value = '';
+            return;
+        }
+        
+        let compose = `version: '3.8'\n\nservices:\n  ${containerName}:\n    image: ${imageName}\n`;
+        
+        // Container name
+        if (this.containerName.value.trim()) {
+            compose += `    container_name: ${this.containerName.value.trim()}\n`;
+        }
+        
+        // Port mappings
+        if (this.portMappings.value.trim()) {
+            compose += `    ports:\n`;
+            const ports = this.portMappings.value.trim().split('\n');
+            ports.forEach(port => {
+                const mapping = port.trim();
+                if (mapping) {
+                    compose += `      - "${mapping}"\n`;
+                }
+            });
+        }
+        
+        // Volume mounts
+        if (this.volumeMounts.value.trim()) {
+            compose += `    volumes:\n`;
+            const volumes = this.volumeMounts.value.trim().split('\n');
+            volumes.forEach(volume => {
+                const mapping = volume.trim();
+                if (mapping) {
+                    compose += `      - "${mapping}"\n`;
+                }
+            });
+        }
+        
+        // Environment variables
+        if (this.envVars.value.trim()) {
+            compose += `    environment:\n`;
+            const envs = this.envVars.value.trim().split('\n');
+            envs.forEach(env => {
+                const variable = env.trim();
+                if (variable) {
+                    compose += `      - ${variable}\n`;
+                }
+            });
+        }
+        
+        // Network mode
+        if (this.networkMode.value) {
+            compose += `    network_mode: "${this.networkMode.value}"\n`;
+        }
+        
+        // Custom network
+        if (this.customNetwork.value.trim()) {
+            compose += `    networks:\n      - ${this.customNetwork.value.trim()}\n`;
+        }
+        
+        // Restart policy
+        if (this.restartPolicy.value) {
+            compose += `    restart: ${this.restartPolicy.value}\n`;
+        }
+        
+        // Working directory
+        if (this.workingDir.value.trim()) {
+            compose += `    working_dir: ${this.workingDir.value.trim()}\n`;
+        }
+        
+        // Command
+        if (this.command.value.trim()) {
+            compose += `    command: ${this.command.value.trim()}\n`;
+        }
+        
+        // Add networks section if custom network is used
+        if (this.customNetwork.value.trim()) {
+            compose += `\nnetworks:\n  ${this.customNetwork.value.trim()}:\n    external: true\n`;
+        }
+        
+        this.dockerCompose.value = compose;
+    }
+    
+    async copyToClipboard(text) {
+        if (!text) {
+            this.showStatus('コピーするデータがありません', 'error');
+            return;
+        }
+        
+        try {
+            await navigator.clipboard.writeText(text);
+            this.showStatus('クリップボードにコピーしました', 'success');
+        } catch (error) {
+            this.fallbackCopyTextToClipboard(text);
+        }
+    }
+    
+    fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            this.showStatus('クリップボードにコピーしました', 'success');
+        } catch (error) {
+            this.showStatus('コピーに失敗しました', 'error');
+        }
+        
+        document.body.removeChild(textArea);
+    }
+    
+    showStatus(message, type = 'info') {
+        this.statusBar.textContent = message;
+        this.statusBar.className = `status-bar status-${type}`;
+        
+        // Auto-hide status after 3 seconds
+        setTimeout(() => {
+            this.statusBar.textContent = '';
+            this.statusBar.className = 'status-bar';
+        }, 3000);
+    }
+}
+
+// Initialize the Docker Builder when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new DockerBuilder();
+});
