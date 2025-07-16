@@ -14,12 +14,19 @@
     <nav>
         <ul>
             <li><a href="https://m-shiono.github.io/sharedfile/">home</a></li>
-            <!-- mini-gameフォルダへのリンクを追加 -->
-            <li><a href="./mini-game/index.html">ミニゲーム</a></li>
         </ul>
+        <div class="category-filter">
+            <button class="category-btn active" data-category="all">すべて</button>
+            <button class="category-btn" data-category="data-conversion">📊 データ変換</button>
+            <button class="category-btn" data-category="dev-tools">🔧 開発ツール</button>
+            <button class="category-btn" data-category="security-network">🔒 セキュリティ・ネットワーク</button>
+            <button class="category-btn" data-category="time-date">🕐 時間・日付</button>
+            <button class="category-btn" data-category="mini-games">🎮 ミニゲーム</button>
+            <button class="category-btn" data-category="design-others">🎨 デザイン・その他</button>
+        </div>
     </nav>
     <main>
-        <div class="tool-card">
+        <div class="tool-card" data-category="data-conversion">
             <h2>Excel Table Style Converter</h2>
             <p>
               Excelの表データを HTML、Markdown、Backlog 形式に変換するツールです。<br />
@@ -41,7 +48,7 @@
             <br />
             <a href="./excel-tab-to-html/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="data-conversion">
             <h2>Markdown to HTML Converter</h2>
             <p>
               Markdown形式のテキストをHTMLに変換するツールです。<br />
@@ -63,7 +70,7 @@
             <br />
             <a href="./markdown-to-html/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="data-conversion">
             <h2>テキスト差分比較ツール</h2>
             <p>
               2つのテキストの差分を簡単に比較できるツールです。<br />
@@ -85,21 +92,21 @@
             <br />
             <a href="./difftools/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="security-network">
             <h2>パスワード生成ツール</h2>
             <p>
                 安全で強固なパスワードを簡単に生成できます。
             </p>
             <a href="./passwd-generation/index.html">パスワード生成ツール</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="design-others">
             <h2>QRコード作成ツール</h2>
             <p>
                 URLを貼り付けると簡単にQRコードを生成できます。
             </p>
             <a href="./qr-code/index.html">QRコード作成ツール</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="data-conversion">
             <h2>JSONフォーマッター・バリデーター</h2>
             <p>
                 JSONデータの整形・検証を行うツールです。<br />
@@ -124,7 +131,7 @@
             <br />
             <a href="./json-formatter/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="data-conversion">
             <h2>Base64 エンコーダー・デコーダー</h2>
             <p>
                 テキストとBase64の相互変換を行うツールです。<br />
@@ -150,7 +157,7 @@
             <br />
             <a href="./base64-tool/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="data-conversion">
             <h2>URL エンコーダー・デコーダー</h2>
             <p>
                 URLの安全な文字列変換を行うツールです。<br />
@@ -176,7 +183,7 @@
             <br />
             <a href="./url-tool/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="design-others">
             <h2>カラーパレット・カラーコード変換ツール</h2>
             <p>
                 カラーコードの変換とカラーパレットの生成を行うツールです。<br />
@@ -202,7 +209,7 @@
             <br />
             <a href="./color-tool/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="dev-tools">
             <h2>正規表現テスター</h2>
             <p>
                 正規表現のパターンマッチングをテストするツールです。<br />
@@ -228,7 +235,7 @@
             <br />
             <a href="./regex-tester/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="dev-tools">
             <h2>テキストケース変換ツール</h2>
             <p>
                 プログラミングで使用する変数名・関数名の命名規則変換ツールです。<br />
@@ -254,7 +261,7 @@
             <br />
             <a href="./case-converter/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="security-network">
             <h2>ハッシュ生成ツール</h2>
             <p>
                 テキストやファイルから様々なハッシュ値を生成するツールです。<br />
@@ -280,7 +287,7 @@
             <br />
             <a href="./hash-generator/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="time-date">
             <h2>Unixタイムスタンプ変換ツール</h2>
             <p>
                 Unix時刻と人間が読める日時の相互変換を行うツールです。<br />
@@ -306,7 +313,7 @@
             <br />
             <a href="./timestamp-converter/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="security-network">
             <h2>IPアドレス計算ツール</h2>
             <p>
                 CIDR計算とサブネットマスク変換を行うツールです。<br />
@@ -332,7 +339,7 @@
             <br />
             <a href="./ip-calculator/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="dev-tools">
             <h2>Cron式生成・検証ツール</h2>
             <p>
                 Cronのスケジュール式を簡単に作成・検証するツールです。<br />
@@ -347,7 +354,7 @@
             <br />
             <a href="./cron-generator/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="data-conversion">
             <h2>YAML/JSON設定ファイル変換ツール</h2>
             <p>
                 Kubernetes、Docker Compose等の設定ファイル相互変換ツールです。<br />
@@ -373,7 +380,7 @@
             <br />
             <a href="./yaml-json-converter/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="dev-tools">
             <h2>環境変数管理ツール</h2>
             <p>
                 .env形式の環境変数ファイル生成・検証・管理ツールです。<br />
@@ -399,7 +406,7 @@
             <br />
             <a href="./env-manager/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="data-conversion">
             <h2>JWT デコーダー・バリデーター</h2>
             <p>
                 JSON Web Token（JWT）のデコード・検証を行うツールです。<br />
@@ -425,7 +432,7 @@
             <br />
             <a href="./jwt-decoder/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="dev-tools">
             <h2>SSH Config ジェネレーター</h2>
             <p>
                 SSH接続の設定ファイルを簡単に生成するツールです。<br />
@@ -448,7 +455,7 @@
             <br />
             <a href="./ssh-config-generator/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="dev-tools">
             <h2>Docker コマンドビルダー</h2>
             <p>
                 Docker runコマンドとDocker Composeファイルを簡単に生成するツールです。<br />
@@ -474,7 +481,7 @@
             <br />
             <a href="./docker-builder/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="security-network">
             <h2>HTTPステータスコード・ヘッダーチェッカー</h2>
             <p>
                 HTTPレスポンスの分析とセキュリティヘッダーの検証を行うツールです。<br />
@@ -500,7 +507,7 @@
             <br />
             <a href="./http-checker/index.html">ツールを使用する</a>
         </div>
-        <div class="tool-card">
+        <div class="tool-card" data-category="dev-tools">
             <h2>New Relic NPM設定作成ツール</h2>
             <p>
                 New RelicのKtranslateの設定ファイルを作成できます。
@@ -508,7 +515,7 @@
             <a href="https://m-shiono.github.io/ktranslate/">New Relic NPM設定作成ツール</a>
         </div>
         <!-- mini-gameへの説明文を追加 -->
-        <div class="tool-card">
+        <div class="tool-card" data-category="mini-games">
             <h2>ミニゲーム</h2>
             <p>
               このセクションでは、さまざまなミニゲームを楽しむことができます。<br />
@@ -517,6 +524,33 @@
             <a href="./mini-game/index.html">ミニゲームをプレイする</a>
         </div>
     </main>
+    <script>
+        // カテゴリーフィルタリング機能
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            const toolCards = document.querySelectorAll('.tool-card');
+            
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    
+                    // アクティブボタンの切り替え
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // カードの表示/非表示
+                    toolCards.forEach(card => {
+                        if (category === 'all' || card.dataset.category === category) {
+                            card.style.display = 'block';
+                            card.style.animation = 'fadeIn 0.5s ease-in-out';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
     <footer>
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
