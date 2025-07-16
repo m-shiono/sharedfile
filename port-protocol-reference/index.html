@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポート・プロトコル参照ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>ポート・プロトコル参照ツール</h1>
+        <p>一般的なポート番号とプロトコルの対応表、セキュリティ情報、ファイアウォール設定の参考資料</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="ポート番号、サービス名、プロトコルで検索...">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-category="all">すべて</button>
+                <button class="filter-btn" data-category="web">Web</button>
+                <button class="filter-btn" data-category="email">Email</button>
+                <button class="filter-btn" data-category="file">File Transfer</button>
+                <button class="filter-btn" data-category="database">Database</button>
+                <button class="filter-btn" data-category="network">Network</button>
+                <button class="filter-btn" data-category="security">Security</button>
+                <button class="filter-btn" data-category="system">System</button>
+                <button class="filter-btn" data-category="other">その他</button>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>プロトコル情報</h2>
+            <div class="protocol-info">
+                <div class="protocol-card">
+                    <h3>TCP (Transmission Control Protocol)</h3>
+                    <p>信頼性の高い、接続指向のプロトコル。データの順序保証と誤り検出・訂正機能を提供。</p>
+                    <p><strong>用途:</strong> Web、Email、FTP、SSH など</p>
+                </div>
+                <div class="protocol-card">
+                    <h3>UDP (User Datagram Protocol)</h3>
+                    <p>軽量で高速なコネクションレス型プロトコル。信頼性よりも速度を重視。</p>
+                    <p><strong>用途:</strong> DNS、DHCP、ストリーミング、ゲーム など</p>
+                </div>
+                <div class="protocol-card">
+                    <h3>ICMP (Internet Control Message Protocol)</h3>
+                    <p>ネットワークの診断やエラー報告に使用されるプロトコル。</p>
+                    <p><strong>用途:</strong> ping、traceroute、エラー通知 など</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="ports-section">
+            <h2>ポート一覧</h2>
+            <div id="portsContainer">
+                <!-- ポート情報はJavaScriptで動的に生成 -->
+            </div>
+        </div>
+
+        <div class="firewall-section">
+            <h2>ファイアウォール設定のヒント</h2>
+            <div class="firewall-tips">
+                <div class="tip-card">
+                    <h3>基本原則</h3>
+                    <ul>
+                        <li>デフォルトで全てのポートを閉じる</li>
+                        <li>必要なポートのみを開放する</li>
+                        <li>送信元IPアドレスを制限する</li>
+                        <li>定期的に設定を見直す</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h3>セキュリティ考慮事項</h3>
+                    <ul>
+                        <li>管理用ポートは信頼できるネットワークからのみアクセス許可</li>
+                        <li>未使用のサービスは停止する</li>
+                        <li>ログ監視を実装する</li>
+                        <li>侵入検知システム（IDS）の導入を検討</li>
+                    </ul>
+                </div>
+                <div class="tip-card">
+                    <h3>よくある設定例</h3>
+                    <ul>
+                        <li>Web サーバー: 80 (HTTP), 443 (HTTPS)</li>
+                        <li>SSH アクセス: 22 (管理用、IP制限推奨)</li>
+                        <li>FTP サーバー: 21 (制御), 20 (データ)</li>
+                        <li>DNS サーバー: 53 (UDP/TCP)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="script.js"></script>
+</body>
+</html>
