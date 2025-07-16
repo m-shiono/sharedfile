@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTPステータスコード・ヘッダーチェッカー</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>HTTPステータスコード・ヘッダーチェッカー</h1>
+        <p>HTTPレスポンスの分析とセキュリティヘッダー検証ツール</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="input-section">
+                <h2>URL入力</h2>
+                <div class="url-input-group">
+                    <input type="text" id="urlInput" placeholder="チェックするURLを入力してください... (例: https://example.com)">
+                    <button id="checkBtn">チェック実行</button>
+                </div>
+                <div class="options-group">
+                    <label>
+                        <input type="checkbox" id="followRedirects" checked>
+                        リダイレクトを追跡
+                    </label>
+                    <label>
+                        <input type="checkbox" id="includeHeaders" checked>
+                        全レスポンスヘッダーを表示
+                    </label>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <h2>チェック結果</h2>
+                <div id="statusBar" class="status-bar"></div>
+                <div id="loadingIndicator" class="loading-indicator hidden">
+                    <span class="spinner"></span>
+                    <span>HTTPリクエストを送信中...</span>
+                </div>
+                <div id="results" class="results-container hidden">
+                    <div class="result-group">
+                        <h3>基本情報</h3>
+                        <div id="basicInfo" class="info-display"></div>
+                    </div>
+                    <div class="result-group">
+                        <h3>ステータスコード詳細</h3>
+                        <div id="statusDetails" class="info-display"></div>
+                    </div>
+                    <div class="result-group">
+                        <h3>セキュリティヘッダー検証</h3>
+                        <div id="securityHeaders" class="info-display"></div>
+                    </div>
+                    <div class="result-group">
+                        <h3>レスポンスヘッダー</h3>
+                        <div id="responseHeaders" class="info-display"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
