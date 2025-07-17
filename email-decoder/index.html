@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メールデコーダー</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>メールデコーダー</h1>
+        <p>MIMEエンコードされたメールを日本語で読めるようにデコードします</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="container">
+            <div class="input-section">
+                <h2>エンコードされたメール</h2>
+                <textarea id="emailInput" placeholder="MIMEエンコードされたメールをここに貼り付けてください&#10;例: =?ISO-2022-JP?B?GyRCJDMkbCRKJGgkTiQbKEI=?="></textarea>
+                <div class="button-group">
+                    <button id="decodeBtn">デコード</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h2>デコード結果</h2>
+                <div id="output"></div>
+                <div class="info-section">
+                    <h3>検出情報</h3>
+                    <div id="encodingInfo"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="script.js"></script>
+</body>
+</html>
