@@ -22,10 +22,132 @@ class EmailDecoder {
         }
 
         try {
-            const result = this.decodeMimeText(input);
+            const result = this.processEmail(input);
             this.displayResult(result);
         } catch (error) {
             this.showError(`デコードエラー: ${error.message}`);
+        }
+    }
+
+    processEmail(emailText) {
+        // メールをヘッダーと本文に分離
+        const emailParts = this.parseEmail(emailText);
+        
+        // MIME encoded-wordのデコード (件名など)
+        const mimeResult = this.decodeMimeText(emailText);
+        
+        // メール本文のデコード処理
+        if (emailParts.body) {
+            const bodyResult = this.decodeMessageBody(emailParts.body, emailParts.headers);
+            mimeResult.decoded = mimeResult.decoded.replace(emailParts.body, bodyResult.decoded);
+            mimeResult.detectedEncodings = [...new Set([...mimeResult.detectedEncodings, ...bodyResult.detectedEncodings])];
+            mimeResult.bodyEncoding = bodyResult.encoding;
+        }
+        
+        return mimeResult;
+    }
+
+    parseEmail(emailText) {
+        const lines = emailText.split('\n');
+        let headerEnd = -1;
+        const headers = {};
+        
+        // ヘッダーの終わりを見つける（空行まで）
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].trim() === '') {
+                headerEnd = i;
+                break;
+            }
+        }
+        
+        if (headerEnd === -1) {
+            // ヘッダーと本文の境界が見つからない場合、全体をテキストとして処理
+            return { headers: {}, body: emailText };
+        }
+        
+        // ヘッダーを解析
+        const headerLines = lines.slice(0, headerEnd);
+        let currentHeader = '';
+        let currentValue = '';
+        
+        for (const line of headerLines) {
+            if (line.match(/^[a-zA-Z-]+:/)) {
+                // 新しいヘッダー
+                if (currentHeader) {
+                    headers[currentHeader.toLowerCase()] = currentValue.trim();
+                }
+                const colonIndex = line.indexOf(':');
+                currentHeader = line.substring(0, colonIndex).trim();
+                currentValue = line.substring(colonIndex + 1).trim();
+            } else if (line.startsWith(' ') || line.startsWith('\t')) {
+                // 継続行
+                currentValue += ' ' + line.trim();
+            }
+        }
+        
+        // 最後のヘッダーを追加
+        if (currentHeader) {
+            headers[currentHeader.toLowerCase()] = currentValue.trim();
+        }
+        
+        // 本文を取得
+        const body = lines.slice(headerEnd + 1).join('\n');
+        
+        return { headers, body };
+    }
+
+    decodeMessageBody(body, headers) {
+        const contentType = headers['content-type'] || '';
+        const transferEncoding = headers['content-transfer-encoding'] || '';
+        
+        let charset = 'utf-8';  // デフォルト
+        let encoding = 'none';
+        let decoded = body;
+        const detectedEncodings = [];
+        
+        // Content-Typeからcharsetを抽出
+        const charsetMatch = contentType.match(/charset=([^;]+)/i);
+        if (charsetMatch) {
+            charset = charsetMatch[1].trim().replace(/['"]/g, '');
+            detectedEncodings.push(charset.toUpperCase());
+        }
+        
+        // Content-Transfer-Encodingに基づいてデコード
+        if (transferEncoding.toLowerCase() === 'quoted-printable') {
+            encoding = 'quoted-printable';
+            decoded = this.decodeQuotedPrintableBody(body);
+        } else if (transferEncoding.toLowerCase() === 'base64') {
+            encoding = 'base64';
+            decoded = this.decodeBase64Body(body);
+        }
+        
+        // 文字エンコーディングの変換
+        if (charset.toLowerCase() !== 'utf-8') {
+            decoded = this.convertFromCharset(decoded, charset);
+        }
+        
+        return {
+            decoded,
+            encoding,
+            detectedEncodings
+        };
+    }
+
+    decodeQuotedPrintableBody(body) {
+        return body
+            .replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
+                return String.fromCharCode(parseInt(hex, 16));
+            })
+            .replace(/=\r?\n/g, '');  // ソフトライン区切りを除去
+    }
+
+    decodeBase64Body(body) {
+        try {
+            // 改行とスペースを除去
+            const cleanedBody = body.replace(/[\r\n\s]/g, '');
+            return atob(cleanedBody);
+        } catch (error) {
+            throw new Error('Base64デコードに失敗しました');
         }
     }
 
@@ -161,11 +283,12 @@ class EmailDecoder {
             // UTF-8 バイト列をデコード
             const bytes = new Uint8Array(text.length);
             for (let i = 0; i < text.length; i++) {
-                bytes[i] = text.charCodeAt(i);
+                bytes[i] = text.charCodeAt(i) & 0xFF;
             }
             const decoder = new TextDecoder('utf-8');
             return decoder.decode(bytes);
         } catch (error) {
+            // UTF-8デコードが失敗した場合、そのまま返す
             return text;
         }
     }
@@ -186,6 +309,13 @@ class EmailDecoder {
             const encodingDiv = document.createElement('div');
             encodingDiv.innerHTML = `<strong>検出されたエンコーディング:</strong> ${result.detectedEncodings.join(', ')}`;
             this.encodingInfo.appendChild(encodingDiv);
+        }
+        
+        // メール本文のエンコーディング情報
+        if (result.bodyEncoding && result.bodyEncoding !== 'none') {
+            const bodyEncodingDiv = document.createElement('div');
+            bodyEncodingDiv.innerHTML = `<strong>メール本文のエンコーディング:</strong> ${result.bodyEncoding}`;
+            this.encodingInfo.appendChild(bodyEncodingDiv);
         }
         
         if (result.encodedWords.length > 0) {
