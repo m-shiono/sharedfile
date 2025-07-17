@@ -19,6 +19,10 @@ class DockerBuilder {
         this.restartPolicy = document.getElementById('restartPolicy');
         this.workingDir = document.getElementById('workingDir');
         this.command = document.getElementById('command');
+        this.memoryLimit = document.getElementById('memoryLimit');
+        this.cpuLimit = document.getElementById('cpuLimit');
+        this.healthCheck = document.getElementById('healthCheck');
+        this.healthInterval = document.getElementById('healthInterval');
         
         // Output elements
         this.statusBar = document.getElementById('statusBar');
@@ -38,6 +42,10 @@ class DockerBuilder {
         this.nodeTemplate = document.getElementById('nodeTemplate');
         this.redisTemplate = document.getElementById('redisTemplate');
         this.ubuntuTemplate = document.getElementById('ubuntuTemplate');
+        this.postgresTemplate = document.getElementById('postgresTemplate');
+        this.mongoTemplate = document.getElementById('mongoTemplate');
+        this.elasticsearchTemplate = document.getElementById('elasticsearchTemplate');
+        this.apacheTemplate = document.getElementById('apacheTemplate');
     }
     
     initializeEventListeners() {
@@ -45,7 +53,8 @@ class DockerBuilder {
         const inputs = [
             this.imageName, this.containerName, this.runMode, this.portMappings,
             this.volumeMounts, this.envVars, this.networkMode, this.customNetwork,
-            this.restartPolicy, this.workingDir, this.command
+            this.restartPolicy, this.workingDir, this.command, this.memoryLimit,
+            this.cpuLimit, this.healthCheck, this.healthInterval
         ];
         
         inputs.forEach(input => {
@@ -65,6 +74,10 @@ class DockerBuilder {
         this.nodeTemplate.addEventListener('click', () => this.loadTemplate('node'));
         this.redisTemplate.addEventListener('click', () => this.loadTemplate('redis'));
         this.ubuntuTemplate.addEventListener('click', () => this.loadTemplate('ubuntu'));
+        this.postgresTemplate.addEventListener('click', () => this.loadTemplate('postgres'));
+        this.mongoTemplate.addEventListener('click', () => this.loadTemplate('mongo'));
+        this.elasticsearchTemplate.addEventListener('click', () => this.loadTemplate('elasticsearch'));
+        this.apacheTemplate.addEventListener('click', () => this.loadTemplate('apache'));
     }
     
     initializeTemplates() {
@@ -80,7 +93,11 @@ class DockerBuilder {
                 customNetwork: '',
                 restartPolicy: 'unless-stopped',
                 workingDir: '',
-                command: ''
+                command: '',
+                memoryLimit: '256m',
+                cpuLimit: '0.3',
+                healthCheck: 'curl -f http://localhost:80',
+                healthInterval: '30s'
             },
             mysql: {
                 imageName: 'mysql:8.0',
@@ -93,7 +110,11 @@ class DockerBuilder {
                 customNetwork: '',
                 restartPolicy: 'unless-stopped',
                 workingDir: '',
-                command: ''
+                command: '',
+                memoryLimit: '1g',
+                cpuLimit: '0.5',
+                healthCheck: 'mysqladmin ping -h localhost',
+                healthInterval: '30s'
             },
             node: {
                 imageName: 'node:18-alpine',
@@ -106,7 +127,11 @@ class DockerBuilder {
                 customNetwork: '',
                 restartPolicy: 'unless-stopped',
                 workingDir: '/app',
-                command: 'npm start'
+                command: 'npm start',
+                memoryLimit: '512m',
+                cpuLimit: '0.5',
+                healthCheck: 'curl -f http://localhost:3000/health',
+                healthInterval: '30s'
             },
             redis: {
                 imageName: 'redis:7-alpine',
@@ -119,7 +144,11 @@ class DockerBuilder {
                 customNetwork: '',
                 restartPolicy: 'unless-stopped',
                 workingDir: '',
-                command: ''
+                command: '',
+                memoryLimit: '256m',
+                cpuLimit: '0.3',
+                healthCheck: 'redis-cli ping',
+                healthInterval: '30s'
             },
             ubuntu: {
                 imageName: 'ubuntu:22.04',
@@ -132,7 +161,79 @@ class DockerBuilder {
                 customNetwork: '',
                 restartPolicy: '',
                 workingDir: '',
-                command: '/bin/bash'
+                command: '/bin/bash',
+                memoryLimit: '',
+                cpuLimit: '',
+                healthCheck: '',
+                healthInterval: ''
+            },
+            postgres: {
+                imageName: 'postgres:15',
+                containerName: 'postgres-db',
+                runMode: 'detached',
+                portMappings: '5432:5432',
+                volumeMounts: 'postgres-data:/var/lib/postgresql/data',
+                envVars: 'POSTGRES_DB=myapp\nPOSTGRES_USER=myuser\nPOSTGRES_PASSWORD=mypassword',
+                networkMode: '',
+                customNetwork: '',
+                restartPolicy: 'unless-stopped',
+                workingDir: '',
+                command: '',
+                memoryLimit: '512m',
+                cpuLimit: '0.5',
+                healthCheck: 'pg_isready -U myuser -d myapp',
+                healthInterval: '30s'
+            },
+            mongo: {
+                imageName: 'mongo:7.0',
+                containerName: 'mongo-db',
+                runMode: 'detached',
+                portMappings: '27017:27017',
+                volumeMounts: 'mongo-data:/data/db',
+                envVars: 'MONGO_INITDB_ROOT_USERNAME=root\nMONGO_INITDB_ROOT_PASSWORD=rootpassword\nMONGO_INITDB_DATABASE=myapp',
+                networkMode: '',
+                customNetwork: '',
+                restartPolicy: 'unless-stopped',
+                workingDir: '',
+                command: '',
+                memoryLimit: '1g',
+                cpuLimit: '0.7',
+                healthCheck: 'mongosh --eval "db.adminCommand(\'ping\')"',
+                healthInterval: '30s'
+            },
+            elasticsearch: {
+                imageName: 'elasticsearch:8.11.0',
+                containerName: 'elasticsearch',
+                runMode: 'detached',
+                portMappings: '9200:9200\n9300:9300',
+                volumeMounts: 'es-data:/usr/share/elasticsearch/data',
+                envVars: 'discovery.type=single-node\nxpack.security.enabled=false\nES_JAVA_OPTS=-Xms512m -Xmx512m',
+                networkMode: '',
+                customNetwork: '',
+                restartPolicy: 'unless-stopped',
+                workingDir: '',
+                command: '',
+                memoryLimit: '1g',
+                cpuLimit: '1.0',
+                healthCheck: 'curl -f http://localhost:9200/_cluster/health',
+                healthInterval: '30s'
+            },
+            apache: {
+                imageName: 'httpd:2.4',
+                containerName: 'apache-server',
+                runMode: 'detached',
+                portMappings: '80:80',
+                volumeMounts: '/host/htdocs:/usr/local/apache2/htdocs/:ro\n/host/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro',
+                envVars: '',
+                networkMode: '',
+                customNetwork: '',
+                restartPolicy: 'unless-stopped',
+                workingDir: '',
+                command: '',
+                memoryLimit: '256m',
+                cpuLimit: '0.3',
+                healthCheck: 'curl -f http://localhost:80',
+                healthInterval: '30s'
             }
         };
     }
@@ -152,6 +253,10 @@ class DockerBuilder {
         this.restartPolicy.value = template.restartPolicy;
         this.workingDir.value = template.workingDir;
         this.command.value = template.command;
+        this.memoryLimit.value = template.memoryLimit || '';
+        this.cpuLimit.value = template.cpuLimit || '';
+        this.healthCheck.value = template.healthCheck || '';
+        this.healthInterval.value = template.healthInterval || '';
         
         this.generateCommand();
         this.showStatus(`${templateName.toUpperCase()}テンプレートが読み込まれました`, 'success');
@@ -284,6 +389,47 @@ class DockerBuilder {
             });
         }
         
+        // Memory limit
+        if (this.memoryLimit.value.trim()) {
+            command += ` -m ${this.memoryLimit.value.trim()}`;
+            breakdown.push({
+                flag: '-m',
+                value: this.memoryLimit.value.trim(),
+                description: 'メモリ制限'
+            });
+        }
+        
+        // CPU limit
+        if (this.cpuLimit.value.trim()) {
+            command += ` --cpus ${this.cpuLimit.value.trim()}`;
+            breakdown.push({
+                flag: '--cpus',
+                value: this.cpuLimit.value.trim(),
+                description: 'CPU制限'
+            });
+        }
+        
+        // Health check
+        if (this.healthCheck.value.trim()) {
+            let healthCmd = `--health-cmd="${this.healthCheck.value.trim()}"`;
+            if (this.healthInterval.value.trim()) {
+                healthCmd += ` --health-interval=${this.healthInterval.value.trim()}`;
+            }
+            command += ` ${healthCmd}`;
+            breakdown.push({
+                flag: '--health-cmd',
+                value: this.healthCheck.value.trim(),
+                description: 'ヘルスチェックコマンド'
+            });
+            if (this.healthInterval.value.trim()) {
+                breakdown.push({
+                    flag: '--health-interval',
+                    value: this.healthInterval.value.trim(),
+                    description: 'ヘルスチェック間隔'
+                });
+            }
+        }
+        
         // Image name
         command += ` ${imageName}`;
         breakdown.push({
@@ -394,6 +540,26 @@ class DockerBuilder {
         // Command
         if (this.command.value.trim()) {
             compose += `    command: ${this.command.value.trim()}\n`;
+        }
+        
+        // Resource limits
+        if (this.memoryLimit.value.trim() || this.cpuLimit.value.trim()) {
+            compose += `    deploy:\n      resources:\n        limits:\n`;
+            if (this.memoryLimit.value.trim()) {
+                compose += `          memory: ${this.memoryLimit.value.trim()}\n`;
+            }
+            if (this.cpuLimit.value.trim()) {
+                compose += `          cpus: '${this.cpuLimit.value.trim()}'\n`;
+            }
+        }
+        
+        // Health check
+        if (this.healthCheck.value.trim()) {
+            compose += `    healthcheck:\n      test: [\"CMD-SHELL\", \"${this.healthCheck.value.trim()}\"]\n`;
+            if (this.healthInterval.value.trim()) {
+                compose += `      interval: ${this.healthInterval.value.trim()}\n`;
+            }
+            compose += `      timeout: 10s\n      retries: 3\n`;
         }
         
         // Add networks section if custom network is used
