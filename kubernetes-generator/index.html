@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Resource Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Kubernetes Resource Generator</h1>
+        <p>Deployment、Service、ConfigMap等のKubernetesリソースを簡単に生成します</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホーム</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-container">
+            <div class="resource-selector">
+                <h2>リソースタイプを選択</h2>
+                <div class="resource-tabs">
+                    <button class="tab-button active" data-resource="deployment">Deployment</button>
+                    <button class="tab-button" data-resource="service">Service</button>
+                    <button class="tab-button" data-resource="configmap">ConfigMap</button>
+                </div>
+            </div>
+
+            <div class="resource-forms">
+                <!-- Deployment Form -->
+                <div class="resource-form active" id="deployment-form">
+                    <h3>Deployment Configuration</h3>
+                    <div class="form-group">
+                        <label for="deployment-name">Name:</label>
+                        <input type="text" id="deployment-name" placeholder="app-deployment" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deployment-namespace">Namespace:</label>
+                        <input type="text" id="deployment-namespace" placeholder="default" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deployment-image">Container Image:</label>
+                        <input type="text" id="deployment-image" placeholder="nginx:1.20" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deployment-replicas">Replicas:</label>
+                        <input type="number" id="deployment-replicas" value="3" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deployment-port">Container Port:</label>
+                        <input type="number" id="deployment-port" value="80" min="1" max="65535" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deployment-labels">Labels (key=value, separated by commas):</label>
+                        <input type="text" id="deployment-labels" placeholder="app=myapp,version=1.0">
+                    </div>
+                </div>
+
+                <!-- Service Form -->
+                <div class="resource-form" id="service-form">
+                    <h3>Service Configuration</h3>
+                    <div class="form-group">
+                        <label for="service-name">Name:</label>
+                        <input type="text" id="service-name" placeholder="app-service" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="service-namespace">Namespace:</label>
+                        <input type="text" id="service-namespace" placeholder="default" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="service-type">Service Type:</label>
+                        <select id="service-type" required>
+                            <option value="ClusterIP">ClusterIP</option>
+                            <option value="NodePort">NodePort</option>
+                            <option value="LoadBalancer">LoadBalancer</option>
+                            <option value="ExternalName">ExternalName</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="service-port">Service Port:</label>
+                        <input type="number" id="service-port" value="80" min="1" max="65535" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="service-target-port">Target Port:</label>
+                        <input type="number" id="service-target-port" value="80" min="1" max="65535" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="service-selector">Selector (key=value, separated by commas):</label>
+                        <input type="text" id="service-selector" placeholder="app=myapp" required>
+                    </div>
+                </div>
+
+                <!-- ConfigMap Form -->
+                <div class="resource-form" id="configmap-form">
+                    <h3>ConfigMap Configuration</h3>
+                    <div class="form-group">
+                        <label for="configmap-name">Name:</label>
+                        <input type="text" id="configmap-name" placeholder="app-config" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="configmap-namespace">Namespace:</label>
+                        <input type="text" id="configmap-namespace" placeholder="default" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="configmap-data">Data (key=value, separated by new lines):</label>
+                        <textarea id="configmap-data" placeholder="database.host=localhost&#10;database.port=5432&#10;debug=true" rows="6"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button id="generate-btn">Generate YAML</button>
+                <button id="copy-btn" style="display: none;">Copy to Clipboard</button>
+                <button id="download-btn" style="display: none;">Download YAML</button>
+            </div>
+
+            <div class="output-section">
+                <h3>Generated YAML</h3>
+                <div class="yaml-output">
+                    <pre id="yaml-preview">Click "Generate YAML" to create your Kubernetes resource manifest.</pre>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="script.js"></script>
+</body>
+</html>

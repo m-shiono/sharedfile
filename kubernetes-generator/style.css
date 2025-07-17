@@ -1,0 +1,294 @@
+/* Base styles following repository guidelines */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+header {
+    background: linear-gradient(135deg, #43a047, #66bb6a);
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+nav {
+    background-color: #4caf50;
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+nav a:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.tool-container {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.resource-selector {
+    margin-bottom: 2rem;
+}
+
+.resource-selector h2 {
+    color: #43a047;
+    margin-bottom: 1rem;
+}
+
+.resource-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.tab-button {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #43a047;
+    background: white;
+    color: #43a047;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #f5f5f5;
+}
+
+.tab-button.active {
+    background-color: #43a047;
+    color: white;
+}
+
+.resource-forms {
+    margin-bottom: 2rem;
+}
+
+.resource-form {
+    display: none;
+    padding: 1.5rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
+}
+
+.resource-form.active {
+    display: block;
+}
+
+.resource-form h3 {
+    color: #43a047;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #43a047;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.actions button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+#generate-btn {
+    background-color: #43a047;
+    color: white;
+}
+
+#generate-btn:hover {
+    background-color: #388e3c;
+}
+
+#copy-btn {
+    background-color: #66bb6a;
+    color: white;
+}
+
+#copy-btn:hover {
+    background-color: #4caf50;
+}
+
+#download-btn {
+    background-color: #81c784;
+    color: white;
+}
+
+#download-btn:hover {
+    background-color: #66bb6a;
+}
+
+.output-section {
+    margin-top: 2rem;
+}
+
+.output-section h3 {
+    color: #43a047;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.yaml-output {
+    background-color: #f8f8f8;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.yaml-output pre {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.yaml-output.has-content {
+    border-color: #43a047;
+    background-color: #f9fff9;
+}
+
+.error {
+    color: #d32f2f;
+    background-color: #ffebee;
+    border-color: #f44336;
+}
+
+.success {
+    color: #2e7d32;
+    background-color: #e8f5e8;
+    border-color: #4caf50;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .tool-container {
+        padding: 1rem;
+    }
+    
+    .resource-tabs {
+        flex-direction: column;
+    }
+    
+    .tab-button {
+        width: 100%;
+    }
+    
+    .actions {
+        flex-direction: column;
+    }
+    
+    .actions button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 1rem 0;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    main {
+        padding: 0 0.5rem;
+    }
+    
+    .resource-form {
+        padding: 1rem;
+    }
+}
