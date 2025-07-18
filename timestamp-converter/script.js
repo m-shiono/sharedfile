@@ -289,8 +289,7 @@ class TimestampConverter {
         
         // Update the quick result display (new behavior)
         this.quickTimestampResult.value = targetTimestamp;
-        const date = new Date(targetTimestamp * 1000);
-        this.quickDateTimeResult.value = this.formatDateTime(date, 'local');
+        this.quickDateTimeResult.value = this.localDateTime.value;
     }
     
     formatDateTime(date, type) {
