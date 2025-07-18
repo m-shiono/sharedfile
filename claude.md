@@ -34,6 +34,9 @@
 1. **デザイン統一**: 他のページのデザインに合わせること
 2. **リンク追加**: トップページに新しく作成したページのリンクを追加すること
 3. **フィルタ更新**: トップページのカテゴリフィルタ機能を更新すること
+4. **HTML構造**: 必ずheader、nav、main、footerの構造を含めること
+5. **title要素**: 「[ツール名] - Web開発者向けユーティリティ」の形式を使用すること
+6. **nav要素**: ホームリンクは「https://m-shiono.github.io/sharedfile/」を使用すること
 
 ### ファイル構造の規則
 ```html
@@ -43,7 +46,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[ツール名]</title>
+    <title>[ツール名] - Web開発者向けユーティリティ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -54,13 +57,19 @@
     
     <nav>
         <ul>
-            <li><a href="../index.html">ホーム</a></li>
+            <li><a href="https://m-shiono.github.io/sharedfile/">ホームに戻る</a></li>
         </ul>
     </nav>
     
     <main>
-        <!-- ツール固有のコンテンツ -->
+        <div class="tool-card">
+            <!-- ツール固有のコンテンツ -->
+        </div>
     </main>
+    
+    <footer>
+        <p>&copy; 2024 personal project for m-shiono</p>
+    </footer>
     
     <script src="script.js"></script>
 </body>
@@ -68,10 +77,161 @@
 ```
 
 ### デザインの統一性
-- **カラーテーマ**: 緑色ベース (`#43a047`, `#66bb6a`, `#4caf50`)
+
+#### 基本カラーパレット
+- **メインカラー**: `#43a047`, `#66bb6a`, `#4caf50`
+- **テキストカラー**: `#2c3e50`, `#388e3c`, `#2e7d32`
+- **背景グラデーション**: `linear-gradient(135deg, #e8f5e9, #c8e6c9)`
+- **ヘッダーグラデーション**: `linear-gradient(to right, #43a047, #66bb6a)`
+
+#### レイアウト・構造
 - **フォント**: `'Segoe UI', Tahoma, Geneva, Verdana, sans-serif`
-- **レイアウト**: カードベースのデザイン、最大幅1200px
-- **レスポンシブ**: モバイル対応必須
+- **最大幅**: 1200px（メインコンテンツ）
+- **パディング**: 2rem（デスクトップ）、1rem（モバイル）
+- **カードデザイン**: 角丸12px、グラデーション背景、影付き
+
+#### 具体的なスタイル指定
+
+**ヘッダー**
+```css
+header {
+    background: linear-gradient(to right, #43a047, #66bb6a);
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+```
+
+**ナビゲーション**
+```css
+nav {
+    background: linear-gradient(to right, #66bb6a, #81c784);
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+nav ul li a:hover {
+    background-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+```
+
+**tool-card**
+```css
+.tool-card {
+    background: linear-gradient(135deg, #ffffff, #e8f5e9);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.tool-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #2e7d32;
+    border-bottom: 2px solid #4caf50;
+    padding-bottom: 0.5rem;
+}
+
+.tool-card h3 {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #388e3c;
+}
+```
+
+**ボタン**
+```css
+button {
+    background: linear-gradient(to right, #4caf50, #45a049);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+button:hover {
+    background: linear-gradient(to right, #45a049, #4caf50);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+```
+
+**フォーム要素**
+```css
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 0.5rem;
+    border: 1px solid #81c784;
+    border-radius: 4px;
+    resize: vertical;
+    margin-bottom: 1rem;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+```
+
+**フッター**
+```css
+footer {
+    background: linear-gradient(to right, #43a047, #66bb6a);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+```
+
+**レスポンシブデザイン**
+```css
+@media (max-width: 768px) {
+    main {
+        padding: 0 1rem;
+    }
+    .tool-card {
+        padding: 1.5rem;
+    }
+    .radio-group {
+        flex-direction: column;
+    }
+}
+```
 
 ## セキュリティ・ベストプラクティス
 
@@ -125,7 +285,35 @@ touch index.html script.js style.css
 ### 2. 基本ファイルの実装
 - `index.html`: 基本構造とナビゲーション
 - `script.js`: ツールのロジック
-- `style.css`: ツール固有のスタイル
+- `style.css`: ツール固有のスタイル（必須要素を含む）
+
+#### style.cssの必須要素
+各ツールのstyle.cssファイルには、以下の要素を必ず含めること：
+
+```css
+/* 基本リセット */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* body要素の統一スタイル */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #2c3e50;
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    min-height: 100vh;
+}
+
+/* 上記の具体的なスタイル指定をすべて含める */
+```
+
+#### 注意事項
+- **必須**: 全ての統一スタイルを各ツールのstyle.cssに含める
+- **禁止**: 共通CSSファイルへの依存（各ツールは独立して動作すること）
+- **推奨**: デザインの一貫性を保つため、色、フォント、レイアウトの数値は統一すること
 
 ### 3. メインページの更新
 トップページ（`index.html`）に以下を追加：
