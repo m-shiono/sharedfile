@@ -1,8 +1,8 @@
 name: Gemini CLI with Strict Owner Check
 
 on:
-  issues:
-    types: [opened]
+  issue_comment:
+    types: [created]
 
 jobs:
   run-gemini:
