@@ -134,11 +134,57 @@ class EmailDecoder {
     }
 
     decodeQuotedPrintableBody(body) {
-        return body
-            .replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
-                return String.fromCharCode(parseInt(hex, 16));
-            })
-            .replace(/=\r?\n/g, '');  // ソフトライン区切りを除去
+        // ソフトライン区切りを除去
+        let cleanBody = body.replace(/=\r?\n/g, '');
+        
+        // 全ての =XX パターンを抽出してバイト配列を作成
+        const bytes = [];
+        let currentPos = 0;
+        let result = '';
+        
+        cleanBody.replace(/=([0-9A-Fa-f]{2})/g, (match, hex, offset) => {
+            // マッチより前の通常のテキストを追加
+            result += cleanBody.substring(currentPos, offset);
+            
+            // バイト値を配列に追加
+            bytes.push(parseInt(hex, 16));
+            currentPos = offset + match.length;
+            
+            return '';
+        });
+        
+        // 最後の通常のテキストを追加
+        result += cleanBody.substring(currentPos);
+        
+        // バイト配列をUTF-8として一括デコード
+        if (bytes.length > 0) {
+            try {
+                const utf8Bytes = new Uint8Array(bytes);
+                const decoder = new TextDecoder('utf-8');
+                const decodedBytes = decoder.decode(utf8Bytes);
+                
+                // 元のテキストの =XX 部分を削除
+                const textWithoutHex = cleanBody.replace(/=([0-9A-Fa-f]{2})/g, '');
+                
+                // エンコードされたテキストが全体の場合はデコード結果を返す
+                if (textWithoutHex.length === 0) {
+                    return decodedBytes;
+                }
+                
+                // 混在している場合は、元の位置にデコード結果を挿入
+                let byteIndex = 0;
+                return cleanBody.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
+                    return decodedBytes[byteIndex++] || '';
+                });
+            } catch (error) {
+                // UTF-8デコードが失敗した場合は従来の方法を使用
+                return cleanBody.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
+                    return String.fromCharCode(parseInt(hex, 16));
+                });
+            }
+        }
+        
+        return cleanBody;
     }
 
     decodeBase64Body(body) {
@@ -195,12 +241,48 @@ class EmailDecoder {
     }
 
     decodeQuotedPrintable(encodedText) {
-        return encodedText
-            .replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
-                return String.fromCharCode(parseInt(hex, 16));
-            })
-            .replace(/=\r?\n/g, '')
-            .replace(/_/g, ' ');
+        // アンダースコアを空白に変換（MIME header用）
+        let text = encodedText.replace(/_/g, ' ');
+        
+        // ソフトライン区切りを除去
+        text = text.replace(/=\r?\n/g, '');
+        
+        // 全ての =XX パターンを抽出してバイト配列を作成
+        const bytes = [];
+        for (const match of text.match(/=([0-9A-Fa-f]{2})/g) || []) {
+            const hex = match.substring(1); // = を除去
+            bytes.push(parseInt(hex, 16));
+        }
+        
+        // バイト配列をUTF-8として一括デコード
+        if (bytes.length > 0) {
+            try {
+                const utf8Bytes = new Uint8Array(bytes);
+                const decoder = new TextDecoder('utf-8');
+                const decodedBytes = decoder.decode(utf8Bytes);
+                
+                // 元のテキストの =XX 部分を削除
+                const textWithoutHex = text.replace(/=([0-9A-Fa-f]{2})/g, '');
+                
+                // エンコードされたテキストが全体の場合はデコード結果を返す
+                if (textWithoutHex.length === 0) {
+                    return decodedBytes;
+                }
+                
+                // 混在している場合は、元の位置にデコード結果を挿入
+                let byteIndex = 0;
+                return text.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
+                    return decodedBytes[byteIndex++] || '';
+                });
+            } catch (error) {
+                // UTF-8デコードが失敗した場合は従来の方法を使用
+                return text.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
+                    return String.fromCharCode(parseInt(hex, 16));
+                });
+            }
+        }
+        
+        return text;
     }
 
     convertFromCharset(text, charset) {
@@ -280,6 +362,11 @@ class EmailDecoder {
 
     convertFromUTF8(text) {
         try {
+            // 既に文字列の場合、そのまま返す
+            if (typeof text === 'string') {
+                return text;
+            }
+            
             // UTF-8 バイト列をデコード
             const bytes = new Uint8Array(text.length);
             for (let i = 0; i < text.length; i++) {
