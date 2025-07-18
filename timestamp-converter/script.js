@@ -251,7 +251,8 @@ class TimestampConverter {
                             actualTimestamp = Math.floor(timestamp / 1000);
                         }
                         const date = new Date(actualTimestamp * 1000);
-                        results.push(`${trimmedLine} → ${this.formatDateTime(date, 'local')}`);\n                    } else {
+                        results.push(`${trimmedLine} → ${this.formatDateTime(date, 'local')}`);
+                    } else {
                         results.push(`${trimmedLine} → エラー: 無効なタイムスタンプ`);
                     }
                 } else {
