@@ -25,6 +25,9 @@ class TimestampConverter {
         this.batchInput = document.getElementById('batchInput');
         this.batchOutput = document.getElementById('batchOutput');
         
+        this.quickTimestampResult = document.getElementById('quickTimestampResult');
+        this.quickDateTimeResult = document.getElementById('quickDateTimeResult');
+        
         this.copyButtons = document.querySelectorAll('.copy-btn');
         this.timestampUnitRadios = document.querySelectorAll('input[name="timestampUnit"]');
         this.dateInputModeRadios = document.querySelectorAll('input[name="dateInputMode"]');
@@ -277,8 +280,16 @@ class TimestampConverter {
         const now = Math.floor(Date.now() / 1000);
         const targetTimestamp = now + offset;
         
+        // Ensure timestamp unit is set to seconds for consistent behavior
+        document.querySelector('input[name="timestampUnit"][value="seconds"]').checked = true;
+        
+        // Update the main timestamp input (existing behavior)
         this.timestampInput.value = targetTimestamp;
         this.convertTimestamp();
+        
+        // Update the quick result display (new behavior)
+        this.quickTimestampResult.value = targetTimestamp;
+        this.quickDateTimeResult.value = this.localDateTime.value;
     }
     
     formatDateTime(date, type) {
