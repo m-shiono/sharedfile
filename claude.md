@@ -68,7 +68,7 @@
     </main>
     
     <footer>
-        <p>&copy; 2024 personal project for m-shiono</p>
+        <p>&copy; [年] personal project for m-shiono</p>
     </footer>
     
     <script src="script.js"></script>
@@ -141,6 +141,11 @@ nav ul li a:hover {
     padding: 2rem;
     margin-bottom: 2rem;
     transition: all 0.3s ease;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
 }
 
 .tool-card h2 {
@@ -288,8 +293,10 @@ touch index.html script.js style.css
 - `style.css`: ツール固有のスタイル（必須要素を含む）
 
 #### style.cssの必須要素
-各ツールのstyle.cssファイルには、以下の要素を必ず含めること：
+各ツールの`style.css`ファイルには、以下の基本スタイルを必ず含めてください。
+さらに、前述の「具体的なスタイル指定」セクションで定義されている**すべてのスタイル**（`header`, `nav`, `.tool-card`, `button`, `textarea`, `.radio-group`, `footer`, レスポンシブデザインなど）も追加する必要があります。
 
+**`style.css` 基本テンプレート:**
 ```css
 /* 基本リセット */
 * {
@@ -307,7 +314,10 @@ body {
     min-height: 100vh;
 }
 
-/* 上記の具体的なスタイル指定をすべて含める */
+/*
+ * ここに「具体的なスタイル指定」セクションの
+ * CSSルール（header, nav, .tool-cardなど）をすべてコピーしてください。
+ */
 ```
 
 #### 注意事項
