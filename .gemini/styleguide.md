@@ -1,3 +1,5 @@
+Posts a code review in Japanese language.
+
 # Gemini Code Review スタイルガイド
 
 ## 基本設定
