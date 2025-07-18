@@ -84,6 +84,9 @@
             margin-bottom: 20px;
             max-width: 100%;
             height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .input-group {
@@ -316,7 +319,7 @@
                     level: "H", // エラー訂正レベル
                     background: 'white',
                     foreground: selectedQrColor, // 選択された色のQRコード
-                    padding: 5
+                    padding: 10 // パディングを増やして中央寄せを改善
                 });
             } catch (error) {
                 errorDiv.textContent = "QRコードの生成に失敗しました: " + error.message;
