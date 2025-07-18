@@ -85,8 +85,7 @@
             max-width: 100%;
             height: auto;
             display: block;
-            margin-left: auto;
-            margin-right: auto;
+            margin-inline: auto;
         }
 
         .input-group {
@@ -280,6 +279,9 @@
     </footer>
 
     <script>
+        // QRコードのパディング設定
+        const QR_CODE_PADDING = 10;
+        
         const qrcodeCanvas = document.getElementById("qrcodeCanvas");
         const textInput = document.getElementById("text");
         const generateQrCodeButton = document.getElementById("generateQrCode");
@@ -319,7 +321,7 @@
                     level: "H", // エラー訂正レベル
                     background: 'white',
                     foreground: selectedQrColor, // 選択された色のQRコード
-                    padding: 10 // パディングを増やして中央寄せを改善
+                    padding: QR_CODE_PADDING // QRコード周囲の余白を調整
                 });
             } catch (error) {
                 errorDiv.textContent = "QRコードの生成に失敗しました: " + error.message;
