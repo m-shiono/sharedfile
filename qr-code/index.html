@@ -82,6 +82,8 @@
             background-color: white;
             padding: 10px;
             margin-bottom: 20px;
+            max-width: 100%;
+            height: auto;
         }
 
         .input-group {
@@ -240,7 +242,7 @@
         </div>
         
         <div class="qrcode-area">
-            <canvas id="qrcodeCanvas" width="200" height="200"></canvas>
+            <canvas id="qrcodeCanvas" width="400" height="400"></canvas>
         </div>
         
         <div class="input-group">
@@ -310,11 +312,11 @@
                 const qrcode = new QRious({
                     element: qrcodeCanvas,
                     value: text,
-                    size: 200, // QRコードのサイズ
+                    size: 400, // QRコードのサイズ
                     level: "H", // エラー訂正レベル
                     background: 'white',
                     foreground: selectedQrColor, // 選択された色のQRコード
-                    padding: 10
+                    padding: 5
                 });
             } catch (error) {
                 errorDiv.textContent = "QRコードの生成に失敗しました: " + error.message;
