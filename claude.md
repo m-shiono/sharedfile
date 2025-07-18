@@ -36,7 +36,7 @@
 3. **フィルタ更新**: トップページのカテゴリフィルタ機能を更新すること
 4. **HTML構造**: 必ずheader、nav、main、footerの構造を含めること
 5. **title要素**: 「[ツール名] - Web開発者向けユーティリティ」の形式を使用すること
-6. **nav要素**: ホームリンクは「https://m-shiono.github.io/sharedfile/」を使用すること
+6. **nav要素**: ホームへのリンクは相対パス「../index.html」を使用し、直接URLの指定はしないこと
 
 ### ファイル構造の規則
 ```html
@@ -46,7 +46,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[ツール名] - Web開発者向けユーティリティ</title>
+    <title>[ツール名] - 便利ツール＆ユーティリティ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -57,7 +57,7 @@
     
     <nav>
         <ul>
-            <li><a href="https://m-shiono.github.io/sharedfile/">ホームに戻る</a></li>
+            <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
     </nav>
     
