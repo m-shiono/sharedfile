@@ -7,8 +7,8 @@ on:
     types: [created]
   issues:
     types: [opened, assigned]
-  pull_request_review:
-    types: [submitted]
+  #pull_request_review:
+  #  types: [submitted]
 
 jobs:
   claude-code-action:
