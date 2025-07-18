@@ -280,14 +280,16 @@ class TimestampConverter {
         const now = Math.floor(Date.now() / 1000);
         const targetTimestamp = now + offset;
         
+        // Ensure timestamp unit is set to seconds for consistent behavior
+        document.querySelector('input[name="timestampUnit"][value="seconds"]').checked = true;
+        
         // Update the main timestamp input (existing behavior)
         this.timestampInput.value = targetTimestamp;
         this.convertTimestamp();
         
         // Update the quick result display (new behavior)
-        const date = new Date(targetTimestamp * 1000);
         this.quickTimestampResult.value = targetTimestamp;
-        this.quickDateTimeResult.value = this.formatDateTime(date, 'local');
+        this.quickDateTimeResult.value = this.localDateTime.value;
     }
     
     formatDateTime(date, type) {

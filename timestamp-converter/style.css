@@ -583,11 +583,6 @@ footer {
         grid-template-columns: 1fr;
     }
     
-    .quick-result-item {
-        grid-template-columns: 1fr;
-        gap: 0.3rem;
-    }
-    
     .quick-result-item label {
         font-size: 0.85rem;
     }
