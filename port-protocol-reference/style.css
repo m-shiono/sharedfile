@@ -13,10 +13,10 @@ body {
 }
 
 header {
-    background: linear-gradient(135deg, #43a047, #66bb6a);
+    background: linear-gradient(to right, #43a047, #66bb6a);
     color: white;
-    padding: 2rem 0;
     text-align: center;
+    padding: 2rem 0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -31,29 +31,35 @@ header p {
 }
 
 nav {
-    background-color: #2e7d32;
+    background: linear-gradient(to right, #66bb6a, #81c784);
     padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 nav ul {
     list-style: none;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 2rem;
+}
+nav ul li {
+    margin-right: 1rem;
 }
 
 nav a {
     color: white;
     text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
     padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    border-radius: 20px;
 }
 
 nav a:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
 }
 
 main {
