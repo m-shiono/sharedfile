@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QRコード作成ツール - Web開発者向けユーティリティ</title>
+    <title>QRコード作成ツール - 便利ツール＆ユーティリティ</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -19,7 +19,8 @@
         </ul>
     </nav>
     
-    <div class="container">
+    <main>
+        <div class="tool-card">
         <h2>説明</h2>
         <div class="description">
             このツールはHTMLとJavascriptのみで構成されており、生成したQRコードがどこかに保存されることはありません。
@@ -60,10 +61,11 @@
             <button id="generateQrCode">QRコードを生成</button>
             <button id="reset">初期化</button>
         </div>
-    </div>
+        </div>
+    </main>
     
     <footer>
-        <p>&copy; 2025 m-shiono personal project</p>
+        <p>&copy; 2025 personal project for m-shiono</p>
     </footer>
 
     <script src="script.js"></script>

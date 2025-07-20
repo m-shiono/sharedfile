@@ -76,19 +76,6 @@ main {
     padding: 0 2rem;
 }
 
-.container {
-    background: linear-gradient(135deg, #ffffff, #e8f5e9);
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    padding: 2rem;
-    margin-bottom: 2rem;
-    transition: all 0.3s ease;
-}
-
-.container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-}
 
 /* tool-card */
 .tool-card {
@@ -314,7 +301,7 @@ footer {
         padding: 0 1rem;
     }
     
-    .container {
+    .tool-card {
         padding: 1.5rem;
     }
     
@@ -348,7 +335,7 @@ footer {
 }
 
 @media (max-width: 640px) {
-    .container {
+    .tool-card {
         margin: 1rem;
         padding: 1rem;
     }
