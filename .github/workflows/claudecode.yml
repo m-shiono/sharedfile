@@ -22,7 +22,6 @@ jobs:
       issues: write           # イシューの作成・更新・コメントのため
       id-token: write         # OAuth認証のため
       actions: read           # GitHub Actionsログの読み取り用
-      metadata: read          # リポジトリメタデータの読み取り用
       statuses: write         # コミットステータスの更新用（PR用）
       checks: write           # チェック結果の更新用（PR用）
       # 以下の権限は意図的に除外（セキュリティのため）：
