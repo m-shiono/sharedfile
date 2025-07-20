@@ -7,8 +7,8 @@ on:
     types: [created]
   issues:
     types: [opened, assigned]
-  #pull_request_review:
-  #  types: [submitted]
+  pull_request_review:
+    types: [submitted]
 
 jobs:
   claude-code-action:
@@ -19,9 +19,9 @@ jobs:
       (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
-      issues: write
+      contents: read
+      pull-requests: read
+      issues: read
       id-token: write
     steps:
       - name: Checkout repository
