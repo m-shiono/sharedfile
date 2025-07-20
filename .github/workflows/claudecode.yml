@@ -1,5 +1,4 @@
 name: Claude PR Assistant
-
 on:
   issue_comment:
     types: [created]
@@ -9,7 +8,6 @@ on:
     types: [opened, assigned]
   pull_request_review:
     types: [submitted]
-
 jobs:
   claude-code-action:
     if: |
@@ -19,23 +17,32 @@ jobs:
       (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: read
-      issues: read
-      id-token: write
+      contents: write          # 新規ブランチ作成・プッシュのため（メインブランチは保護ルールで制限）
+      pull-requests: write     # PRの作成・更新・コメントのため
+      issues: write           # イシューの作成・更新・コメントのため
+      id-token: write         # OAuth認証のため
+      actions: read           # GitHub Actionsログの読み取り用
+      metadata: read          # リポジトリメタデータの読み取り用
+      statuses: write         # コミットステータスの更新用（PR用）
+      checks: write           # チェック結果の更新用（PR用）
+      # 以下の権限は意図的に除外（セキュリティのため）：
+      # packages: none         # パッケージへの書き込み禁止
+      # deployments: none      # デプロイメント禁止
+      # security-events: none  # セキュリティイベント禁止
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
-
+          fetch-depth: 0        # 1 → 0 に変更（完全なGit履歴を取得）
+          token: ${{ secrets.GITHUB_TOKEN }}  # GitHub tokenを明示的に指定
+      - name: Configure Git
+        run: |
+          git config --global user.name "claude-code-action[bot]"
+          git config --global user.email "claude-code-action[bot]@users.noreply.github.com"
       - name: Run Claude PR Action
         uses: anthropics/claude-code-action@beta
         with:
-          #use_oauth: 'true'
-
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          #anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          # Or use OAuth token instead:
-          # claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           timeout_minutes: "60"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 環境変数としてGitHub tokenを渡す
