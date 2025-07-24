@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mermaid図変換ツール - 便利ツール＆ユーティリティ</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Mermaid図変換ツール</h1>
+        <p>Mermaidテキストを美しい図に変換し、SVG・PNG形式でダウンロードできます</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-card">
+            <div class="input-section">
+                <h3>Mermaidテキスト入力</h3>
+                <textarea id="mermaidInput" placeholder="Mermaidの記法で図を記述してください...
+
+例:
+graph TD
+    A[開始] --> B{条件分岐}
+    B -->|Yes| C[処理A]
+    B -->|No| D[処理B]
+    C --> E[終了]
+    D --> E"></textarea>
+                
+                <div class="button-group">
+                    <button id="generateBtn">図を生成</button>
+                    <button id="clearBtn">クリア</button>
+                </div>
+                
+                <div class="templates">
+                    <h3>テンプレート例</h3>
+                    <div class="template-buttons">
+                        <button class="template-btn" data-template="flowchart">フローチャート</button>
+                        <button class="template-btn" data-template="sequence">シーケンス図</button>
+                        <button class="template-btn" data-template="class">クラス図</button>
+                        <button class="template-btn" data-template="er">ER図</button>
+                        <button class="template-btn" data-template="gantt">ガントチャート</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h3>生成された図</h3>
+                <div id="statusBar" class="status-bar"></div>
+                <div id="diagramContainer" class="diagram-container">
+                    <div id="diagramOutput"></div>
+                </div>
+                
+                <div class="button-group download-group">
+                    <button id="downloadSvgBtn">SVGダウンロード</button>
+                    <button id="downloadPngBtn">PNGダウンロード</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
