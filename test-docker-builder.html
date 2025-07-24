@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Builder Test</title>
+</head>
+<body>
+    <h1>Docker Builder Test</h1>
+    
+    <!-- Minimal elements needed for testing -->
+    <input type="text" id="imageName" value="nginx:latest" placeholder="Image Name">
+    <textarea id="dockerCommand" readonly></textarea>
+    <div id="commandBreakdown"></div>
+    <div id="statusBar"></div>
+    <textarea id="dockerCompose" readonly></textarea>
+    
+    <button id="generateCommand">コマンド生成</button> <!-- This is the problematic button -->
+    <button id="copyCommand">コピー</button>
+    
+    <!-- Add all other required elements with minimal setup -->
+    <input type="text" id="containerName">
+    <select id="runMode"><option value="detached">detached</option></select>
+    <textarea id="portMappings"></textarea>
+    <textarea id="volumeMounts"></textarea>
+    <textarea id="envVars"></textarea>
+    <select id="networkMode"><option value="">default</option></select>
+    <input type="text" id="customNetwork">
+    <select id="restartPolicy"><option value="">none</option></select>
+    <input type="text" id="workingDir">
+    <input type="text" id="command">
+    <input type="text" id="memoryLimit">
+    <input type="text" id="cpuLimit">
+    <input type="text" id="healthCheck">
+    <input type="text" id="healthInterval">
+    
+    <button id="generateCompose">Compose生成</button>
+    <button id="copyCompose">Composeコピー</button>
+    
+    <!-- Template buttons -->
+    <button id="nginxTemplate">Nginx</button>
+    <button id="mysqlTemplate">MySQL</button>
+    <button id="nodeTemplate">Node</button>
+    <button id="redisTemplate">Redis</button>
+    <button id="ubuntuTemplate">Ubuntu</button>
+    <button id="postgresTemplate">PostgreSQL</button>
+    <button id="mongoTemplate">MongoDB</button>
+    <button id="elasticsearchTemplate">Elasticsearch</button>
+    <button id="apacheTemplate">Apache</button>
+    
+    <script src="docker-builder/script.js"></script>
+    
+    <script>
+        // Add additional debugging
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+        });
+        
+        // Test direct button functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Test page: DOMContentLoaded');
+            
+            setTimeout(() => {
+                const btn = document.getElementById('generateCommand');
+                console.log('Test page: generateCommand button:', btn);
+                
+                if (btn) {
+                    btn.addEventListener('click', function() {
+                        console.log('Test page: Direct button click event fired');
+                    });
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
