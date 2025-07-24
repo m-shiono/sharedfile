@@ -104,14 +104,29 @@ class DockerBuilder {
         
         if (this.generateCommandBtn) {
             console.log('DockerBuilder: generateCommandBtn found, adding click listener');
-            this.generateCommandBtn.addEventListener('click', () => {
-                console.log('DockerBuilder: generateCommand button clicked');
+            // Try multiple event binding approaches
+            this.generateCommandBtn.addEventListener('click', (event) => {
+                console.log('DockerBuilder: generateCommand button clicked via addEventListener');
+                event.preventDefault();
+                event.stopPropagation();
                 try {
                     this.generateCommand();
                 } catch (error) {
                     console.error('DockerBuilder: Error in generateCommand:', error);
                 }
             });
+            
+            // Also try onclick as backup
+            this.generateCommandBtn.onclick = (event) => {
+                console.log('DockerBuilder: generateCommand button clicked via onclick');
+                event.preventDefault();
+                event.stopPropagation();
+                try {
+                    this.generateCommand();
+                } catch (error) {
+                    console.error('DockerBuilder: Error in generateCommand via onclick:', error);
+                }
+            };
         } else {
             console.error('DockerBuilder: generateCommandBtn not found');
         }
@@ -121,6 +136,24 @@ class DockerBuilder {
         } else {
             console.error('DockerBuilder: generateComposeBtn not found');
         }
+        
+        // Alternative direct DOM binding as fallback
+        setTimeout(() => {
+            const directGenBtn = document.getElementById('generateCommand');
+            if (directGenBtn && directGenBtn !== this.generateCommandBtn) {
+                console.log('DockerBuilder: Found generateCommand via direct DOM query, adding backup listener');
+                directGenBtn.addEventListener('click', (event) => {
+                    console.log('DockerBuilder: generateCommand clicked via direct DOM backup');
+                    event.preventDefault();
+                    event.stopPropagation();
+                    try {
+                        this.generateCommand();
+                    } catch (error) {
+                        console.error('DockerBuilder: Error in direct DOM backup:', error);
+                    }
+                });
+            }
+        }, 100);
         
         // Template listeners
         this.nginxTemplate.addEventListener('click', () => this.loadTemplate('nginx'));
@@ -689,7 +722,24 @@ class DockerBuilder {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DockerBuilder: DOMContentLoaded event fired');
     try {
-        new DockerBuilder();
+        const dockerBuilder = new DockerBuilder();
+        
+        // Additional backup event listener as a last resort
+        setTimeout(() => {
+            const generateBtn = document.getElementById('generateCommand');
+            if (generateBtn) {
+                console.log('DockerBuilder: Adding final backup listener');
+                generateBtn.addEventListener('click', function() {
+                    console.log('DockerBuilder: Final backup listener triggered');
+                    if (dockerBuilder && typeof dockerBuilder.generateCommand === 'function') {
+                        dockerBuilder.generateCommand();
+                    } else {
+                        console.error('DockerBuilder: dockerBuilder instance or generateCommand method not available');
+                    }
+                }, true); // Use capture phase
+            }
+        }, 500);
+        
     } catch (error) {
         console.error('DockerBuilder: Error initializing DockerBuilder:', error);
     }
