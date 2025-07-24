@@ -33,8 +33,8 @@ class DockerBuilder {
         // Buttons
         this.copyCommand = document.getElementById('copyCommand');
         this.copyCompose = document.getElementById('copyCompose');
-        this.generateCommand = document.getElementById('generateCommand');
-        this.generateCompose = document.getElementById('generateCompose');
+        this.generateCommandBtn = document.getElementById('generateCommand');
+        this.generateComposeBtn = document.getElementById('generateCompose');
         
         // Template buttons
         this.nginxTemplate = document.getElementById('nginxTemplate');
@@ -65,8 +65,8 @@ class DockerBuilder {
         // Button listeners
         this.copyCommand.addEventListener('click', () => this.copyToClipboard(this.dockerCommand.value));
         this.copyCompose.addEventListener('click', () => this.copyToClipboard(this.dockerCompose.value));
-        this.generateCommand.addEventListener('click', () => this.generateCommand());
-        this.generateCompose.addEventListener('click', () => this.generateDockerCompose());
+        this.generateCommandBtn.addEventListener('click', () => this.generateCommand());
+        this.generateComposeBtn.addEventListener('click', () => this.generateDockerCompose());
         
         // Template listeners
         this.nginxTemplate.addEventListener('click', () => this.loadTemplate('nginx'));
