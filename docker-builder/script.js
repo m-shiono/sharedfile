@@ -1,12 +1,20 @@
 class DockerBuilder {
     constructor() {
-        this.initializeElements();
-        this.initializeEventListeners();
-        this.templates = this.initializeTemplates();
-        this.generateCommand();
+        console.log('DockerBuilder: Constructor called');
+        try {
+            this.initializeElements();
+            this.initializeEventListeners();
+            this.templates = this.initializeTemplates();
+            this.generateCommand();
+            console.log('DockerBuilder: Constructor completed successfully');
+        } catch (error) {
+            console.error('DockerBuilder: Error in constructor:', error);
+        }
     }
     
     initializeElements() {
+        console.log('DockerBuilder: initializing elements');
+        
         // Input elements
         this.imageName = document.getElementById('imageName');
         this.containerName = document.getElementById('containerName');
@@ -36,6 +44,19 @@ class DockerBuilder {
         this.generateCommandBtn = document.getElementById('generateCommand');
         this.generateComposeBtn = document.getElementById('generateCompose');
         
+        // Debug: Check if critical elements are found
+        if (!this.generateCommandBtn) {
+            console.error('DockerBuilder: generateCommand button not found in DOM!');
+        } else {
+            console.log('DockerBuilder: generateCommand button found:', this.generateCommandBtn);
+        }
+        
+        if (!this.dockerCommand) {
+            console.error('DockerBuilder: dockerCommand textarea not found in DOM!');
+        } else {
+            console.log('DockerBuilder: dockerCommand textarea found:', this.dockerCommand);
+        }
+        
         // Template buttons
         this.nginxTemplate = document.getElementById('nginxTemplate');
         this.mysqlTemplate = document.getElementById('mysqlTemplate');
@@ -49,6 +70,8 @@ class DockerBuilder {
     }
     
     initializeEventListeners() {
+        console.log('DockerBuilder: initializing event listeners');
+        
         // Input change listeners
         const inputs = [
             this.imageName, this.containerName, this.runMode, this.portMappings,
@@ -58,15 +81,46 @@ class DockerBuilder {
         ];
         
         inputs.forEach(input => {
-            input.addEventListener('input', () => this.generateCommand());
-            input.addEventListener('change', () => this.generateCommand());
+            if (input) {
+                input.addEventListener('input', () => this.generateCommand());
+                input.addEventListener('change', () => this.generateCommand());
+            } else {
+                console.error('DockerBuilder: Missing input element');
+            }
         });
         
         // Button listeners
-        this.copyCommand.addEventListener('click', () => this.copyToClipboard(this.dockerCommand.value));
-        this.copyCompose.addEventListener('click', () => this.copyToClipboard(this.dockerCompose.value));
-        this.generateCommandBtn.addEventListener('click', () => this.generateCommand());
-        this.generateComposeBtn.addEventListener('click', () => this.generateDockerCompose());
+        if (this.copyCommand) {
+            this.copyCommand.addEventListener('click', () => this.copyToClipboard(this.dockerCommand.value));
+        } else {
+            console.error('DockerBuilder: copyCommand button not found');
+        }
+        
+        if (this.copyCompose) {
+            this.copyCompose.addEventListener('click', () => this.copyToClipboard(this.dockerCompose.value));
+        } else {
+            console.error('DockerBuilder: copyCompose button not found');
+        }
+        
+        if (this.generateCommandBtn) {
+            console.log('DockerBuilder: generateCommandBtn found, adding click listener');
+            this.generateCommandBtn.addEventListener('click', () => {
+                console.log('DockerBuilder: generateCommand button clicked');
+                try {
+                    this.generateCommand();
+                } catch (error) {
+                    console.error('DockerBuilder: Error in generateCommand:', error);
+                }
+            });
+        } else {
+            console.error('DockerBuilder: generateCommandBtn not found');
+        }
+        
+        if (this.generateComposeBtn) {
+            this.generateComposeBtn.addEventListener('click', () => this.generateDockerCompose());
+        } else {
+            console.error('DockerBuilder: generateComposeBtn not found');
+        }
         
         // Template listeners
         this.nginxTemplate.addEventListener('click', () => this.loadTemplate('nginx'));
@@ -263,11 +317,20 @@ class DockerBuilder {
     }
     
     generateCommand() {
-        const imageName = this.imageName.value.trim();
+        console.log('DockerBuilder: generateCommand method called');
         
-        if (!imageName) {
-            this.dockerCommand.value = '';
-            this.commandBreakdown.innerHTML = '';
+        try {
+            const imageName = this.imageName.value.trim();
+            console.log('DockerBuilder: imageName =', imageName);
+            
+            if (!imageName) {
+                console.log('DockerBuilder: No image name provided, clearing output');
+                this.dockerCommand.value = '';
+                this.commandBreakdown.innerHTML = '';
+                return;
+            }
+        } catch (error) {
+            console.error('DockerBuilder: Error getting imageName:', error);
             return;
         }
         
@@ -448,9 +511,15 @@ class DockerBuilder {
             });
         }
         
-        this.dockerCommand.value = command;
-        this.renderCommandBreakdown(breakdown);
-        this.generateDockerCompose();
+        try {
+            this.dockerCommand.value = command;
+            console.log('DockerBuilder: Docker command generated:', command);
+            this.renderCommandBreakdown(breakdown);
+            this.generateDockerCompose();
+            console.log('DockerBuilder: generateCommand completed successfully');
+        } catch (error) {
+            console.error('DockerBuilder: Error setting command output:', error);
+        }
     }
     
     renderCommandBreakdown(breakdown) {
@@ -618,5 +687,10 @@ class DockerBuilder {
 
 // Initialize the Docker Builder when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new DockerBuilder();
+    console.log('DockerBuilder: DOMContentLoaded event fired');
+    try {
+        new DockerBuilder();
+    } catch (error) {
+        console.error('DockerBuilder: Error initializing DockerBuilder:', error);
+    }
 });
