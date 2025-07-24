@@ -52,7 +52,7 @@ const templates = {
         +calculateTotal()
     }
     
-    User ||--o{ Order : has`,
+    User --> Order : has`,
     
     er: `erDiagram
     USER ||--o{ ORDER : places
