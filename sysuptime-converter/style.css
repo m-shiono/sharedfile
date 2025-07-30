@@ -298,6 +298,17 @@ footer {
     color: #5d4037;
 }
 
+.error-container {
+    color: #e74c3c;
+    margin-top: 10px;
+    display: none;
+    padding: 10px;
+    background-color: #ffeaea;
+    border: 1px solid #e74c3c;
+    border-radius: 4px;
+    font-weight: normal;
+}
+
 @media (max-width: 768px) {
     .result-breakdown {
         grid-template-columns: repeat(2, 1fr);
