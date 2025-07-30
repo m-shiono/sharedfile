@@ -134,28 +134,25 @@ const portsData = [
     // 追加のWell-Knownポート (1000-1023)
     { port: 1000, service: "Cadlock", protocol: "TCP", category: "other", description: "Cadlock", security: "medium", securityNote: "アプリケーションサービス" },
     { port: 1001, service: "Web-Based Dist", protocol: "TCP", category: "web", description: "Web-Based Distributed Authoring and Versioning", security: "medium", securityNote: "ウェブコラボレーションプロトコル" },
-    { port: 1002, service: "Web-Based", protocol: "TCP", category: "web", description: "Web-Based Distributed Authoring and Versioning", security: "medium", securityNote: "ウェブコラボレーションプロトコル" },
+    { port: 1002, service: "Windows Msg", protocol: "TCP", category: "system", description: "Windows Messaging", security: "medium", securityNote: "Windowsメッセージングサービス" },
     { port: 1003, service: "Lilisoft", protocol: "TCP", category: "other", description: "Lilisoft Tango", security: "medium", securityNote: "アプリケーションサービス" },
     { port: 1004, service: "Microsoft Lic", protocol: "TCP", category: "system", description: "Microsoft Windows Licensing", security: "medium", securityNote: "Windowsライセンスサービス" },
     { port: 1005, service: "Microsoft MSG", protocol: "TCP", category: "system", description: "Microsoft Windows Messaging", security: "medium", securityNote: "Windowsメッセージングサービス" },
     { port: 1006, service: "Intermec", protocol: "TCP", category: "other", description: "Intermec", security: "medium", securityNote: "工業デバイス通信" },
-    { port: 1007, service: "Intermec", protocol: "TCP", category: "other", description: "Intermec", security: "medium", securityNote: "工業デバイス通信" },
+    { port: 1007, service: "Intermec Admin", protocol: "TCP", category: "other", description: "Intermec Admin", security: "medium", securityNote: "工業デバイス管理通信" },
     { port: 1008, service: "UFO Server", protocol: "TCP", category: "other", description: "UFO Server", security: "medium", securityNote: "アプリケーションサーバー" },
-    { port: 1009, service: "UFO Server", protocol: "TCP", category: "other", description: "UFO Server", security: "medium", securityNote: "アプリケーションサーバー" },
+    { port: 1009, service: "UFO Console", protocol: "TCP", category: "other", description: "UFO Console", security: "medium", securityNote: "UFOアプリケーション管理コンソール" },
     { port: 1010, service: "Surf", protocol: "TCP", category: "other", description: "Surf", security: "medium", securityNote: "アプリケーションサービス" },
-    { port: 1011, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1012, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1013, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1014, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1015, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1016, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1017, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1018, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1019, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1020, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1021, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1022, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
-    { port: 1023, service: "予約済み", protocol: "TCP", category: "system", description: "予約済み", security: "low", securityNote: "将来の使用のために予約済み" },
+    // Generate reserved ports (1011-1023) dynamically
+    ...Array.from({ length: 13 }, (_, i) => ({
+        port: 1011 + i,
+        service: "予約済み",
+        protocol: "TCP",
+        category: "system",
+        description: "予約済み",
+        security: "low",
+        securityNote: "将来の使用のために予約済み"
+    })),
 
     // よく使われるアプリケーションポート（Well Knownポート以外）
     { port: 1194, service: "OpenVPN", protocol: "UDP", category: "security", description: "OpenVPN - VPN接続", security: "low", securityNote: "適切に設定されていれば安全" },
@@ -197,25 +194,6 @@ const searchInput = document.getElementById('searchInput');
 const filterButtons = document.querySelectorAll('.filter-btn');
 const portsContainer = document.getElementById('portsContainer');
 
-// 統計情報の更新
-function updatePortStats() {
-    const totalPorts = portsData.length;
-    const categories = {};
-    const protocols = {};
-    const securityLevels = {};
-    
-    portsData.forEach(port => {
-        categories[port.category] = (categories[port.category] || 0) + 1;
-        protocols[port.protocol] = (protocols[port.protocol] || 0) + 1;
-        securityLevels[port.security] = (securityLevels[port.security] || 0) + 1;
-    });
-    
-    console.log(`ポートデータベース統計:`);
-    console.log(`総ポート数: ${totalPorts}`);
-    console.log('カテゴリ別:', categories);
-    console.log('プロトコル別:', protocols);
-    console.log('セキュリティレベル別:', securityLevels);
-}
 
 // State
 let currentFilter = 'all';
