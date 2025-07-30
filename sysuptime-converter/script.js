@@ -1,3 +1,6 @@
+// Constants
+const MAX_TIMETICKS = 4294967295; // 2^32 - 1
+
 document.addEventListener('DOMContentLoaded', function() {
     const sysuptimeInput = document.getElementById('sysuptimeInput');
     const convertBtn = document.getElementById('convertBtn');
@@ -10,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalSecondsResult = document.getElementById('totalSecondsResult');
     const originalValueResult = document.getElementById('originalValueResult');
     const exampleButtons = document.querySelectorAll('.example-btn');
+    const errorContainer = document.getElementById('errorContainer');
     
     // 変換関数
     function convertSysUpTime(timeTicks) {
@@ -17,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error('TimeTicks値は0以上である必要があります');
         }
         
-        if (timeTicks > 4294967295) {
-            throw new Error('TimeTicks値の最大値（4,294,967,295）を超えています');
+        if (timeTicks > MAX_TIMETICKS) {
+            throw new Error(`TimeTicks値の最大値（${MAX_TIMETICKS.toLocaleString()}）を超えています`);
         }
         
         // TimeTicks を秒に変換（1 TimeTick = 1/100 秒）
@@ -65,8 +69,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // エラーを表示する関数
     function showError(message) {
-        alert(`エラー: ${message}`);
+        errorContainer.textContent = `エラー: ${message}`;
+        errorContainer.style.display = 'block';
         resultSection.style.display = 'none';
+    }
+    
+    // エラーを非表示にする関数
+    function hideError() {
+        errorContainer.style.display = 'none';
     }
     
     // 変換実行関数
@@ -86,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         try {
+            hideError();
             const result = convertSysUpTime(timeTicks);
             displayResult(result);
         } catch (error) {
@@ -97,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
     convertBtn.addEventListener('click', performConversion);
     
     // Enterキーで変換実行
-    sysuptimeInput.addEventListener('keypress', function(event) {
+    sysuptimeInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
             performConversion();
         }
@@ -108,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const value = this.value.trim();
         const numValue = parseInt(value, 10);
         
-        if (value && (isNaN(numValue) || numValue < 0 || numValue > 4294967295)) {
+        if (value && (isNaN(numValue) || numValue < 0 || numValue > MAX_TIMETICKS)) {
             this.style.borderColor = '#e74c3c';
         } else {
             this.style.borderColor = '#81c784';
