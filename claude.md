@@ -132,6 +132,10 @@ nav ul li a:hover {
     background-color: rgba(255,255,255,0.2);
     transform: translateY(-2px);
 }
+
+nav ul {
+    justify-content: flex-start;
+}
 ```
 
 **tool-card**
