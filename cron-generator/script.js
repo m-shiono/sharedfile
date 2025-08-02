@@ -84,7 +84,7 @@ class CronTool {
         const cron = cronParts.join(' ');
         this.cronOutput.value = cron;
         this.cronInput.value = cron;
-        this.showStatus(`${format === 'aws' ? 'AWS EventBridge形式で生成しました' : 'Linux Cron形式で生成しました'}`, 'success');
+        this.showStatus(`${format === 'aws' ? 'AWS EventBridge形式' : 'Linux Cron形式'}で生成しました`, 'success');
     }
 
     clear() {
