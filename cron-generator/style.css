@@ -59,6 +59,10 @@ nav ul li a:hover {
     transform: translateY(-2px);
 }
 
+.hidden {
+    display: none;
+}
+
 main {
     max-width: 1400px;
     margin: 2rem auto;
@@ -70,6 +74,59 @@ main {
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
     margin-bottom: 2rem;
+}
+
+.builder-section, .validator-section {
+    background: linear-gradient(135deg, #ffffff, #e8f5e9);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+
+.builder-section:hover, .validator-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.builder-section h2, .validator-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #2e7d32;
+    border-bottom: 2px solid #4caf50;
+    padding-bottom: 0.5rem;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #2e7d32;
+    font-size: 1.1rem;
+}
+
+.input-group select, .input-group input[type="text"] {
+    width: 100%;
+    min-height: 50px;
+    padding: 1rem 1.2rem;
+    border: 2px solid #c8e6c9;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.input-group select:focus, .input-group input[type="text"]:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    background: #f9fff9;
 }
 
 .input-section, .output-section {

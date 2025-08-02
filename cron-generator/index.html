@@ -22,6 +22,16 @@
         <div class="tool-container">
             <div class="builder-section">
                 <h2>Cron式生成</h2>
+                <div class="mode-selector">
+                    <label class="radio-label">
+                        <input type="radio" name="cronFormat" value="linux" checked>
+                        <span>Linux Cron (5フィールド)</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="cronFormat" value="aws">
+                        <span>AWS EventBridge Scheduler (6フィールド)</span>
+                    </label>
+                </div>
                 <div class="input-group">
                     <label for="minute">分:</label>
                     <select id="minute"></select>
@@ -41,6 +51,10 @@
                 <div class="input-group">
                     <label for="weekday">曜日:</label>
                     <select id="weekday"></select>
+                </div>
+                <div class="input-group hidden" id="yearGroup">
+                    <label for="year">年:</label>
+                    <select id="year"></select>
                 </div>
                 <div class="button-group">
                     <button id="generateBtn">生成</button>
