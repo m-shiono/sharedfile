@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+
+        // Web References
+        "WebFetch(domain:learn.microsoft.com)",
+        "WebFetch(domain:docs.aws.amazon.com)",
+        "WebFetch(domain:cloud.google.com)",
+        "WebFetch(domain:kubernetes.io)",
+        "WebFetch(domain:docker.com)",
+
+        // Monitoring Tools References
+        "WebFetch(domain:docs.newrelic.com)",
+        "WebFetch(domain:docs.datadoghq.com)",
+        "WebFetch(domain:www.zabbix.com)",
+
+      ],
+    "deny": []
+  }
+}
