@@ -14,6 +14,10 @@ class CronTool {
         this.cronInput = document.getElementById('cronInput');
         this.validateBtn = document.getElementById('validateBtn');
         this.statusBar = document.getElementById('statusBar');
+        
+        // Year range configuration
+        this.minYear = new Date().getFullYear();
+        this.maxYear = this.minYear + 10;
 
         this.fillSelect(this.minute, 0, 59);
         this.fillSelect(this.hour, 0, 23);
@@ -45,8 +49,7 @@ class CronTool {
 
     fillYearSelect() {
         this.year.innerHTML = '<option value="*">*</option>';
-        const currentYear = new Date().getFullYear();
-        for (let i = currentYear; i <= currentYear + 10; i++) {
+        for (let i = this.minYear; i <= this.maxYear; i++) {
             const opt = document.createElement('option');
             opt.value = i;
             opt.textContent = i;
@@ -56,11 +59,7 @@ class CronTool {
 
     toggleFormat() {
         const selectedFormat = document.querySelector('input[name="cronFormat"]:checked').value;
-        if (selectedFormat === 'aws') {
-            this.yearGroup.style.display = 'block';
-        } else {
-            this.yearGroup.style.display = 'none';
-        }
+        this.yearGroup.classList.toggle('hidden', selectedFormat !== 'aws');
     }
 
     getSelectedFormat() {
@@ -69,27 +68,20 @@ class CronTool {
 
     generate() {
         const format = this.getSelectedFormat();
-        let cron;
         
+        const cronParts = [
+            this.minute.value,
+            this.hour.value,
+            this.day.value,
+            this.month.value,
+            this.weekday.value
+        ];
+
         if (format === 'aws') {
-            cron = [
-                this.minute.value,
-                this.hour.value,
-                this.day.value,
-                this.month.value,
-                this.weekday.value,
-                this.year.value
-            ].join(' ');
-        } else {
-            cron = [
-                this.minute.value,
-                this.hour.value,
-                this.day.value,
-                this.month.value,
-                this.weekday.value
-            ].join(' ');
+            cronParts.push(this.year.value);
         }
         
+        const cron = cronParts.join(' ');
         this.cronOutput.value = cron;
         this.cronInput.value = cron;
         this.showStatus(`${format === 'aws' ? 'AWS EventBridge' : 'Linux Cron'}形式で生成しました`, 'success');
@@ -155,7 +147,7 @@ class CronTool {
                 this.validateField(parts[2], 1, 31, '日'),
                 this.validateField(parts[3], 1, 12, '月'),
                 this.validateField(parts[4], 0, 6, '曜日'),
-                this.validateYearField(parts[5])
+                this.validateField(parts[5], this.minYear, this.maxYear, '年', '\\d{4}')
             ];
             
             const invalidField = validFields.find(result => !result.valid);
@@ -173,10 +165,11 @@ class CronTool {
         }
     }
 
-    validateField(field, min, max, fieldName = 'フィールド') {
+    validateField(field, min, max, fieldName = 'フィールド', numPattern = '\\d+') {
         if (field === '*') return { valid: true };
         
-        if (/^\d+$/.test(field)) {
+        const singleValueRegex = new RegExp(`^${numPattern}$`);
+        if (singleValueRegex.test(field)) {
             const n = parseInt(field, 10);
             if (n >= min && n <= max) {
                 return { valid: true };
@@ -195,7 +188,8 @@ class CronTool {
             }
         }
         
-        if (/^\d+-\d+$/.test(field)) {
+        const rangeRegex = new RegExp(`^${numPattern}-${numPattern}$`);
+        if (rangeRegex.test(field)) {
             const [s, e] = field.split('-').map(Number);
             if (s >= min && e <= max && s <= e) {
                 return { valid: true };
@@ -204,7 +198,8 @@ class CronTool {
             }
         }
         
-        if (/^(\d+,)+\d+$/.test(field)) {
+        const listRegex = new RegExp(`^(${numPattern},)+${numPattern}$`);
+        if (listRegex.test(field)) {
             const values = field.split(',').map(v => parseInt(v, 10));
             const invalidValue = values.find(num => num < min || num > max);
             if (!invalidValue) {
@@ -217,49 +212,6 @@ class CronTool {
         return { valid: false, error: `${fieldName}の形式が無効です (${field})` };
     }
 
-    validateYearField(field) {
-        if (field === '*') return { valid: true };
-        
-        if (/^\d{4}$/.test(field)) {
-            const year = parseInt(field, 10);
-            if (year >= 2025 && year <= 2125) {
-                return { valid: true };
-            } else {
-                return { valid: false, error: `年の値が範囲外です (${year}は2025-2125の範囲内である必要があります)` };
-            }
-        }
-        
-        if (/^\d{4}-\d{4}$/.test(field)) {
-            const [start, end] = field.split('-').map(Number);
-            if (start >= 2025 && end <= 2125 && start <= end) {
-                return { valid: true };
-            } else {
-                return { valid: false, error: `年の範囲指定が無効です (${start}-${end}は2025-2125の範囲内かつ開始年≤終了年である必要があります)` };
-            }
-        }
-        
-        if (/^(\d{4},)+\d{4}$/.test(field)) {
-            const years = field.split(',').map(y => parseInt(y, 10));
-            const invalidYear = years.find(year => year < 2025 || year > 2125);
-            if (!invalidYear) {
-                return { valid: true };
-            } else {
-                return { valid: false, error: `年のリスト値に無効な値があります (${invalidYear}は2025-2125の範囲内である必要があります)` };
-            }
-        }
-        
-        if (/^\*(\/\d+)?$/.test(field)) {
-            if (field === '*') return { valid: true };
-            const step = parseInt(field.split('/')[1], 10);
-            if (step > 0) {
-                return { valid: true };
-            } else {
-                return { valid: false, error: `年のステップ値が無効です (${step}は0より大きい必要があります)` };
-            }
-        }
-        
-        return { valid: false, error: `年の形式が無効です (${field})` };
-    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
