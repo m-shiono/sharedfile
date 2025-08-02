@@ -41,6 +41,8 @@ nav ul {
     display: flex;
     justify-content: flex-start;
     gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 nav a {
