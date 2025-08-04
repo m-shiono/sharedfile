@@ -702,7 +702,7 @@
                     const cardText = card.textContent.toLowerCase();
                     
                     const categoryMatch = currentCategory === 'all' || cardCategory === currentCategory;
-                    const searchMatch = currentSearchTerm === '' || cardText.includes(currentSearchTerm.toLowerCase());
+                    const searchMatch = currentSearchTerm === '' || cardText.includes(currentSearchTerm);
                     
                     if (categoryMatch && searchMatch) {
                         card.style.display = 'block';
@@ -728,7 +728,7 @@
             
             // 検索機能
             searchInput.addEventListener('input', function() {
-                currentSearchTerm = this.value;
+                currentSearchTerm = this.value.toLowerCase();
                 filterCards();
                 
                 // クリアボタンの表示/非表示
@@ -744,12 +744,10 @@
                 searchInput.focus();
             });
             
-            // Enterキーでの検索実行（フォーカスを維持）
-            searchInput.addEventListener('keypress', function(e) {
+            // Enterキーでの検索実行
+            searchInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    this.blur();
-                    this.focus();
                 }
             });
         });
