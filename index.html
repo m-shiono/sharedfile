@@ -15,6 +15,12 @@
         <ul>
             <li><a href="https://m-shiono.github.io/sharedfile/">home</a></li>
         </ul>
+        <div class="search-filter">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="ツール名や機能で検索..." />
+                <button id="clear-search">×</button>
+            </div>
+        </div>
         <div class="category-filter">
             <button class="category-btn active" data-category="all">すべて</button>
             <button class="category-btn" data-category="data-conversion">📊 データ変換</button>
@@ -679,29 +685,72 @@
         </div>
     </main>
     <script>
-        // カテゴリーフィルタリング機能
+        // フィルタリング機能
         document.addEventListener('DOMContentLoaded', function() {
             const categoryButtons = document.querySelectorAll('.category-btn');
             const toolCards = document.querySelectorAll('.tool-card');
+            const searchInput = document.getElementById('search-input');
+            const clearButton = document.getElementById('clear-search');
             
+            let currentCategory = 'all';
+            let currentSearchTerm = '';
+            
+            // カード表示/非表示の共通処理
+            function filterCards() {
+                toolCards.forEach(card => {
+                    const cardCategory = card.dataset.category;
+                    const cardText = card.textContent.toLowerCase();
+                    
+                    const categoryMatch = currentCategory === 'all' || cardCategory === currentCategory;
+                    const searchMatch = currentSearchTerm === '' || cardText.includes(currentSearchTerm.toLowerCase());
+                    
+                    if (categoryMatch && searchMatch) {
+                        card.style.display = 'block';
+                        card.style.animation = 'fadeIn 0.5s ease-in-out';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+            
+            // カテゴリーフィルタリング
             categoryButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const category = this.dataset.category;
+                    currentCategory = this.dataset.category;
                     
                     // アクティブボタンの切り替え
                     categoryButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
                     
-                    // カードの表示/非表示
-                    toolCards.forEach(card => {
-                        if (category === 'all' || card.dataset.category === category) {
-                            card.style.display = 'block';
-                            card.style.animation = 'fadeIn 0.5s ease-in-out';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
+                    filterCards();
                 });
+            });
+            
+            // 検索機能
+            searchInput.addEventListener('input', function() {
+                currentSearchTerm = this.value;
+                filterCards();
+                
+                // クリアボタンの表示/非表示
+                clearButton.style.display = currentSearchTerm ? 'block' : 'none';
+            });
+            
+            // 検索クリア
+            clearButton.addEventListener('click', function() {
+                searchInput.value = '';
+                currentSearchTerm = '';
+                clearButton.style.display = 'none';
+                filterCards();
+                searchInput.focus();
+            });
+            
+            // Enterキーでの検索実行（フォーカスを維持）
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.blur();
+                    this.focus();
+                }
             });
         });
     </script>
