@@ -39,8 +39,12 @@ nav {
 nav ul {
     list-style: none;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 nav ul li a {
