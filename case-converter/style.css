@@ -1,75 +1,7 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: #2c3e50;
-    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    min-height: 100vh;
-}
-
-header {
-    background: linear-gradient(to right, #43a047, #66bb6a);
-    color: white;
-    text-align: center;
-    padding: 2rem 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-}
-
-nav {
-    background: linear-gradient(to right, #66bb6a, #81c784);
-    padding: 1rem 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: flex-start;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
-nav ul li {
-    margin-right: 1rem;
-}
-
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-}
-
-nav ul li a:hover {
-    background-color: rgba(255,255,255,0.2);
-    transform: translateY(-2px);
-}
-
-main {
-    max-width: 1400px;
-    margin: 2rem auto;
-    padding: 0 2rem;
-}
+/* case-converter specific styles */
 
 .tool-container {
-    display: grid;
     grid-template-columns: 400px 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
 }
 
 .input-section, .output-section, .quick-examples-section {
@@ -341,15 +273,6 @@ main {
     font-size: 0.85rem;
 }
 
-footer {
-    background: linear-gradient(to right, #43a047, #66bb6a);
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-    margin-top: 2rem;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-}
-
 @media (max-width: 1200px) {
     .tool-container {
         grid-template-columns: 1fr;
@@ -357,62 +280,46 @@ footer {
 }
 
 @media (max-width: 768px) {
-    main {
-        padding: 0 1rem;
-    }
-    
-    .input-section, .output-section, .quick-examples-section, .info-section {
-        padding: 1.5rem;
-    }
-    
     .input-controls {
         flex-direction: column;
     }
-    
+
     .conversion-output {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .copy-btn {
         margin-top: 0.5rem;
     }
-    
+
     .examples-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .info-grid {
         grid-template-columns: 1fr;
-    }
-    
-    nav ul {
-        padding: 0 1rem;
     }
 }
 
 @media (max-width: 480px) {
-    header h1 {
-        font-size: 2rem;
-    }
-    
     .conversion-item {
         padding: 0.8rem;
     }
-    
+
     .case-name {
         font-size: 0.9rem;
     }
-    
+
     .case-description {
         font-size: 0.8rem;
     }
-    
+
     .conversion-output input {
         font-size: 12px;
         padding: 0.5rem;
     }
-    
+
     .copy-btn {
         font-size: 10px;
         padding: 0.5rem 0.8rem;
