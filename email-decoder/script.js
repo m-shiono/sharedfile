@@ -121,8 +121,10 @@ class EmailDecoder {
             decoded = this.decodeBase64Body(body);
         }
         
-        // 文字エンコーディングの変換
-        decoded = this.convertFromCharset(decoded, charset);
+        // 文字エンコーディングの変換（UTF-8/US-ASCIIの場合はスキップ）
+        if (!/^utf-8$/i.test(charset) && !/^us-ascii$/i.test(charset)) {
+            decoded = this.convertFromCharset(decoded, charset);
+        }
         
         return {
             decoded,
@@ -158,7 +160,7 @@ class EmailDecoder {
             bytes.push(remainingText.charCodeAt(i));
         }
     
-        return String.fromCharCode.apply(null, bytes);
+        return new TextDecoder('latin1').decode(new Uint8Array(bytes));
     }
 
     decodeBase64Body(body) {
@@ -257,10 +259,14 @@ class EmailDecoder {
         const decodedDiv = document.createElement('div');
         decodedDiv.className = 'decoded-text';
         
-        // XSS対策としてtextContentを使い、改行を<br>に変換
+        // XSS対策としてtextContentを使い、<pre>を直接追加
+        const strong = document.createElement('strong');
+        strong.textContent = 'デコード結果:';
+        decodedDiv.appendChild(strong);
+        decodedDiv.appendChild(document.createElement('br'));
         const pre = document.createElement('pre');
         pre.textContent = result.decoded;
-        decodedDiv.innerHTML = `<strong>デコード結果:</strong><br>${pre.innerHTML}`;
+        decodedDiv.appendChild(pre);
         this.output.appendChild(decodedDiv);
         
         // エンコーディング情報の表示
