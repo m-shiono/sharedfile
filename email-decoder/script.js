@@ -235,12 +235,6 @@ class EmailDecoder {
     }
 
     convertFromCharset(text, charset) {
-        const upperCharset = charset.toUpperCase();
-        
-        if (upperCharset === 'UTF-8' || upperCharset === 'US-ASCII') {
-            return text;
-        }
-
         try {
             const bytes = this.stringToUint8Array(text);
             const decoder = new TextDecoder(charset.toLowerCase());
