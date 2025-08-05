@@ -121,10 +121,8 @@ class EmailDecoder {
             decoded = this.decodeBase64Body(body);
         }
         
-        // 文字エンコーディングの変換（UTF-8/US-ASCIIの場合はスキップ）
-        if (!/^utf-8$/i.test(charset) && !/^us-ascii$/i.test(charset)) {
-            decoded = this.convertFromCharset(decoded, charset);
-        }
+        // 文字エンコーディングの変換
+        decoded = this.convertFromCharset(decoded, charset);
         
         return {
             decoded,
