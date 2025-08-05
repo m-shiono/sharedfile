@@ -115,7 +115,7 @@ class EmailDecoder {
         // Content-Transfer-Encodingに基づいてデコード
         if (transferEncoding.toLowerCase() === 'quoted-printable') {
             encoding = 'quoted-printable';
-            decoded = this.decodeQuotedPrintableBody(body, charset);
+            decoded = this.decodeQuotedPrintableBody(body);
         } else if (transferEncoding.toLowerCase() === 'base64') {
             encoding = 'base64';
             decoded = this.decodeBase64Body(body);
@@ -131,34 +131,13 @@ class EmailDecoder {
         };
     }
 
-    decodeQuotedPrintableBody(body, charset) {
+    decodeQuotedPrintableBody(body) {
         // ソフトラインブレークを除去
         const noSoftBreaks = body.replace(/=\r?\n/g, '');
-    
-        // =XX 形式の16進数をバイトに変換
-        const bytes = [];
-        const regex = /=([0-9A-Fa-f]{2})/g;
-        let lastIndex = 0;
-        let match;
-    
-        while ((match = regex.exec(noSoftBreaks)) !== null) {
-            // 直前の非エンコード部分を追加
-            const textPart = noSoftBreaks.substring(lastIndex, match.index);
-            for (let i = 0; i < textPart.length; i++) {
-                bytes.push(textPart.charCodeAt(i));
-            }
-            // エンコードされたバイトを追加
-            bytes.push(parseInt(match[1], 16));
-            lastIndex = regex.lastIndex;
-        }
-    
-        // 最後の非エンコード部分を追加
-        const remainingText = noSoftBreaks.substring(lastIndex);
-        for (let i = 0; i < remainingText.length; i++) {
-            bytes.push(remainingText.charCodeAt(i));
-        }
-    
-        return new TextDecoder('latin1').decode(new Uint8Array(bytes));
+        // =XX 形式の16進数をデコード
+        return noSoftBreaks.replace(/=([0-9A-Fa-f]{2})/g, (_match, hex) => {
+            return String.fromCharCode(parseInt(hex, 16));
+        });
     }
 
     decodeBase64Body(body) {
