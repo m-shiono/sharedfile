@@ -132,10 +132,11 @@ class EmailDecoder {
     }
 
     decodeQuotedPrintableBody(body) {
-        // ソフトラインブレークを除去
-        const noSoftBreaks = body.replace(/=\r?\n/g, '');
-        // =XX 形式の16進数をデコード
-        return noSoftBreaks.replace(/=([0-9A-Fa-f]{2})/g, (_match, hex) => {
+        // 1. ソフトラインブレークを除去
+        const text = body.replace(/=\r?\n/g, '');
+    
+        // 2. =XX 形式の16進数をデコード
+        return text.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
             return String.fromCharCode(parseInt(hex, 16));
         });
     }
@@ -194,10 +195,10 @@ class EmailDecoder {
     }
 
     decodeQuotedPrintable(encodedText) {
-        // アンダースコアを空白に変換（MIME header用）
+        // 1. アンダースコアを空白に変換（MIME headerの仕様）
         let text = encodedText.replace(/_/g, ' ');
         
-        // Quoted-Printableデコード
+        // 2. =XX 形式の16進数をデコード
         return text.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
             return String.fromCharCode(parseInt(hex, 16));
         });
