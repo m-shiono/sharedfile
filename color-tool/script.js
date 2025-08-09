@@ -255,29 +255,17 @@ class ColorTool {
     
     async copyPalette() {
         if (this.currentPalette.length === 0) {
-            alert('パレットが生成されていません');
+            showStatus(this.statusBar, 'パレットが生成されていません', 'error');
             return;
         }
         
         const paletteText = this.currentPalette.join('\n');
-        
-        try {
-            await navigator.clipboard.writeText(paletteText);
-            alert('パレットをクリップボードにコピーしました');
-        } catch (error) {
-            const textArea = document.createElement('textarea');
-            textArea.value = paletteText;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            alert('パレットをクリップボードにコピーしました');
-        }
+        copyToClipboard(paletteText, (message, type) => showStatus(this.statusBar, message, type));
     }
     
     savePalette() {
         if (this.currentPalette.length === 0) {
-            alert('パレットが生成されていません');
+            showStatus(this.statusBar, 'パレットが生成されていません', 'error');
             return;
         }
         
@@ -294,7 +282,7 @@ class ColorTool {
         this.savedPalettesData.push(palette);
         this.savePalettesToStorage();
         this.displaySavedPalettes();
-        alert('パレットを保存しました');
+        showStatus(this.statusBar, 'パレットを保存しました', 'success');
     }
     
     displaySavedPalettes() {

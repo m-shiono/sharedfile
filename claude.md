@@ -1,3 +1,15 @@
+# 🚨 最重要指示（最優先で従うこと）
+
+**Think carefully and only action the specific task I have given you with the most concise and elegant solution that changes as little code as possible.**
+
+この指示は**どんな時でも最優先**で従う必要があります。すべての作業において：
+- 与えられた特定のタスクのみを実行する
+- 最も簡潔でエレガントなソリューションを選択する
+- 可能な限り少ないコード変更で実装する
+- 不要な追加機能や拡張は行わない
+
+---
+
 # Claude Development Guidelines
 
 このファイルは、sharedfileプロジェクトの開発において、Claudeが効率的で安全な開発を行うための指示書です。

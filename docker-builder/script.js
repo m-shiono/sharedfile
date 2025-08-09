@@ -91,13 +91,13 @@ class DockerBuilder {
         
         // Button listeners
         if (this.copyCommand) {
-            this.copyCommand.addEventListener('click', () => this.copyToClipboard(this.dockerCommand.value));
+            this.copyCommand.addEventListener('click', () => copyToClipboard(this.dockerCommand.value, (message, type) => this.showStatus(message, type)));
         } else {
             console.error('DockerBuilder: copyCommand button not found');
         }
         
         if (this.copyCompose) {
-            this.copyCompose.addEventListener('click', () => this.copyToClipboard(this.dockerCompose.value));
+            this.copyCompose.addEventListener('click', () => copyToClipboard(this.dockerCompose.value, (message, type) => this.showStatus(message, type)));
         } else {
             console.error('DockerBuilder: copyCompose button not found');
         }
@@ -672,43 +672,8 @@ class DockerBuilder {
         this.dockerCompose.value = compose;
     }
     
-    async copyToClipboard(text) {
-        if (!text) {
-            this.showStatus('コピーするデータがありません', 'error');
-            return;
-        }
-        
-        try {
-            await navigator.clipboard.writeText(text);
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.fallbackCopyTextToClipboard(text);
-        }
-    }
-    
-    fallbackCopyTextToClipboard(text) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        
-        try {
-            document.execCommand('copy');
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.showStatus('コピーに失敗しました', 'error');
-        }
-        
-        document.body.removeChild(textArea);
-    }
-    
     showStatus(message, type = 'info') {
-        this.statusBar.textContent = message;
-        this.statusBar.className = `status-bar status-${type}`;
+        showStatus(this.statusBar, message, type);
         
         // Auto-hide status after 3 seconds
         setTimeout(() => {

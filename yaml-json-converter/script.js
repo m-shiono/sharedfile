@@ -39,8 +39,7 @@ class YamlJsonConverter {
     }
 
     showStatus(message, type = 'info') {
-        this.statusBar.textContent = message;
-        this.statusBar.className = `status-bar status-${type}`;
+        showStatus(this.statusBar, message, type);
     }
 
     getInputFormat() {
@@ -99,13 +98,8 @@ class YamlJsonConverter {
         this.showStatus('クリア完了', 'success');
     }
 
-    async copyToClipboard() {
-        try {
-            await navigator.clipboard.writeText(this.outputText.value);
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.showStatus('コピーに失敗しました', 'error');
-        }
+    copyToClipboard() {
+        copyToClipboard(this.outputText.value, (message, type) => this.showStatus(message, type));
     }
 
     formatOutput() {

@@ -43,6 +43,7 @@ function switchTab(resourceType) {
 
 function generateYAML() {
     const activeTab = document.querySelector('.tab-button.active').dataset.resource;
+    const statusBar = document.getElementById('statusBar');
     
     try {
         let yaml = '';
@@ -63,10 +64,11 @@ function generateYAML() {
         
         displayYAML(yaml);
         showActionButtons();
+        showStatus(statusBar, 'YAMLが生成されました', 'success');
         
     } catch (error) {
         console.error('Generation error:', error);
-        showError('入力データに問題があります: ' + error.message);
+        showStatus(statusBar, '入力データに問題があります: ' + error.message, 'error');
     }
 }
 
@@ -264,43 +266,17 @@ function hideActionButtons() {
     document.getElementById('download-btn').style.display = 'none';
 }
 
-async function copyToClipboard() {
+function copyToClipboard() {
     const yamlContent = document.getElementById('yaml-preview').textContent;
-    
-    try {
-        await navigator.clipboard.writeText(yamlContent);
-        showSuccessMessage('クリップボードにコピーしました');
-    } catch (err) {
-        console.error('Copy failed:', err);
-        fallbackCopyTextToClipboard(yamlContent);
-    }
-}
-
-function fallbackCopyTextToClipboard(text) {
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    textArea.style.position = 'fixed';
-    textArea.style.left = '-999999px';
-    textArea.style.top = '-999999px';
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    
-    try {
-        document.execCommand('copy');
-        showSuccessMessage('クリップボードにコピーしました');
-    } catch (err) {
-        console.error('Fallback copy failed:', err);
-        showError('コピーに失敗しました');
-    }
-    
-    document.body.removeChild(textArea);
+    const statusBar = document.getElementById('statusBar');
+    copyToClipboard(yamlContent, (message, type) => showStatus(statusBar, message, type));
 }
 
 function downloadYAML() {
     const yamlContent = document.getElementById('yaml-preview').textContent;
     const activeTab = document.querySelector('.tab-button.active').dataset.resource;
     const resourceName = document.getElementById(`${activeTab}-name`).value || 'resource';
+    const statusBar = document.getElementById('statusBar');
     
     const blob = new Blob([yamlContent], { type: 'text/yaml' });
     const url = window.URL.createObjectURL(blob);
@@ -313,19 +289,5 @@ function downloadYAML() {
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
     
-    showSuccessMessage('YAMLファイルをダウンロードしました');
-}
-
-function showSuccessMessage(message) {
-    const outputElement = document.getElementById('yaml-preview');
-    const outputContainer = document.querySelector('.yaml-output');
-    
-    const originalContent = outputElement.textContent;
-    outputElement.textContent = message;
-    outputContainer.classList.add('success');
-    
-    setTimeout(() => {
-        outputElement.textContent = originalContent;
-        outputContainer.classList.remove('success');
-    }, 2000);
+    showStatus(statusBar, 'YAMLファイルをダウンロードしました', 'success');
 }

@@ -32,8 +32,7 @@ class JWTDecoder {
     }
     
     showStatus(message, type = 'info') {
-        this.statusBar.textContent = message;
-        this.statusBar.className = `status-bar status-${type}`;
+        showStatus(this.statusBar, message, type);
     }
     
     clearStatus() {
@@ -293,40 +292,8 @@ class JWTDecoder {
         this.claimsInfo.innerHTML = '';
     }
     
-    async copyOutput(textarea) {
-        const output = textarea.value;
-        
-        if (!output) {
-            this.showStatus('コピーするデータがありません', 'error');
-            return;
-        }
-        
-        try {
-            await navigator.clipboard.writeText(output);
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.fallbackCopyTextToClipboard(output);
-        }
-    }
-    
-    fallbackCopyTextToClipboard(text) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        
-        try {
-            document.execCommand('copy');
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.showStatus('コピーに失敗しました', 'error');
-        }
-        
-        document.body.removeChild(textArea);
+    copyOutput(textarea) {
+        copyToClipboard(textarea.value, (message, type) => this.showStatus(message, type));
     }
     
     autoProcess() {

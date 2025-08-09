@@ -36,8 +36,7 @@ class Base64Tool {
     }
     
     showStatus(message, type = 'info') {
-        this.statusBar.textContent = message;
-        this.statusBar.className = `status-bar status-${type}`;
+        showStatus(this.statusBar, message, type);
     }
     
     clearStatus() {
@@ -174,40 +173,8 @@ SmF2YVNjcmlwdCBpcyBhd2Vzb21lIQ==`;
         this.inputText.focus();
     }
     
-    async copyOutput() {
-        const output = this.outputText.value;
-        
-        if (!output) {
-            this.showStatus('コピーするデータがありません', 'error');
-            return;
-        }
-        
-        try {
-            await navigator.clipboard.writeText(output);
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.fallbackCopyTextToClipboard(output);
-        }
-    }
-    
-    fallbackCopyTextToClipboard(text) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        
-        try {
-            document.execCommand('copy');
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.showStatus('コピーに失敗しました', 'error');
-        }
-        
-        document.body.removeChild(textArea);
+    copyOutput() {
+        copyToClipboard(this.outputText.value, (message, type) => this.showStatus(message, type));
     }
     
     swapInputOutput() {

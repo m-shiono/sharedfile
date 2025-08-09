@@ -41,8 +41,7 @@ class URLTool {
     }
     
     showStatus(message, type = 'info') {
-        this.statusBar.textContent = message;
-        this.statusBar.className = `status-bar status-${type}`;
+        showStatus(this.statusBar, message, type);
     }
     
     clearStatus() {
@@ -181,40 +180,8 @@ Hello+World%21+%23%E7%89%B9%E6%AE%8A%E6%96%87%E5%AD%97%40%E5%90%AB%E3%82%80
         this.inputText.focus();
     }
     
-    async copyOutput() {
-        const output = this.outputText.value;
-        
-        if (!output) {
-            this.showStatus('コピーするデータがありません', 'error');
-            return;
-        }
-        
-        try {
-            await navigator.clipboard.writeText(output);
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.fallbackCopyTextToClipboard(output);
-        }
-    }
-    
-    fallbackCopyTextToClipboard(text) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        
-        try {
-            document.execCommand('copy');
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.showStatus('コピーに失敗しました', 'error');
-        }
-        
-        document.body.removeChild(textArea);
+    copyOutput() {
+        copyToClipboard(this.outputText.value, (message, type) => this.showStatus(message, type));
     }
     
     swapInputOutput() {

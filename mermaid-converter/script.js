@@ -84,8 +84,7 @@ const templates = {
 
 // ユーティリティ関数
 function showStatus(message, type = 'info') {
-    statusBar.textContent = message;
-    statusBar.className = `status-bar ${type}`;
+    showStatus(statusBar, message, type);
 }
 
 function hideStatus() {
@@ -146,7 +145,7 @@ async function generateDiagram() {
 function downloadSvg() {
     const svgElement = diagramOutput.querySelector('svg');
     if (!svgElement) {
-        showStatus('ダウンロードする図がありません', 'error');
+        showStatus(statusBar, 'ダウンロードする図がありません', 'error');
         return;
     }
     
@@ -168,11 +167,11 @@ function downloadSvg() {
         // URLオブジェクトを解放
         URL.revokeObjectURL(downloadLink.href);
         
-        showStatus('SVGファイルをダウンロードしました', 'success');
+        showStatus(statusBar, 'SVGファイルをダウンロードしました', 'success');
         
     } catch (error) {
         console.error('SVG download error:', error);
-        showStatus('SVGダウンロードに失敗しました', 'error');
+        showStatus(statusBar, 'SVGダウンロードに失敗しました', 'error');
     }
 }
 
@@ -180,7 +179,7 @@ function downloadSvg() {
 function downloadPng() {
     const svgElement = diagramOutput.querySelector('svg');
     if (!svgElement) {
-        showStatus('ダウンロードする図がありません', 'error');
+        showStatus(statusBar, 'ダウンロードする図がありません', 'error');
         return;
     }
     
@@ -226,7 +225,7 @@ function downloadPng() {
                 document.body.removeChild(downloadLink);
                 
                 URL.revokeObjectURL(downloadLink.href);
-                showStatus('PNGファイルをダウンロードしました', 'success');
+                showStatus(statusBar, 'PNGファイルをダウンロードしました', 'success');
             }, 'image/png');
             
             URL.revokeObjectURL(url);
@@ -234,14 +233,14 @@ function downloadPng() {
         
         img.onerror = function() {
             URL.revokeObjectURL(url);
-            showStatus('PNG変換に失敗しました', 'error');
+            showStatus(statusBar, 'PNG変換に失敗しました', 'error');
         };
         
         img.src = url;
         
     } catch (error) {
         console.error('PNG download error:', error);
-        showStatus('PNGダウンロードに失敗しました', 'error');
+        showStatus(statusBar, 'PNGダウンロードに失敗しました', 'error');
     }
 }
 

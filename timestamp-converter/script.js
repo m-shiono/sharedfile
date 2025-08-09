@@ -116,8 +116,9 @@ class TimestampConverter {
     
     convertTimestamp() {
         const input = this.timestampInput.value.trim();
+        const statusBar = document.getElementById('statusBar');
         if (!input) {
-            alert('タイムスタンプを入力してください');
+            showStatus(statusBar, 'タイムスタンプを入力してください', 'error');
             return;
         }
         
@@ -125,7 +126,7 @@ class TimestampConverter {
         let timestamp = parseInt(input);
         
         if (isNaN(timestamp)) {
-            alert('有効な数値を入力してください');
+            showStatus(statusBar, '有効な数値を入力してください', 'error');
             return;
         }
         
@@ -134,7 +135,7 @@ class TimestampConverter {
         }
         
         if (timestamp < 0 || timestamp > 4102444800) { // 2100年まで
-            alert('有効な範囲のタイムスタンプを入力してください');
+            showStatus(statusBar, '有効な範囲のタイムスタンプを入力してください', 'error');
             return;
         }
         
@@ -146,6 +147,7 @@ class TimestampConverter {
         this.rfcDateTime.value = date.toUTCString();
         
         this.updateCustomFormat();
+        showStatus(statusBar, 'タイムスタンプ変換が完了しました', 'success');
     }
     
     autoConvertTimestamp() {
@@ -178,6 +180,7 @@ class TimestampConverter {
     convertDate() {
         const mode = document.querySelector('input[name="dateInputMode"]:checked').value;
         let date;
+        const statusBar = document.getElementById('statusBar');
         
         if (mode === 'picker') {
             const dateValue = this.dateInput.value;
@@ -185,7 +188,7 @@ class TimestampConverter {
             const timezone = this.timezoneSelect.value;
             
             if (!dateValue) {
-                alert('日付を選択してください');
+                showStatus(statusBar, '日付を選択してください', 'error');
                 return;
             }
             
@@ -203,7 +206,7 @@ class TimestampConverter {
         } else {
             const dateText = this.dateTextInput.value.trim();
             if (!dateText) {
-                alert('日時文字列を入力してください');
+                showStatus(statusBar, '日時文字列を入力してください', 'error');
                 return;
             }
             
@@ -211,7 +214,7 @@ class TimestampConverter {
         }
         
         if (isNaN(date.getTime())) {
-            alert('有効な日時を入力してください');
+            showStatus(statusBar, '有効な日時を入力してください', 'error');
             return;
         }
         
@@ -220,6 +223,7 @@ class TimestampConverter {
         
         this.resultTimestampSeconds.value = timestampSeconds;
         this.resultTimestampMilliseconds.value = timestampMilliseconds;
+        showStatus(statusBar, '日時変換が完了しました', 'success');
     }
     
     autoConvertDate() {
@@ -234,8 +238,9 @@ class TimestampConverter {
     
     batchConvert() {
         const input = this.batchInput.value.trim();
+        const statusBar = document.getElementById('statusBar');
         if (!input) {
-            alert('変換したいデータを入力してください');
+            showStatus(statusBar, '変換したいデータを入力してください', 'error');
             return;
         }
         
@@ -273,6 +278,7 @@ class TimestampConverter {
         });
         
         this.batchOutput.value = results.join('\n');
+        showStatus(statusBar, '一括変換が完了しました', 'success');
     }
     
     handleQuickTimestamp(e) {
@@ -327,62 +333,19 @@ class TimestampConverter {
         return result;
     }
     
-    async handleCopy(e) {
+    handleCopy(e) {
         const button = e.target;
         const targetId = button.getAttribute('data-target');
+        const statusBar = document.getElementById('statusBar');
         
         if (targetId) {
             const element = document.getElementById(targetId);
-            await this.copyText(element.value, button);
+            copyToClipboard(element.value, (message, type) => showStatus(statusBar, message, type));
+        } else {
+            // currentTimestamp, currentDateTime, currentDateTimeUTC のコピーボタン
+            const textToCopy = button.previousElementSibling.textContent;
+            copyToClipboard(textToCopy, (message, type) => showStatus(statusBar, message, type));
         }
-    }
-    
-    async copyText(text, button = null) {
-        if (!text) {
-            if (button) this.showCopyFeedback(button, 'コピーするデータがありません', 'error');
-            return;
-        }
-        
-        try {
-            await navigator.clipboard.writeText(text);
-            if (button) this.showCopyFeedback(button, 'コピー完了', 'success');
-        } catch (error) {
-            this.fallbackCopyTextToClipboard(text, button);
-        }
-    }
-    
-    fallbackCopyTextToClipboard(text, button) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        
-        try {
-            document.execCommand('copy');
-            if (button) this.showCopyFeedback(button, 'コピー完了', 'success');
-        } catch (error) {
-            if (button) this.showCopyFeedback(button, 'コピー失敗', 'error');
-        }
-        
-        document.body.removeChild(textArea);
-    }
-    
-    showCopyFeedback(button, message, type) {
-        const originalText = button.textContent;
-        button.textContent = message;
-        
-        if (type === 'success') {
-            button.classList.add('copied');
-        }
-        
-        setTimeout(() => {
-            button.textContent = originalText;
-            button.classList.remove('copied');
-        }, 1500);
     }
     
     validateTimestamp(timestamp) {

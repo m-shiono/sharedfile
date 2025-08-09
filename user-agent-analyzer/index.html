@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User-Agent分析ツール - 便利ツール＆ユーティリティ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>User-Agent分析ツール</h1>
+        <p>User-Agent文字列の詳細情報を分析・解析するツールです</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-card">
+            <h2>現在のUser-Agent</h2>
+            <div class="current-ua">
+                <div id="current-user-agent"></div>
+                <button id="analyze-current-btn">現在のUAを分析</button>
+            </div>
+            
+            <h3>User-Agent分析</h3>
+            <div class="input-section">
+                <textarea id="user-agent-input" placeholder="分析したいUser-Agent文字列を入力してください...
+
+例:
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+
+Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1"></textarea>
+                <div class="button-group">
+                    <button id="analyze-btn">分析実行</button>
+                    <button id="clear-btn">クリア</button>
+                    <button id="sample-btn">サンプルUA</button>
+                </div>
+            </div>
+            
+            <div class="results-section" id="results-section" style="display: none;">
+                <h3>分析結果</h3>
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <h4>ブラウザ情報</h4>
+                        <div id="browser-info"></div>
+                    </div>
+                    <div class="analysis-card">
+                        <h4>OS情報</h4>
+                        <div id="os-info"></div>
+                    </div>
+                    <div class="analysis-card">
+                        <h4>デバイス情報</h4>
+                        <div id="device-info"></div>
+                    </div>
+                    <div class="analysis-card">
+                        <h4>エンジン情報</h4>
+                        <div id="engine-info"></div>
+                    </div>
+                </div>
+                
+                <div class="detailed-analysis">
+                    <h4>詳細解析</h4>
+                    <div id="detailed-info"></div>
+                </div>
+                
+                <div class="raw-components">
+                    <h4>User-Agent構成要素</h4>
+                    <div id="ua-components"></div>
+                </div>
+            </div>
+            
+            <div class="sample-section">
+                <h3>よく使われるUser-Agent例</h3>
+                <div class="sample-grid">
+                    <div class="sample-item" data-ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36">
+                        <strong>Chrome (Windows)</strong><br>
+                        <small>Windows 10, 64bit</small>
+                    </div>
+                    <div class="sample-item" data-ua="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36">
+                        <strong>Chrome (macOS)</strong><br>
+                        <small>macOS Monterey</small>
+                    </div>
+                    <div class="sample-item" data-ua="Mozilla/5.0 (iPhone; CPU iPhone OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Mobile/15E148 Safari/604.1">
+                        <strong>Safari (iPhone)</strong><br>
+                        <small>iOS 17.1</small>
+                    </div>
+                    <div class="sample-item" data-ua="Mozilla/5.0 (Linux; Android 14; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36">
+                        <strong>Chrome (Android)</strong><br>
+                        <small>Android 14</small>
+                    </div>
+                    <div class="sample-item" data-ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0">
+                        <strong>Firefox (Windows)</strong><br>
+                        <small>Windows 10, 64bit</small>
+                    </div>
+                    <div class="sample-item" data-ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0">
+                        <strong>Edge (Windows)</strong><br>
+                        <small>Windows 10, 64bit</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 personal project for m-shiono</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

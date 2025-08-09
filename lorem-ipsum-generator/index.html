@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorem Ipsum ジェネレーター - 便利ツール＆ユーティリティ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Lorem Ipsum ジェネレーター</h1>
+        <p>日本語・英語のダミーテキストを生成するツールです</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-card">
+            <h2>ダミーテキスト生成</h2>
+            
+            <div class="generation-options">
+                <div class="option-group">
+                    <label>言語：</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="language" value="latin" checked>
+                            ラテン語 (Lorem ipsum)
+                        </label>
+                        <label>
+                            <input type="radio" name="language" value="japanese">
+                            日本語
+                        </label>
+                        <label>
+                            <input type="radio" name="language" value="english">
+                            英語
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label>生成タイプ：</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="type" value="paragraphs" checked>
+                            段落
+                        </label>
+                        <label>
+                            <input type="radio" name="type" value="sentences">
+                            文
+                        </label>
+                        <label>
+                            <input type="radio" name="type" value="words">
+                            単語
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quantity-section">
+                <div class="quantity-input">
+                    <label for="quantity">生成数：</label>
+                    <input type="number" id="quantity" value="3" min="1" max="50">
+                    <span id="type-label">段落</span>
+                </div>
+                
+                <div class="additional-options">
+                    <label>
+                        <input type="checkbox" id="start-with-lorem">
+                        "Lorem ipsum dolor sit amet..." で開始
+                    </label>
+                </div>
+            </div>
+            
+            <div class="button-section">
+                <button id="generate-btn">生成</button>
+                <button id="clear-btn">クリア</button>
+            </div>
+            
+            <div class="output-section">
+                <h3>生成結果</h3>
+                <div class="output-controls">
+                    <div class="format-options">
+                        <label>出力形式：</label>
+                        <select id="output-format">
+                            <option value="plain">プレーンテキスト</option>
+                            <option value="html">HTML段落</option>
+                            <option value="markdown">Markdown</option>
+                        </select>
+                    </div>
+                    <div class="output-buttons">
+                        <button id="copy-btn">コピー</button>
+                        <button id="download-btn">ダウンロード</button>
+                    </div>
+                </div>
+                <textarea id="output-text" readonly placeholder="生成されたダミーテキストがここに表示されます..."></textarea>
+            </div>
+            
+            <div class="info-section">
+                <h3>使用例・説明</h3>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>Lorem Ipsum とは？</h4>
+                        <p>印刷業界で500年以上使用されているダミーテキスト。文字の配置やデザインの確認に使用されます。</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>日本語ダミーテキスト</h4>
+                        <p>日本語のWebサイトやアプリのデザインに適したダミーテキスト。ひらがな、カタカナ、漢字が含まれます。</p>
+                    </div>
+                    <div class="info-card">
+                        <h4>英語ダミーテキスト</h4>
+                        <p>英語圏向けのコンテンツ作成時に使用する自然な英語のダミーテキストです。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 personal project for m-shiono</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

@@ -35,10 +35,16 @@ class CaseConverter {
         this.clearBtn.addEventListener('click', () => this.clearAll());
         this.convertAllBtn.addEventListener('click', () => this.convertAll());
         
-        this.copyButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const targetId = e.target.getAttribute('data-target');
-                this.copyToClipboard(targetId, button);
+        copyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.dataset.target;
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    copyToClipboard(targetElement.value, (message, type) => {
+                        // このツールにはstatusBarがないため、アラートで代用
+                        alert(message);
+                    });
+                }
             });
         });
         
