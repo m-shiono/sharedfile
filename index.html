@@ -796,66 +796,6 @@
         </div>
     </main>
     <script src="common.js"></script>
-    <script>
-        // 検索・フィルタリング機能
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('search-input');
-            const clearSearchBtn = document.getElementById('clear-search');
-            const categoryBtns = document.querySelectorAll('.category-btn');
-            const toolCards = document.querySelectorAll('.tool-card');
-            
-            let currentCategory = 'all';
-            let currentSearchTerm = '';
-
-            // 検索機能
-            searchInput.addEventListener('input', function() {
-                currentSearchTerm = this.value.toLowerCase();
-                clearSearchBtn.style.display = currentSearchTerm ? 'block' : 'none';
-                filterTools();
-            });
-
-            // 検索クリアボタン
-            clearSearchBtn.addEventListener('click', function() {
-                searchInput.value = '';
-                currentSearchTerm = '';
-                this.style.display = 'none';
-                filterTools();
-            });
-
-            // カテゴリフィルタ機能
-            categoryBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // アクティブボタンの切り替え
-                    categoryBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    currentCategory = this.getAttribute('data-category');
-                    filterTools();
-                });
-            });
-
-            // ツールをフィルタリングする関数
-            function filterTools() {
-                toolCards.forEach(card => {
-                    const cardCategory = card.getAttribute('data-category');
-                    const cardText = card.textContent.toLowerCase();
-                    
-                    // カテゴリフィルタをチェック
-                    const categoryMatch = currentCategory === 'all' || cardCategory === currentCategory;
-                    
-                    // 検索テキストをチェック
-                    const searchMatch = !currentSearchTerm || cardText.includes(currentSearchTerm);
-                    
-                    // 両方の条件をチェック
-                    if (categoryMatch && searchMatch) {
-                        card.style.display = 'block';
-                        card.style.animation = 'fadeIn 0.3s ease-in';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            }
-        });
-    </script>
+    <script src="search.js" defer></script>
   </body>
 </html>

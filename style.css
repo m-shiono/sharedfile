@@ -1,3 +1,8 @@
+:root {
+    --transition-duration: 0.4s;
+    --fade-transition: 0.3s;
+}
+
 /* 既存のスタイルはそのまま保持 */
 * {
     margin: 0;
@@ -33,6 +38,7 @@ header h1 {
 
 /* ナビゲーションのスタイルを変更 */
 nav {
+    position: relative;
     background: linear-gradient(to right, #66bb6a, #81c784);
     padding: 1rem 0;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -93,7 +99,7 @@ nav ul li a:hover {
     right: 0;
     bottom: 0;
     background-color: rgba(255,255,255,0.3);
-    transition: .4s;
+    transition: var(--transition-duration);
     border-radius: 24px;
 }
 
@@ -105,7 +111,7 @@ nav ul li a:hover {
     left: 3px;
     bottom: 3px;
     background-color: white;
-    transition: .4s;
+    transition: var(--transition-duration);
     border-radius: 50%;
 }
 
@@ -290,6 +296,18 @@ footer {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.fadeIn {
+    animation: fadeIn var(--fade-transition) ease-in;
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
 }
 
 /* Category badges for tool cards */
