@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タイムゾーン変換ツール - 便利ツール＆ユーティリティ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>タイムゾーン変換ツール</h1>
+        <p>複数のタイムゾーン間での時刻変換を簡単に行えるツールです</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-card">
+            <h2>現在の時刻</h2>
+            <div id="current-time" class="current-time"></div>
+            
+            <h3>時刻変換</h3>
+            <div class="conversion-section">
+                <div class="input-group">
+                    <label for="input-datetime">変換元の日時：</label>
+                    <input type="datetime-local" id="input-datetime">
+                    <select id="input-timezone">
+                        <option value="UTC">UTC</option>
+                        <option value="Asia/Tokyo" selected>日本標準時 (JST)</option>
+                        <option value="America/New_York">東部標準時 (EST)</option>
+                        <option value="America/Los_Angeles">太平洋標準時 (PST)</option>
+                        <option value="Europe/London">グリニッジ標準時 (GMT)</option>
+                        <option value="Europe/Paris">中央ヨーロッパ時間 (CET)</option>
+                        <option value="Asia/Shanghai">中国標準時 (CST)</option>
+                        <option value="Asia/Seoul">韓国標準時 (KST)</option>
+                        <option value="Australia/Sydney">オーストラリア東部時間 (AEST)</option>
+                    </select>
+                </div>
+                
+                <button id="convert-btn">変換実行</button>
+                <button id="current-time-btn">現在時刻を設定</button>
+            </div>
+            
+            <h3>変換結果</h3>
+            <div id="conversion-results" class="results-grid"></div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 personal project for m-shiono</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

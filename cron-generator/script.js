@@ -99,15 +99,11 @@ class CronTool {
     }
 
     copyCron() {
-        if (!this.cronOutput.value) return;
-        navigator.clipboard.writeText(this.cronOutput.value)
-            .then(() => this.showStatus('コピーしました', 'success'))
-            .catch(() => this.showStatus('コピーに失敗しました', 'error'));
+        copyToClipboard(this.cronOutput.value, (message, type) => this.showStatus(message, type));
     }
 
     showStatus(message, type = 'info') {
-        this.statusBar.textContent = message;
-        this.statusBar.className = 'status-bar' + (type ? ` status-${type}` : '');
+        showStatus(this.statusBar, message, type);
     }
 
     validate() {

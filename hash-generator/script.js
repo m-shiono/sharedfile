@@ -158,13 +158,13 @@ APIキー
         if (mode === 'text') {
             const text = this.inputText.value.trim();
             if (!text) {
-                alert('テキストを入力してください');
+                showStatus(this.statusBar, 'テキストを入力してください', 'error');
                 return;
             }
             data = new TextEncoder().encode(text);
         } else {
             if (!this.currentFile) {
-                alert('ファイルを選択してください');
+                showStatus(this.statusBar, 'ファイルを選択してください', 'error');
                 return;
             }
             data = await this.currentFile.arrayBuffer();
@@ -181,8 +181,9 @@ APIキー
             
             this.updateHashSummary();
             this.populateHashSelector();
+            showStatus(this.statusBar, 'ハッシュ生成が完了しました', 'success');
         } catch (error) {
-            alert(`ハッシュ生成エラー: ${error.message}`);
+            showStatus(this.statusBar, `ハッシュ生成エラー: ${error.message}`, 'error');
         }
     }
     
@@ -502,52 +503,18 @@ APIキー
     async copyToClipboard(targetId, button) {
         const element = document.getElementById(targetId);
         const text = element.value;
-        
-        if (!text) {
-            this.showCopyFeedback(button, 'コピーするデータがありません', 'error');
-            return;
-        }
-        
-        try {
-            await navigator.clipboard.writeText(text);
-            this.showCopyFeedback(button, 'コピー完了', 'success');
-        } catch (error) {
-            this.fallbackCopyTextToClipboard(text, button);
-        }
-    }
-    
-    fallbackCopyTextToClipboard(text, button) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        
-        try {
-            document.execCommand('copy');
-            this.showCopyFeedback(button, 'コピー完了', 'success');
-        } catch (error) {
-            this.showCopyFeedback(button, 'コピー失敗', 'error');
-        }
-        
-        document.body.removeChild(textArea);
-    }
-    
-    showCopyFeedback(button, message, type) {
-        const originalText = button.textContent;
-        button.textContent = message;
-        
-        if (type === 'success') {
-            button.classList.add('copied');
-        }
-        
-        setTimeout(() => {
-            button.textContent = originalText;
-            button.classList.remove('copied');
-        }, 1500);
+        copyToClipboard(text, (message, type) => {
+            // ボタンに直接フィードバックを表示
+            const originalText = button.textContent;
+            button.textContent = message;
+            if (type === 'success') {
+                button.classList.add('copied');
+            }
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('copied');
+            }, 1500);
+        });
     }
     
     clearAll() {

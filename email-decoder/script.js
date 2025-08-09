@@ -30,21 +30,29 @@ class EmailDecoder {
     }
 
     processEmail(emailText) {
-        // メールをヘッダーと本文に分離
-        const emailParts = this.parseEmail(emailText);
+        // 1. 改行コードを\nに正規化
+        const normalizedEmailText = emailText.replace(/\r\n/g, '\n');
+
+        // 2. ヘッダーと本文に分離
+        const emailParts = this.parseEmail(normalizedEmailText);
+
+        // 3. ヘッダー部分のMIME encoded-wordをデコード
+        const decodedHeaderResult = this.decodeMimeText(emailParts.rawHeaders);
+
+        // 4. 本文をデコード
+        const bodyResult = this.decodeMessageBody(emailParts.body, emailParts.headers);
+
+        // 5. デコード済みのヘッダーと本文を結合
+        const finalDecodedText = decodedHeaderResult.decoded + '\n\n' + bodyResult.decoded;
         
-        // MIME encoded-wordのデコード (件名など)
-        const mimeResult = this.decodeMimeText(emailText);
-        
-        // メール本文のデコード処理
-        if (emailParts.body) {
-            const bodyResult = this.decodeMessageBody(emailParts.body, emailParts.headers);
-            mimeResult.decoded = mimeResult.decoded.replace(emailParts.body, bodyResult.decoded);
-            mimeResult.detectedEncodings = [...new Set([...mimeResult.detectedEncodings, ...bodyResult.detectedEncodings])];
-            mimeResult.bodyEncoding = bodyResult.encoding;
-        }
-        
-        return mimeResult;
+        const combinedEncodings = [...new Set([...decodedHeaderResult.detectedEncodings, ...bodyResult.detectedEncodings])];
+
+        return {
+            decoded: finalDecodedText,
+            encodedWords: decodedHeaderResult.encodedWords,
+            detectedEncodings: Array.from(combinedEncodings),
+            bodyEncoding: bodyResult.encoding
+        };
     }
 
     parseEmail(emailText) {
@@ -52,7 +60,7 @@ class EmailDecoder {
         let headerEnd = -1;
         const headers = {};
         
-        // ヘッダーの終わりを見つける（空行まで）
+        // ヘッダーの終わり（最初の空行）を見つける
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].trim() === '') {
                 headerEnd = i;
@@ -61,18 +69,18 @@ class EmailDecoder {
         }
         
         if (headerEnd === -1) {
-            // ヘッダーと本文の境界が見つからない場合、全体をテキストとして処理
-            return { headers: {}, body: emailText };
+            // ヘッダーがない場合
+            return { headers: {}, body: emailText, rawHeaders: '' };
         }
         
-        // ヘッダーを解析
         const headerLines = lines.slice(0, headerEnd);
+        const rawHeaders = headerLines.join('\n');
         let currentHeader = '';
         let currentValue = '';
         
+        // ヘッダーを解析してオブジェクトに格納
         for (const line of headerLines) {
             if (line.match(/^[a-zA-Z-]+:/)) {
-                // 新しいヘッダー
                 if (currentHeader) {
                     headers[currentHeader.toLowerCase()] = currentValue.trim();
                 }
@@ -80,48 +88,43 @@ class EmailDecoder {
                 currentHeader = line.substring(0, colonIndex).trim();
                 currentValue = line.substring(colonIndex + 1).trim();
             } else if (line.startsWith(' ') || line.startsWith('\t')) {
-                // 継続行
+                // 折り返されたヘッダー
                 currentValue += ' ' + line.trim();
             }
         }
         
-        // 最後のヘッダーを追加
         if (currentHeader) {
             headers[currentHeader.toLowerCase()] = currentValue.trim();
         }
         
-        // 本文を取得
         const body = lines.slice(headerEnd + 1).join('\n');
         
-        return { headers, body };
+        return { headers, body, rawHeaders };
     }
 
     decodeMessageBody(body, headers) {
         const contentType = headers['content-type'] || '';
         const transferEncoding = headers['content-transfer-encoding'] || '';
         
-        let charset = 'utf-8';  // デフォルト
+        let charset = 'utf-8';
         let encoding = 'none';
         let decoded = body;
         const detectedEncodings = [];
         
-        // Content-Typeからcharsetを抽出
         const charsetMatch = contentType.match(/charset=([^;]+)/i);
         if (charsetMatch) {
             charset = charsetMatch[1].trim().replace(/['"]/g, '');
             detectedEncodings.push(charset.toUpperCase());
         }
         
-        // Content-Transfer-Encodingに基づいてデコード
         if (transferEncoding.toLowerCase() === 'quoted-printable') {
             encoding = 'quoted-printable';
-            decoded = this.decodeQuotedPrintableBody(body);
+            decoded = this.decodeQuotedPrintable(body, true);
         } else if (transferEncoding.toLowerCase() === 'base64') {
             encoding = 'base64';
-            decoded = this.decodeBase64Body(body);
+            decoded = this.decodeBase64(body);
         }
         
-        // 文字エンコーディングの変換
         decoded = this.convertFromCharset(decoded, charset);
         
         return {
@@ -131,31 +134,11 @@ class EmailDecoder {
         };
     }
 
-    decodeQuotedPrintableBody(body) {
-        // ソフトラインブレークを除去
-        const noSoftBreaks = body.replace(/=\r?\n/g, '');
-        // =XX 形式の16進数をデコード
-        return noSoftBreaks.replace(/=([0-9A-Fa-f]{2})/g, (_match, hex) => {
-            return String.fromCharCode(parseInt(hex, 16));
-        });
-    }
-
-    decodeBase64Body(body) {
-        try {
-            // 改行とスペースを除去
-            const cleanedBody = body.replace(/[\r\n\s]/g, '');
-            return atob(cleanedBody);
-        } catch (error) {
-            throw new Error('Base64デコードに失敗しました');
-        }
-    }
-
     decodeMimeText(text) {
         let decodedText = text;
         const encodedWords = [];
         let detectedEncodings = new Set();
 
-        // MIME encoded-word pattern: =?charset?encoding?encoded-text?=
         const mimePattern = /=\?([^?]+)\?([BQbq])\?([^?]+)\?=/g;
         
         decodedText = decodedText.replace(mimePattern, (match, charset, encoding, encodedText) => {
@@ -167,7 +150,7 @@ class EmailDecoder {
                 if (encoding.toUpperCase() === 'B') {
                     decoded = this.decodeBase64(encodedText);
                 } else if (encoding.toUpperCase() === 'Q') {
-                    decoded = this.decodeQuotedPrintable(encodedText);
+                    decoded = this.decodeQuotedPrintable(encodedText, false);
                 } else {
                     throw new Error(`未サポートのエンコーディング: ${encoding}`);
                 }
@@ -187,18 +170,25 @@ class EmailDecoder {
 
     decodeBase64(encodedText) {
         try {
-            return atob(encodedText);
+            return atob(encodedText.replace(/[\r\n\s]/g, ''));
         } catch (error) {
             throw new Error('Base64デコードに失敗しました');
         }
     }
 
-    decodeQuotedPrintable(encodedText) {
-        // アンダースコアを空白に変換（MIME header用）
-        let text = encodedText.replace(/_/g, ' ');
+    decodeQuotedPrintable(text, isBody) {
+        let decoded = text;
+        if (!isBody) {
+            // ヘッダーの場合、アンダースコアはスペースに
+            decoded = decoded.replace(/_/g, ' ');
+        }
+        if (isBody) {
+            // 本文の場合、ソフトラインブレークを除去
+            decoded = decoded.replace(/=\r?\n/g, '');
+        }
         
-        // Quoted-Printableデコード
-        return text.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
+        // =XX 形式の16進数をデコード
+        return decoded.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
             return String.fromCharCode(parseInt(hex, 16));
         });
     }
@@ -217,30 +207,22 @@ class EmailDecoder {
             const decoder = new TextDecoder(charset.toLowerCase());
             return decoder.decode(bytes);
         } catch (error) {
-            // TextDecoderがサポートしていない、または失敗した場合
             console.error(`Charset conversion failed for ${charset}:`, error);
-            return text; // フォールバック
+            return text;
         }
     }
 
     displayResult(result) {
         this.output.innerHTML = '';
         
-        // デコード結果の表示
         const decodedDiv = document.createElement('div');
         decodedDiv.className = 'decoded-text';
         
-        // XSS対策としてtextContentを使い、<pre>を直接追加
-        const strong = document.createElement('strong');
-        strong.textContent = 'デコード結果:';
-        decodedDiv.appendChild(strong);
-        decodedDiv.appendChild(document.createElement('br'));
         const pre = document.createElement('pre');
         pre.textContent = result.decoded;
         decodedDiv.appendChild(pre);
         this.output.appendChild(decodedDiv);
         
-        // エンコーディング情報の表示
         this.encodingInfo.innerHTML = '';
         
         if (result.detectedEncodings.length > 0) {
@@ -249,7 +231,6 @@ class EmailDecoder {
             this.encodingInfo.appendChild(encodingDiv);
         }
         
-        // メール本文のエンコーディング情報
         if (result.bodyEncoding && result.bodyEncoding !== 'none') {
             const bodyEncodingDiv = document.createElement('div');
             bodyEncodingDiv.innerHTML = `<strong>メール本文のエンコーディング:</strong> ${result.bodyEncoding}`;

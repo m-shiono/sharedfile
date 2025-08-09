@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV/TSV変換ツール - 便利ツール＆ユーティリティ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>CSV/TSV変換ツール</h1>
+        <p>CSV、TSV、JSON形式のデータを相互変換するツールです</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-card">
+            <h2>データ変換</h2>
+            
+            <div class="conversion-options">
+                <div class="option-group">
+                    <label>入力形式：</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="input-format" value="csv" checked>
+                            CSV
+                        </label>
+                        <label>
+                            <input type="radio" name="input-format" value="tsv">
+                            TSV
+                        </label>
+                        <label>
+                            <input type="radio" name="input-format" value="json">
+                            JSON
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <label>出力形式：</label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="output-format" value="csv">
+                            CSV
+                        </label>
+                        <label>
+                            <input type="radio" name="output-format" value="tsv" checked>
+                            TSV
+                        </label>
+                        <label>
+                            <input type="radio" name="output-format" value="json">
+                            JSON
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="csv-options">
+                <h3>CSV/TSVオプション</h3>
+                <div class="option-row">
+                    <label>
+                        <input type="checkbox" id="has-header" checked>
+                        ヘッダー行を含む
+                    </label>
+                    <label for="delimiter">区切り文字：</label>
+                    <select id="delimiter">
+                        <option value="auto">自動判定</option>
+                        <option value=",">カンマ (,)</option>
+                        <option value="\t">タブ (\t)</option>
+                        <option value=";">セミコロン (;)</option>
+                        <option value="|">パイプ (|)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="input-section">
+                <h3>入力データ</h3>
+                <textarea id="input-data" placeholder="変換したいデータを入力してください...
+例（CSV）:
+名前,年齢,職業
+田中太郎,30,エンジニア
+佐藤花子,25,デザイナー
+
+例（JSON）:
+[
+  {&quot;名前&quot;: &quot;田中太郎&quot;, &quot;年齢&quot;: 30, &quot;職業&quot;: &quot;エンジニア&quot;},
+  {&quot;名前&quot;: &quot;佐藤花子&quot;, &quot;年齢&quot;: 25, &quot;職業&quot;: &quot;デザイナー&quot;}
+]"></textarea>
+                <div class="button-group">
+                    <button id="convert-btn">変換実行</button>
+                    <button id="clear-input-btn">入力クリア</button>
+                    <button id="sample-data-btn">サンプルデータ</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h3>変換結果</h3>
+                <textarea id="output-data" readonly placeholder="変換結果がここに表示されます..."></textarea>
+                <div class="button-group">
+                    <button id="copy-btn">結果をコピー</button>
+                    <button id="download-btn">ファイルダウンロード</button>
+                    <button id="clear-output-btn">結果クリア</button>
+                </div>
+            </div>
+            
+            <div class="preview-section" id="preview-section" style="display: none;">
+                <h3>データプレビュー</h3>
+                <div id="preview-table"></div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 personal project for m-shiono</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

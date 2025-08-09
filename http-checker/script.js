@@ -83,8 +83,7 @@ class HTTPChecker {
     }
     
     showStatus(message, type = 'info') {
-        this.statusBar.textContent = message;
-        this.statusBar.className = `status-bar status-${type}`;
+        showStatus(this.statusBar, message, type);
     }
     
     clearStatus() {

@@ -26,8 +26,7 @@ class JSONFormatter {
     }
     
     showStatus(message, type = 'info') {
-        this.statusBar.textContent = message;
-        this.statusBar.className = `status-bar status-${type}`;
+        showStatus(this.statusBar, message, type);
     }
     
     clearStatus() {
@@ -102,40 +101,8 @@ class JSONFormatter {
         this.jsonInput.focus();
     }
     
-    async copyOutput() {
-        const output = this.jsonOutput.value;
-        
-        if (!output) {
-            this.showStatus('コピーするデータがありません', 'error');
-            return;
-        }
-        
-        try {
-            await navigator.clipboard.writeText(output);
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.fallbackCopyTextToClipboard(output);
-        }
-    }
-    
-    fallbackCopyTextToClipboard(text) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        
-        try {
-            document.execCommand('copy');
-            this.showStatus('クリップボードにコピーしました', 'success');
-        } catch (error) {
-            this.showStatus('コピーに失敗しました', 'error');
-        }
-        
-        document.body.removeChild(textArea);
+    copyOutput() {
+        copyToClipboard(this.jsonOutput.value, (message, type) => this.showStatus(message, type));
     }
     
     autoFormat() {
@@ -188,16 +155,5 @@ document.addEventListener('DOMContentLoaded', () => {
     new JSONFormatter();
     
     const jsonInput = document.getElementById('jsonInput');
-    jsonInput.placeholder = `JSONデータを入力してください...
-
-例:
-{
-  "name": "田中太郎",
-  "age": 30,
-  "skills": ["JavaScript", "Python", "Java"],
-  "address": {
-    "city": "東京",
-    "country": "日本"
-  }
-}`;
+    jsonInput.placeholder = `JSONデータを入力してください...\n\n例:\n{\n  "name": "田中太郎",\n  "age": 30,\n  "skills": ["JavaScript", "Python", "Java"],\n  "address": {\n    "city": "東京",\n    "country": "日本"\n  }\n}`;
 });

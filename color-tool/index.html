@@ -9,14 +9,19 @@
 </head>
 <body>
     <header>
-        <h1>カラーパレット・カラーコード変換ツール</h1>
-        <p>色の変換とパレット生成を行うツール</p>
+        <h1>便利ツール＆ユーティリティ</h1>
+        <p>効率的なシステム運用を支援する便利なツール集</p>
     </header>
-    
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="theme-switch">
+                <input type="checkbox" id="theme-switch" />
+                <div class="slider round"></div>
+            </label>
+        </div>
     </nav>
     
     <main>
@@ -61,9 +66,10 @@
                 </div>
                 <div class="palette-display" id="paletteDisplay"></div>
                 <div class="palette-actions">
-                    <button id="copyPalette">パレットをコピー</button>
-                    <button id="savePalette">パレットを保存</button>
-                </div>
+                <button id="copyPalette">パレットをコピー</button>
+                <button id="savePalette">パレットを保存</button>
+            </div>
+            <div id="statusBar" class="status-bar"></div>
             </div>
         </div>
         
@@ -133,6 +139,7 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
+    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
