@@ -4,28 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kubernetes Resource Generator - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>Kubernetes Resource Generator</h1>
+        <p>基本的なKubernetesリソースのYAMLマニフェストを生成します。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="tool-container">
+        <div class="tool-card">
             <div class="resource-selector">
                 <h2>リソースタイプを選択</h2>
                 <div class="resource-tabs">
@@ -66,7 +59,7 @@
                 </div>
 
                 <!-- Service Form -->
-                <div class="resource-form" id="service-form">
+                <div class="resource-form" id="service-form" style="display: none;">
                     <h3>Service Configuration</h3>
                     <div class="form-group">
                         <label for="service-name">Name:</label>
@@ -100,7 +93,7 @@
                 </div>
 
                 <!-- ConfigMap Form -->
-                <div class="resource-form" id="configmap-form">
+                <div class="resource-form" id="configmap-form" style="display: none;">
                     <h3>ConfigMap Configuration</h3>
                     <div class="form-group">
                         <label for="configmap-name">Name:</label>
@@ -112,7 +105,9 @@
                     </div>
                     <div class="form-group">
                         <label for="configmap-data">Data (key=value, separated by new lines):</label>
-                        <textarea id="configmap-data" placeholder="database.host=localhost&#10;database.port=5432&#10;debug=true" rows="6"></textarea>
+                        <textarea id="configmap-data" placeholder="database.host=localhost
+database.port=5432
+debug=true" rows="6"></textarea>
                     </div>
                 </div>
             </div>
@@ -133,9 +128,9 @@
         </div>
     </main>
     
-    <script src="../common.js"></script>
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
     <script src="script.js"></script>
 </body>
-<footer>
-    <p>&copy; 2024 m-shiono personal project</p>
-</footer>
+</html>

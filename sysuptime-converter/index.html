@@ -4,24 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sysUpTime変換ツール - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>sysUpTime変換ツール</h1>
+        <p>SNMPのsysUpTime値を人間が読める形式に変換します。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
@@ -40,38 +33,7 @@
             <div class="result-section" id="resultSection" style="display: none;">
                 <h3>変換結果</h3>
                 <div class="result-display">
-                    <div class="result-item">
-                        <span class="result-label">起動経過時間:</span>
-                        <span class="result-value" id="totalResult"></span>
-                    </div>
-                    <div class="result-breakdown">
-                        <div class="breakdown-item">
-                            <span class="breakdown-label">日数:</span>
-                            <span class="breakdown-value" id="daysResult"></span>
-                        </div>
-                        <div class="breakdown-item">
-                            <span class="breakdown-label">時間:</span>
-                            <span class="breakdown-value" id="hoursResult"></span>
-                        </div>
-                        <div class="breakdown-item">
-                            <span class="breakdown-label">分:</span>
-                            <span class="breakdown-value" id="minutesResult"></span>
-                        </div>
-                        <div class="breakdown-item">
-                            <span class="breakdown-label">秒:</span>
-                            <span class="breakdown-value" id="secondsResult"></span>
-                        </div>
-                    </div>
-                    <div class="additional-info">
-                        <div class="info-item">
-                            <span class="info-label">総秒数:</span>
-                            <span class="info-value" id="totalSecondsResult"></span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">入力値:</span>
-                            <span class="info-value" id="originalValueResult"></span>
-                        </div>
-                    </div>
+                    <!-- 結果はここに動的に挿入されます -->
                 </div>
             </div>
             
@@ -100,7 +62,6 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

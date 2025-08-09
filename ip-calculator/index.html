@@ -4,28 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPアドレス計算ツール - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>IPアドレス計算ツール</h1>
+        <p>IPアドレスとCIDRからネットワーク情報を計算します。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="tool-container">
+        <div class="tool-card">
             <div class="input-section">
                 <h2>IPアドレス・CIDR入力</h2>
                 <div class="input-group">
@@ -42,43 +35,12 @@
                 <h2>計算結果</h2>
                 <div id="statusBar" class="status-bar"></div>
                 <div id="results" class="results-container">
-                    <div class="result-item">
-                        <label>ネットワークアドレス:</label>
-                        <span id="networkAddress">-</span>
-                    </div>
-                    <div class="result-item">
-                        <label>ブロードキャストアドレス:</label>
-                        <span id="broadcastAddress">-</span>
-                    </div>
-                    <div class="result-item">
-                        <label>サブネットマスク:</label>
-                        <span id="subnetMask">-</span>
-                    </div>
-                    <div class="result-item">
-                        <label>利用可能IP範囲:</label>
-                        <span id="ipRange">-</span>
-                    </div>
-                    <div class="result-item">
-                        <label>総IPアドレス数:</label>
-                        <span id="totalHosts">-</span>
-                    </div>
-                    <div class="result-item">
-                        <label>利用可能IPアドレス数:</label>
-                        <span id="availableHosts">-</span>
-                    </div>
-                    <div class="result-item">
-                        <label>IPアドレスクラス:</label>
-                        <span id="ipClass">-</span>
-                    </div>
-                    <div class="result-item">
-                        <label>プライベートアドレス:</label>
-                        <span id="privateAddress">-</span>
-                    </div>
+                    <!-- 結果はここに動的に挿入されます -->
                 </div>
             </div>
         </div>
         
-        <div class="subnet-calculator">
+        <div class="tool-card">
             <h2>サブネット分割計算</h2>
             <div class="input-group">
                 <label for="baseNetwork">ベースネットワーク:</label>
@@ -99,7 +61,6 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

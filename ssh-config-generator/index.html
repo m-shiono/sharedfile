@@ -4,28 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSH Config ジェネレーター - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>SSH Config ジェネレーター</h1>
+        <p>SSHの接続設定ファイル(~/.ssh/config)を対話的に生成します。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
 
     <main>
-        <div class="config-section">
+        <div class="tool-card">
             <h2>GitHub 設定</h2>
             <div class="input-group">
                 <label for="githubIdentityFile">GitHub用 秘密鍵のパス (例: ~/.ssh/id_rsa_github)</label>
@@ -33,38 +26,42 @@
             </div>
         </div>
 
-        <div class="config-section">
+        <div class="tool-card">
             <h2>ホスト設定</h2>
-            <table id="hostsTable">
-                <thead>
-                    <tr>
-                        <th>ホスト名</th>
-                        <th>IPアドレス/ホスト名</th>
-                        <th>ユーザー名</th>
-                        <th>ポート</th>
-                        <th>秘密鍵パス</th>
-                        <th>su先ユーザー</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- JavaScriptで動的に行が追加される -->
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table id="hostsTable">
+                    <thead>
+                        <tr>
+                            <th>ホスト名</th>
+                            <th>IPアドレス/ホスト名</th>
+                            <th>ユーザー名</th>
+                            <th>ポート</th>
+                            <th>秘密鍵パス</th>
+                            <th>su先ユーザー</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- JavaScriptで動的に行が追加される -->
+                    </tbody>
+                </table>
+            </div>
             <div class="table-actions">
                 <button id="addRowBtn">行を追加</button>
             </div>
         </div>
 
-        <div class="action-buttons">
-            <button id="generateBtn" class="primary-action">生成</button>
-            <button id="clearBtn">すべてクリア</button>
-        </div>
+        <div class="tool-card">
+            <div class="action-buttons">
+                <button id="generateBtn" class="primary-action">生成</button>
+                <button id="clearBtn">すべてクリア</button>
+            </div>
 
-        <div class="output-section">
-            <h2>生成されたSSH Config</h2>
-            <textarea id="output" readonly></textarea>
-            <button id="copyBtn">コピー</button>
+            <div class="output-section">
+                <h2>生成されたSSH Config</h2>
+                <textarea id="output" readonly></textarea>
+                <button id="copyBtn">コピー</button>
+            </div>
         </div>
     </main>
 
@@ -72,7 +69,6 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
 
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

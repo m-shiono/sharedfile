@@ -4,45 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON フォーマッター・バリデーター - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>JSON フォーマッター・バリデーター</h1>
+        <p>JSONデータの整形、検証、圧縮を簡単に行います。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="tool-container">
-            <div class="input-section">
-                <h2>JSON入力</h2>
-                <textarea id="jsonInput" placeholder="JSONデータを入力してください..."></textarea>
-                <div class="button-group">
-                    <button id="formatBtn">フォーマット</button>
-                    <button id="validateBtn">バリデート</button>
-                    <button id="minifyBtn">圧縮</button>
-                    <button id="clearBtn">クリア</button>
+        <div class="tool-card">
+            <div class="tool-container">
+                <div class="input-section">
+                    <h2>JSON入力</h2>
+                    <textarea id="jsonInput" placeholder="JSONデータを入力してください..."></textarea>
+                    <div class="button-group">
+                        <button id="formatBtn">フォーマット</button>
+                        <button id="validateBtn">バリデート</button>
+                        <button id="minifyBtn">圧縮</button>
+                        <button id="clearBtn">クリア</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="output-section">
-                <h2>結果</h2>
-                <div id="statusBar" class="status-bar"></div>
-                <textarea id="jsonOutput" readonly></textarea>
-                <div class="button-group">
-                    <button id="copyBtn">コピー</button>
+                
+                <div class="output-section">
+                    <h2>結果</h2>
+                    <div id="statusBar" class="status-bar"></div>
+                    <textarea id="jsonOutput" readonly></textarea>
+                    <div class="button-group">
+                        <button id="copyBtn">コピー</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -52,6 +47,6 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
+</html>
