@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let currentCategory = 'all';
     let currentSearchTerm = '';
+    let debounceTimer = null;
 
     // パフォーマンス向上のため、カード情報を事前にキャッシュ
     const toolsData = Array.from(toolCards).map(card => ({
@@ -15,17 +16,36 @@ document.addEventListener('DOMContentLoaded', function() {
         text: card.textContent.toLowerCase()
     }));
 
-    // 要素の存在チェック
+    // 要素の存在チェック強化
     if (!searchInput || !clearSearchBtn) {
         console.warn('検索要素が見つかりません');
         return;
     }
+    
+    if (!categoryBtns || categoryBtns.length === 0) {
+        console.warn('カテゴリボタンが見つかりません');
+        return;
+    }
+    
+    if (!toolCards || toolCards.length === 0) {
+        console.warn('ツールカードが見つかりません');
+        return;
+    }
 
-    // 検索機能
+    // デバウンス処理付き検索機能（パフォーマンス改善）
     searchInput.addEventListener('input', function() {
         currentSearchTerm = this.value.toLowerCase();
         clearSearchBtn.style.display = currentSearchTerm ? 'block' : 'none';
-        filterTools();
+        
+        // デバウンス処理で頻繁な検索を防ぐ
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+        
+        debounceTimer = setTimeout(() => {
+            filterTools();
+            debounceTimer = null;
+        }, 150); // 150ms の遅延
     });
 
     // 検索クリアボタン
@@ -33,6 +53,13 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.value = '';
         currentSearchTerm = '';
         this.style.display = 'none';
+        
+        // デバウンスタイマーもクリア
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+            debounceTimer = null;
+        }
+        
         filterTools();
     });
 
@@ -60,11 +87,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (shouldShow && !isCurrentlyVisible) {
                 tool.element.style.display = 'block';
                 tool.element.classList.add('fadeIn');
-                // アニメーション終了後にクラスを削除（より信頼性の高い方法）
-                tool.element.addEventListener('animationend', function handleAnimationEnd() {
+                // アニメーション終了後にクラスを削除（最適化されたイベント処理）
+                const handleAnimationEnd = () => {
                     tool.element.classList.remove('fadeIn');
-                    tool.element.removeEventListener('animationend', handleAnimationEnd);
-                }, { once: true });
+                };
+                tool.element.addEventListener('animationend', handleAnimationEnd, { once: true });
             } else if (!shouldShow) {
                 tool.element.style.display = 'none';
             }
