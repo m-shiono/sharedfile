@@ -60,10 +60,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (shouldShow && !isCurrentlyVisible) {
                 tool.element.style.display = 'block';
                 tool.element.classList.add('fadeIn');
-                // アニメーション後にクラスを削除
-                setTimeout(() => {
+                // アニメーション終了後にクラスを削除（より信頼性の高い方法）
+                tool.element.addEventListener('animationend', function handleAnimationEnd() {
                     tool.element.classList.remove('fadeIn');
-                }, 300);
+                    tool.element.removeEventListener('animationend', handleAnimationEnd);
+                }, { once: true });
             } else if (!shouldShow) {
                 tool.element.style.display = 'none';
             }

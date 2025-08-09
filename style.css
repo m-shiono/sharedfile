@@ -112,7 +112,6 @@ nav ul li a:hover {
     bottom: 3px;
     background-color: white;
     transition: var(--transition-duration);
-    border-radius: 50%;
 }
 
 .theme-switch input:checked + .slider {
