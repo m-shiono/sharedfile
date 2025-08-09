@@ -60,7 +60,9 @@
       "Bash(git fetch:*)",
       "Bash(git merge-base:*)",
       "Bash(git rebase:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git stash:*)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
