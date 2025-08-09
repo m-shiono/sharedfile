@@ -54,7 +54,13 @@
       "Bash(gh pr list:*)",
       "Bash(gh pr comment:*)",
       "Bash(ls:*)",
-      "Bash(git rebase:*)"
+      "Bash(git rebase:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr view:*)",
+      "Bash(git fetch:*)",
+      "Bash(git merge-base:*)",
+      "Bash(git rebase:*)",
+      "Bash(git add:*)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
