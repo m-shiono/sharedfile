@@ -81,6 +81,90 @@ function initializeThemeSwitcher() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // すべてのページでテーマスイッチャーを初期化
-    initializeThemeSwitcher();
+    // 共通のヘッダーとフッターを読み込む
+    loadCommonComponents();
 });
+
+/**
+ * 共通のヘッダーとフッターを読み込んでページに挿入する
+ */
+async function loadCommonComponents() {
+    const headerPlaceholder = document.getElementById('header-placeholder');
+    const footerPlaceholder = document.getElementById('footer-placeholder');
+
+    const basePath = getBasePath();
+
+    if (headerPlaceholder) {
+        try {
+            const response = await fetch(`${basePath}common_header.html`);
+            if (response.ok) {
+                const text = await response.text();
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = text;
+
+                // 読み込んだHTML内の相対パスを現在のページの階層に合わせて修正
+                tempDiv.querySelectorAll('a[href], link[href]').forEach(el => {
+                    const href = el.getAttribute('href');
+                    if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('/')) {
+                        el.setAttribute('href', `${basePath}${href}`);
+                    }
+                });
+                tempDiv.querySelectorAll('img[src], script[src]').forEach(el => {
+                    const src = el.getAttribute('src');
+                    if (src && !src.startsWith('http') && !src.startsWith('/')) {
+                        el.setAttribute('src', `${basePath}${src}`);
+                    }
+                });
+
+                // プレースホルダーを読み込んだコンテンツで置き換える
+                headerPlaceholder.replaceWith(...tempDiv.childNodes);
+                
+                // ヘッダーがDOMに追加された後にテーマスイッチャーを初期化
+                initializeThemeSwitcher();
+            } else {
+                console.error('Failed to load header:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching header:', error);
+        }
+    }
+
+    if (footerPlaceholder) {
+        try {
+            const response = await fetch(`${basePath}common_footer.html`);
+            if (response.ok) {
+                const text = await response.text();
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = text;
+                // フッター内のパスも同様に修正（必要であれば）
+                footerPlaceholder.replaceWith(...tempDiv.childNodes);
+            } else {
+                console.error('Failed to load footer:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching footer:', error);
+        }
+    }
+}
+
+/**
+ * 現在のページの階層に応じて、共通ファイルへの相対パスを計算する
+ * @returns {string} - ベースパス (e.g., './' or '../')
+ */
+function getBasePath() {
+    const path = window.location.pathname;
+    // '/sharedfile/' が見つからない場合は、ルートとみなす
+    const repoRootIndex = path.indexOf('/sharedfile/');
+    if (repoRootIndex === -1) {
+        return './';
+    }
+    // '/sharedfile/' より後のパス部分を取得
+    const repoRelativePath = path.substring(repoRootIndex + '/sharedfile/'.length);
+    // スラッシュの数を数えて階層を判断
+    const depth = (repoRelativePath.match(/\//g) || []).length;
+    
+    if (depth > 0) {
+        return '../'.repeat(depth);
+    }
+    return './';
+}
