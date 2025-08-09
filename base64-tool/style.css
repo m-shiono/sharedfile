@@ -49,15 +49,17 @@ nav {
 nav ul {
     list-style: none;
     display: flex;
-    justify-content: center;
-    padding: 0;
+    justify-content: flex-start;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 2rem;
 }
 
 nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
     padding: 0.5rem 1rem;
     border-radius: 20px;
 }
@@ -67,13 +69,6 @@ nav ul li a:hover {
     transform: translateY(-2px);
 }
 
-nav ul {
-    justify-content: flex-start;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 0 2rem;
-}
-
 /* ツールカード */
 .tool-card {
     background: linear-gradient(135deg, #ffffff, #e8f5e9);
@@ -81,7 +76,7 @@ nav ul {
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     padding: 2rem;
     margin-bottom: 2rem;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .tool-card:hover {
@@ -115,7 +110,7 @@ button {
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
     margin-bottom: 1rem;
     margin-right: 0.5rem;
 }
