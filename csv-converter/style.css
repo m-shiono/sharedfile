@@ -49,7 +49,7 @@ nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
     padding: 0.5rem 1rem;
     border-radius: 20px;
 }
@@ -73,7 +73,7 @@ main {
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     padding: 2rem;
     margin-bottom: 2rem;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .tool-card:hover {
@@ -207,7 +207,7 @@ button {
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
@@ -300,5 +300,15 @@ footer {
     .option-row {
         flex-direction: column;
         align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .tool-card h2 {
+        font-size: 1.5rem;
     }
 }

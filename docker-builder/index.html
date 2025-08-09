@@ -4,179 +4,182 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Docker コマンドビルダー - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>Docker コマンドビルダー</h1>
+        <p>対話形式で Docker コマンドと Docker Compose ファイルを生成します。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="tool-container">
-            <div class="input-section">
-                <h2>Docker設定</h2>
-                
-                <div class="config-group">
-                    <h3>基本設定</h3>
-                    <div class="form-group">
-                        <label for="imageName">イメージ名</label>
-                        <input type="text" id="imageName" placeholder="例: nginx:latest">
+        <div class="tool-card">
+            <div class="tool-container">
+                <div class="input-section">
+                    <h2>Docker設定</h2>
+                    
+                    <div class="config-group">
+                        <h3>基本設定</h3>
+                        <div class="form-group">
+                            <label for="imageName">イメージ名</label>
+                            <input type="text" id="imageName" placeholder="例: nginx:latest">
+                        </div>
+                        <div class="form-group">
+                            <label for="containerName">コンテナ名</label>
+                            <input type="text" id="containerName" placeholder="例: my-container">
+                        </div>
+                        <div class="form-group">
+                            <label for="runMode">実行モード</label>
+                            <select id="runMode">
+                                <option value="detached">デタッチモード (-d)</option>
+                                <option value="interactive">インタラクティブモード (-it)</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="containerName">コンテナ名</label>
-                        <input type="text" id="containerName" placeholder="例: my-container">
+                    
+                    <div class="config-group">
+                        <h3>ポート設定</h3>
+                        <div class="form-group">
+                            <label for="portMappings">ポートマッピング</label>
+                            <textarea id="portMappings" placeholder="例:
+80:80
+443:443
+3000:3000"></textarea>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="runMode">実行モード</label>
-                        <select id="runMode">
-                            <option value="detached">デタッチモード (-d)</option>
-                            <option value="interactive">インタラクティブモード (-it)</option>
-                        </select>
+                    
+                    <div class="config-group">
+                        <h3>ボリューム設定</h3>
+                        <div class="form-group">
+                            <label for="volumeMounts">ボリュームマウント</label>
+                            <textarea id="volumeMounts" placeholder="例:
+/host/path:/container/path
+my-volume:/data"></textarea>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="config-group">
-                    <h3>ポート設定</h3>
-                    <div class="form-group">
-                        <label for="portMappings">ポートマッピング</label>
-                        <textarea id="portMappings" placeholder="例:&#10;80:80&#10;443:443&#10;3000:3000"></textarea>
+                    
+                    <div class="config-group">
+                        <h3>環境変数</h3>
+                        <div class="form-group">
+                            <label for="envVars">環境変数</label>
+                            <textarea id="envVars" placeholder="例:
+NODE_ENV=production
+PORT=3000
+DATABASE_URL=postgres://..."></textarea>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="config-group">
-                    <h3>ボリューム設定</h3>
-                    <div class="form-group">
-                        <label for="volumeMounts">ボリュームマウント</label>
-                        <textarea id="volumeMounts" placeholder="例:&#10;/host/path:/container/path&#10;my-volume:/data"></textarea>
+                    
+                    <div class="config-group">
+                        <h3>ネットワーク設定</h3>
+                        <div class="form-group">
+                            <label for="networkMode">ネットワークモード</label>
+                            <select id="networkMode">
+                                <option value="">デフォルト</option>
+                                <option value="host">ホストネットワーク</option>
+                                <option value="bridge">ブリッジネットワーク</option>
+                                <option value="none">ネットワークなし</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="customNetwork">カスタムネットワーク</label>
+                            <input type="text" id="customNetwork" placeholder="例: my-network">
+                        </div>
                     </div>
-                </div>
-                
-                <div class="config-group">
-                    <h3>環境変数</h3>
-                    <div class="form-group">
-                        <label for="envVars">環境変数</label>
-                        <textarea id="envVars" placeholder="例:&#10;NODE_ENV=production&#10;PORT=3000&#10;DATABASE_URL=postgres://..."></textarea>
+                    
+                    <div class="config-group">
+                        <h3>その他設定</h3>
+                        <div class="form-group">
+                            <label for="restartPolicy">再起動ポリシー</label>
+                            <select id="restartPolicy">
+                                <option value="">なし</option>
+                                <option value="no">再起動しない</option>
+                                <option value="always">常に再起動</option>
+                                <option value="unless-stopped">停止されるまで再起動</option>
+                                <option value="on-failure">失敗時のみ再起動</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="workingDir">作業ディレクトリ</label>
+                            <input type="text" id="workingDir" placeholder="例: /app">
+                        </div>
+                        <div class="form-group">
+                            <label for="command">コマンド</label>
+                            <input type="text" id="command" placeholder="例: npm start">
+                        </div>
                     </div>
-                </div>
-                
-                <div class="config-group">
-                    <h3>ネットワーク設定</h3>
-                    <div class="form-group">
-                        <label for="networkMode">ネットワークモード</label>
-                        <select id="networkMode">
-                            <option value="">デフォルト</option>
-                            <option value="host">ホストネットワーク</option>
-                            <option value="bridge">ブリッジネットワーク</option>
-                            <option value="none">ネットワークなし</option>
-                        </select>
+                    
+                    <div class="config-group">
+                        <h3>リソース制限</h3>
+                        <div class="form-group">
+                            <label for="memoryLimit">メモリ制限</label>
+                            <input type="text" id="memoryLimit" placeholder="例: 512m, 1g">
+                        </div>
+                        <div class="form-group">
+                            <label for="cpuLimit">CPU制限</label>
+                            <input type="text" id="cpuLimit" placeholder="例: 0.5, 1.0">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="customNetwork">カスタムネットワーク</label>
-                        <input type="text" id="customNetwork" placeholder="例: my-network">
+                    
+                    <div class="config-group">
+                        <h3>ヘルスチェック</h3>
+                        <div class="form-group">
+                            <label for="healthCheck">ヘルスチェックコマンド</label>
+                            <input type="text" id="healthCheck" placeholder="例: curl -f http://localhost:80/health">
+                        </div>
+                        <div class="form-group">
+                            <label for="healthInterval">チェック間隔</label>
+                            <input type="text" id="healthInterval" placeholder="例: 30s">
+                        </div>
                     </div>
-                </div>
-                
-                <div class="config-group">
-                    <h3>その他設定</h3>
-                    <div class="form-group">
-                        <label for="restartPolicy">再起動ポリシー</label>
-                        <select id="restartPolicy">
-                            <option value="">なし</option>
-                            <option value="no">再起動しない</option>
-                            <option value="always">常に再起動</option>
-                            <option value="unless-stopped">停止されるまで再起動</option>
-                            <option value="on-failure">失敗時のみ再起動</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="workingDir">作業ディレクトリ</label>
-                        <input type="text" id="workingDir" placeholder="例: /app">
-                    </div>
-                    <div class="form-group">
-                        <label for="command">コマンド</label>
-                        <input type="text" id="command" placeholder="例: npm start">
-                    </div>
-                </div>
-                
-                <div class="config-group">
-                    <h3>リソース制限</h3>
-                    <div class="form-group">
-                        <label for="memoryLimit">メモリ制限</label>
-                        <input type="text" id="memoryLimit" placeholder="例: 512m, 1g">
-                    </div>
-                    <div class="form-group">
-                        <label for="cpuLimit">CPU制限</label>
-                        <input type="text" id="cpuLimit" placeholder="例: 0.5, 1.0">
-                    </div>
-                </div>
-                
-                <div class="config-group">
-                    <h3>ヘルスチェック</h3>
-                    <div class="form-group">
-                        <label for="healthCheck">ヘルスチェックコマンド</label>
-                        <input type="text" id="healthCheck" placeholder="例: curl -f http://localhost:80/health">
-                    </div>
-                    <div class="form-group">
-                        <label for="healthInterval">チェック間隔</label>
-                        <input type="text" id="healthInterval" placeholder="例: 30s">
-                    </div>
-                </div>
-                
-                <div class="config-group">
-                    <h3>クイックテンプレート</h3>
-                    <div class="button-group">
-                        <button id="nginxTemplate">Nginx</button>
-                        <button id="mysqlTemplate">MySQL</button>
-                        <button id="nodeTemplate">Node.js</button>
-                        <button id="redisTemplate">Redis</button>
-                        <button id="ubuntuTemplate">Ubuntu</button>
-                    </div>
-                    <div class="button-group">
-                        <button id="postgresTemplate">PostgreSQL</button>
-                        <button id="mongoTemplate">MongoDB</button>
-                        <button id="elasticsearchTemplate">Elasticsearch</button>
-                        <button id="apacheTemplate">Apache</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="output-section">
-                <h2>生成されたコマンド</h2>
-                <div id="statusBar" class="status-bar"></div>
-                
-                <div class="output-group">
-                    <h3>Docker Run コマンド</h3>
-                    <textarea id="dockerCommand" readonly></textarea>
-                    <div class="button-group">
-                        <button id="copyCommand">コマンドをコピー</button>
-                        <button id="generateCommand">コマンド生成</button>
+                    
+                    <div class="config-group">
+                        <h3>クイックテンプレート</h3>
+                        <div class="button-group">
+                            <button id="nginxTemplate">Nginx</button>
+                            <button id="mysqlTemplate">MySQL</button>
+                            <button id="nodeTemplate">Node.js</button>
+                            <button id="redisTemplate">Redis</button>
+                            <button id="ubuntuTemplate">Ubuntu</button>
+                        </div>
+                        <div class="button-group">
+                            <button id="postgresTemplate">PostgreSQL</button>
+                            <button id="mongoTemplate">MongoDB</button>
+                            <button id="elasticsearchTemplate">Elasticsearch</button>
+                            <button id="apacheTemplate">Apache</button>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="output-group">
-                    <h3>コマンド詳細</h3>
-                    <div id="commandBreakdown"></div>
-                </div>
-                
-                <div class="output-group">
-                    <h3>Docker Compose版</h3>
-                    <textarea id="dockerCompose" readonly></textarea>
-                    <div class="button-group">
-                        <button id="copyCompose">Composeをコピー</button>
-                        <button id="generateCompose">Compose生成</button>
+                <div class="output-section">
+                    <h2>生成されたコマンド</h2>
+                    <div id="statusBar" class="status-bar"></div>
+                    
+                    <div class="output-group">
+                        <h3>Docker Run コマンド</h3>
+                        <textarea id="dockerCommand" readonly></textarea>
+                        <div class="button-group">
+                            <button id="copyCommand">コマンドをコピー</button>
+                            <button id="generateCommand">コマンド生成</button>
+                        </div>
+                    </div>
+                    
+                    <div class="output-group">
+                        <h3>コマンド詳細</h3>
+                        <div id="commandBreakdown"></div>
+                    </div>
+                    
+                    <div class="output-group">
+                        <h3>Docker Compose版</h3>
+                        <textarea id="dockerCompose" readonly></textarea>
+                        <div class="button-group">
+                            <button id="copyCompose">Composeをコピー</button>
+                            <button id="generateCompose">Compose生成</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -187,7 +190,6 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
