@@ -85,15 +85,23 @@ document.addEventListener('DOMContentLoaded', function() {
             const isCurrentlyVisible = tool.element.style.display !== 'none';
             
             if (shouldShow && !isCurrentlyVisible) {
+                tool.element.classList.remove('fadeOut'); // fadeOutアニメーション中に表示される場合を考慮
                 tool.element.style.display = 'block';
                 tool.element.classList.add('fadeIn');
-                // アニメーション終了後にクラスを削除（最適化されたイベント処理）
-                const handleAnimationEnd = () => {
+                
+                tool.element.addEventListener('animationend', function handler() {
                     tool.element.classList.remove('fadeIn');
-                };
-                tool.element.addEventListener('animationend', handleAnimationEnd, { once: true });
-            } else if (!shouldShow) {
-                tool.element.style.display = 'none';
+                    tool.element.removeEventListener('animationend', handler);
+                }, { once: true });
+
+            } else if (!shouldShow && isCurrentlyVisible) {
+                tool.element.classList.add('fadeOut');
+                
+                tool.element.addEventListener('animationend', function handler() {
+                    tool.element.style.display = 'none';
+                    tool.element.classList.remove('fadeOut');
+                    tool.element.removeEventListener('animationend', handler);
+                }, { once: true });
             }
         });
     }
