@@ -72,11 +72,6 @@ nav ul li a:hover {
 }
 
 /* Theme switch styles */
-.theme-switch-wrapper {
-    position: absolute;
-    top: 1rem;
-    right: 2rem;
-}
 
 .theme-switch {
     position: relative;
@@ -130,19 +125,32 @@ nav ul li a:hover {
     background-color: #45a049;
 }
 
-/* Search filter styles */
-.search-filter {
+/* Navigation controls */
+.nav-controls {
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem 2rem 0.5rem;
-    display: flex;
-    justify-content: center;
+}
+
+.filter-controls, .settings-controls {
+    margin-bottom: 1rem;
+}
+
+.filter-controls h3, .settings-controls h3 {
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.filter-controls p, .settings-controls p {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
 }
 
 .search-box {
     position: relative;
-    width: 100%;
     max-width: 400px;
+    margin-bottom: 1rem;
 }
 
 .search-box input {
@@ -199,6 +207,12 @@ nav ul li a:hover {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0.5rem 2rem 0.5rem;
+}
+
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .category-btn {
@@ -372,7 +386,7 @@ footer {
     nav ul {
         padding: 0 1rem; /* モバイル表示時のパディングを調整 */
     }
-    .search-filter {
+    .nav-controls {
         padding: 1rem 1rem 0.5rem;
     }
     .search-box input {

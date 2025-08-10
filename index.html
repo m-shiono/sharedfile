@@ -16,26 +16,36 @@
         <ul>
             <li><a href="https://m-shiono.github.io/sharedfile/">home</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
-        <div class="search-filter">
-            <div class="search-box">
-                <input type="text" id="search-input" placeholder="ツール名や機能で検索..." />
-                <button id="clear-search">×</button>
+        <div class="nav-controls">
+            <div class="filter-controls">
+                <h3>ツールを探す</h3>
+                <p>豊富なツールから目的の機能を素早く見つけられます</p>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="ツール名や機能で検索（例: JSON、パスワード、時刻変換）" />
+                    <button id="clear-search" title="検索をクリア">×</button>
+                </div>
+                <div class="category-filter">
+                    <p>カテゴリ切り替え（ボタンをクリックで絞り込み）:</p>
+                    <button class="category-btn active" data-category="all">すべて</button>
+                    <button class="category-btn" data-category="data-conversion">📊 データ変換</button>
+                    <button class="category-btn" data-category="dev-tools">🔧 開発ツール</button>
+                    <button class="category-btn" data-category="security-network">🔒 セキュリティ・ネットワーク</button>
+                    <button class="category-btn" data-category="time-date">🕐 時間・日付</button>
+                    <button class="category-btn" data-category="mini-games">🎮 ミニゲーム</button>
+                    <button class="category-btn" data-category="design-others">🎨 デザイン・その他</button>
+                </div>
             </div>
-        </div>
-        <div class="category-filter">
-            <button class="category-btn active" data-category="all">すべて</button>
-            <button class="category-btn" data-category="data-conversion">📊 データ変換</button>
-            <button class="category-btn" data-category="dev-tools">🔧 開発ツール</button>
-            <button class="category-btn" data-category="security-network">🔒 セキュリティ・ネットワーク</button>
-            <button class="category-btn" data-category="time-date">🕐 時間・日付</button>
-            <button class="category-btn" data-category="mini-games">🎮 ミニゲーム</button>
-            <button class="category-btn" data-category="design-others">🎨 デザイン・その他</button>
+            <div class="settings-controls">
+                <h3>表示設定</h3>
+                <p>サイトテーマを切り替えできます</p>
+                <div class="theme-switch-wrapper">
+                    <label for="theme-switch">ダークモード（目に優しい暗いテーマ）</label>
+                    <label class="theme-switch">
+                        <input type="checkbox" id="theme-switch" />
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
         </div>
     </nav>
     <main>
