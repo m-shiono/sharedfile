@@ -4,95 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>環境変数管理ツール - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>環境変数管理ツール</h1>
+        <p>.env ファイルの管理、変換、検証を簡単に行えます。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="tool-container">
-            <div class="input-section">
-                <h2>環境変数入力</h2>
-                <div class="input-mode">
-                    <label>
-                        <input type="radio" name="inputMode" value="editor" checked>
-                        エディタモード
-                    </label>
-                    <label>
-                        <input type="radio" name="inputMode" value="form">
-                        フォームモード
-                    </label>
-                </div>
-                
-                <div id="editorMode" class="input-container">
-                    <textarea id="envInput" placeholder="環境変数を.env形式で入力してください...
+        <div class="tool-card">
+            <div class="tool-container">
+                <div class="input-section">
+                    <h2>環境変数入力</h2>
+                    <div class="input-mode">
+                        <label>
+                            <input type="radio" name="inputMode" value="editor" checked>
+                            エディタモード
+                        </label>
+                        <label>
+                            <input type="radio" name="inputMode" value="form">
+                            フォームモード
+                        </label>
+                    </div>
+                    
+                    <div id="editorMode" class="input-container">
+                        <textarea id="envInput" placeholder="環境変数を.env形式で入力してください...
 例:
 NODE_ENV=production
 DATABASE_URL=postgresql://user:pass@localhost/db
 PORT=3000
 DEBUG=true"></textarea>
-                </div>
-                
-                <div id="formMode" class="input-container" style="display: none;">
-                    <div class="form-controls">
-                        <button id="addRowBtn" class="add-btn">行を追加</button>
-                        <button id="clearFormBtn" class="clear-btn">フォームクリア</button>
                     </div>
-                    <div id="envForm" class="env-form">
-                        <div class="env-row">
-                            <input type="text" placeholder="変数名" class="env-key">
-                            <input type="text" placeholder="値" class="env-value">
-                            <button class="remove-btn">削除</button>
+                    
+                    <div id="formMode" class="input-container" style="display: none;">
+                        <div class="form-controls">
+                            <button id="addRowBtn" class="add-btn">行を追加</button>
+                            <button id="clearFormBtn" class="clear-btn">フォームクリア</button>
+                        </div>
+                        <div id="envForm" class="env-form">
+                            <div class="env-row">
+                                <input type="text" placeholder="変数名" class="env-key">
+                                <input type="text" placeholder="値" class="env-value">
+                                <button class="remove-btn">削除</button>
+                            </div>
                         </div>
                     </div>
+                    
+                    <div class="button-group">
+                        <button id="validateBtn">検証</button>
+                        <button id="generateBtn">生成</button>
+                        <button id="clearBtn">クリア</button>
+                    </div>
                 </div>
                 
-                <div class="button-group">
-                    <button id="validateBtn">検証</button>
-                    <button id="generateBtn">生成</button>
-                    <button id="clearBtn">クリア</button>
-                </div>
-            </div>
-            
-            <div class="output-section">
-                <h2>結果</h2>
-                <div id="statusBar" class="status-bar"></div>
-                <div class="output-tabs">
-                    <button class="tab-btn active" data-tab="env">ENV</button>
-                    <button class="tab-btn" data-tab="json">JSON</button>
-                    <button class="tab-btn" data-tab="yaml">YAML</button>
-                    <button class="tab-btn" data-tab="docker">Docker</button>
-                    <button class="tab-btn" data-tab="shell">Shell</button>
-                </div>
-                <textarea id="outputText" readonly></textarea>
-                <div class="button-group">
-                    <button id="copyBtn">コピー</button>
-                    <button id="downloadBtn">ダウンロード</button>
+                <div class="output-section">
+                    <h2>結果</h2>
+                    <div id="statusBar" class="status-bar"></div>
+                    <div class="output-tabs">
+                        <button class="tab-btn active" data-tab="env">ENV</button>
+                        <button class="tab-btn" data-tab="json">JSON</button>
+                        <button class="tab-btn" data-tab="yaml">YAML</button>
+                        <button class="tab-btn" data-tab="docker">Docker</button>
+                        <button class="tab-btn" data-tab="shell">Shell</button>
+                    </div>
+                    <textarea id="outputText" readonly></textarea>
+                    <div class="button-group">
+                        <button id="copyBtn">コピー</button>
+                        <button id="downloadBtn">ダウンロード</button>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="validation-section">
+        <div class="tool-card">
             <h2>検証結果</h2>
             <div id="validationResults" class="validation-results"></div>
         </div>
         
-        <div class="templates-section">
+        <div class="tool-card">
             <h2>テンプレート</h2>
             <div class="template-grid">
                 <div class="template-card">
@@ -133,7 +128,6 @@ DEBUG=true"></textarea>
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

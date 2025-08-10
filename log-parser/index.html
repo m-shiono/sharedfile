@@ -4,133 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ログパーサー・フィルタリングツール - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>ログパーサー・フィルタリングツール</h1>
+        <p>各種ログデータを解析し、フィルタリングや統計情報の表示を行います。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
             <li><a href="../regex-tester/index.html">正規表現テスター</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="tool-container">
-            <div class="log-input-section">
-                <h2>ログデータ入力</h2>
-                <div class="input-controls">
-                    <label>
-                        <input type="radio" name="inputMethod" value="text" checked>
-                        テキスト入力
-                    </label>
-                    <label>
-                        <input type="radio" name="inputMethod" value="file">
-                        ファイル読み込み
-                    </label>
-                </div>
-                
-                <div class="log-format-section">
-                    <h3>ログフォーマット</h3>
-                    <div class="format-buttons">
-                        <button data-format="apache-access">Apache アクセスログ</button>
-                        <button data-format="nginx-access">Nginx アクセスログ</button>
-                        <button data-format="apache-error">Apache エラーログ</button>
-                        <button data-format="nginx-error">Nginx エラーログ</button>
-                        <button data-format="custom">カスタム</button>
-                    </div>
-                </div>
-                
-                <div class="input-area">
-                    <textarea id="logInput" placeholder="ログデータを入力してください...
-
-例（Apache アクセスログ）:
-192.168.1.1 - - [25/Dec/2023:10:00:00 +0000] &quot;GET /index.html HTTP/1.1&quot; 200 2326
-192.168.1.2 - - [25/Dec/2023:10:00:01 +0000] &quot;POST /api/login HTTP/1.1&quot; 403 1234
-192.168.1.3 - - [25/Dec/2023:10:00:02 +0000] &quot;GET /admin/ HTTP/1.1&quot; 404 567
-
-例（Nginx エラーログ）:
-2023/12/25 10:00:00 [error] 1234#0: *1 open() &quot;/var/www/html/test.php&quot; failed (2: No such file or directory)
-2023/12/25 10:00:01 [warn] 1234#0: *2 client sent invalid request
-2023/12/25 10:00:02 [crit] 1234#0: *3 SSL_do_handshake() failed"></textarea>
-                    <input type="file" id="logFile" accept=".log,.txt" style="display: none;">
-                    <button id="loadFileBtn" style="display: none;">ファイルを選択</button>
-                </div>
-                
-                <div class="parse-controls">
-                    <button id="parseBtn">ログを解析</button>
-                    <button id="clearBtn">クリア</button>
-                </div>
-            </div>
-            
-            <div class="filter-section">
-                <h2>フィルタリング・抽出</h2>
-                <div class="filter-controls">
-                    <div class="field-filter">
-                        <label>フィールド選択:</label>
-                        <select id="fieldSelect">
-                            <option value="all">全体</option>
-                            <option value="ip">IPアドレス</option>
-                            <option value="timestamp">タイムスタンプ</option>
-                            <option value="method">HTTPメソッド</option>
-                            <option value="url">URL</option>
-                            <option value="status">ステータスコード</option>
-                            <option value="size">サイズ</option>
-                            <option value="referer">リファラー</option>
-                            <option value="user_agent">ユーザーエージェント</option>
-                        </select>
+        <div class="tool-card">
+            <div class="tool-container">
+                <div class="log-input-section">
+                    <h2>ログデータ入力</h2>
+                    <div class="input-controls">
+                        <label>
+                            <input type="radio" name="inputMethod" value="text" checked>
+                            テキスト入力
+                        </label>
+                        <label>
+                            <input type="radio" name="inputMethod" value="file">
+                            ファイル読み込み
+                        </label>
                     </div>
                     
-                    <div class="regex-filter">
-                        <label>正規表現フィルタ:</label>
-                        <div class="regex-input-wrapper">
-                            <span class="regex-delimiter">/</span>
-                            <input type="text" id="filterRegex" placeholder="フィルタする正規表現">
-                            <span class="regex-delimiter">/</span>
-                            <div class="flags-section">
-                                <label class="flag-label">
-                                    <input type="checkbox" id="flagGlobal" value="g">
-                                    <span>g</span>
-                                </label>
-                                <label class="flag-label">
-                                    <input type="checkbox" id="flagIgnoreCase" value="i">
-                                    <span>i</span>
-                                </label>
-                                <label class="flag-label">
-                                    <input type="checkbox" id="flagMultiline" value="m">
-                                    <span>m</span>
-                                </label>
+                    <div class="log-format-section">
+                        <h3>ログフォーマット</h3>
+                        <div class="format-buttons">
+                            <button data-format="apache-access">Apache アクセスログ</button>
+                            <button data-format="nginx-access">Nginx アクセスログ</button>
+                            <button data-format="apache-error">Apache エラーログ</button>
+                            <button data-format="nginx-error">Nginx エラーログ</button>
+                            <button data-format="custom">カスタム</button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-area">
+                        <textarea id="logInput" placeholder="ログデータを入力してください..."></textarea>
+                        <input type="file" id="logFile" accept=".log,.txt" style="display: none;">
+                        <button id="loadFileBtn" style="display: none;">ファイルを選択</button>
+                    </div>
+                    
+                    <div class="parse-controls">
+                        <button id="parseBtn">ログを解析</button>
+                        <button id="clearBtn">クリア</button>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h2>フィルタリング・抽出</h2>
+                    <div class="filter-controls">
+                        <div class="field-filter">
+                            <label>フィールド選択:</label>
+                            <select id="fieldSelect">
+                                <option value="all">全体</option>
+                            </select>
+                        </div>
+                        
+                        <div class="regex-filter">
+                            <label>正規表現フィルタ:</label>
+                            <div class="regex-input-wrapper">
+                                <span class="regex-delimiter">/</span>
+                                <input type="text" id="filterRegex" placeholder="フィルタする正規表現">
+                                <span class="regex-delimiter">/</span>
+                                <div class="flags-section">
+                                    <label class="flag-label"><input type="checkbox" id="flagGlobal" value="g"><span>g</span></label>
+                                    <label class="flag-label"><input type="checkbox" id="flagIgnoreCase" value="i"><span>i</span></label>
+                                    <label class="flag-label"><input type="checkbox" id="flagMultiline" value="m"><span>m</span></label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="quick-filters">
-                        <h3>クイックフィルタ</h3>
-                        <div class="quick-filter-buttons">
-                            <button data-filter="error">エラー（4xx, 5xx）</button>
-                            <button data-filter="success">成功（2xx）</button>
-                            <button data-filter="ip">IPアドレス</button>
-                            <button data-filter="suspicious">疑わしい活動</button>
-                            <button data-filter="today">今日</button>
+                        
+                        <div class="quick-filters">
+                            <h3>クイックフィルタ</h3>
+                            <div class="quick-filter-buttons">
+                                <button data-filter="error">エラー（4xx, 5xx）</button>
+                                <button data-filter="success">成功（2xx）</button>
+                                <button data-filter="ip">IPアドレス</button>
+                                <button data-filter="suspicious">疑わしい活動</button>
+                                <button data-filter="today">今日</button>
+                            </div>
                         </div>
+                        
+                        <button id="applyFilterBtn">フィルタ適用</button>
                     </div>
-                    
-                    <button id="applyFilterBtn">フィルタ適用</button>
                 </div>
             </div>
         </div>
         
-        <div class="results-section">
+        <div class="tool-card">
             <h2>解析結果</h2>
             <div class="results-summary" id="resultsSummary"></div>
             <div class="results-tabs">
@@ -152,7 +120,7 @@
             </div>
         </div>
         
-        <div class="export-section">
+        <div class="tool-card">
             <h2>エクスポート</h2>
             <div class="export-controls">
                 <select id="exportFormat">
@@ -164,7 +132,7 @@
             </div>
         </div>
         
-        <div class="regex-integration">
+        <div class="tool-card">
             <h2>正規表現テスター連携</h2>
             <p>複雑な正規表現パターンをテストしたい場合は、<a href="../regex-tester/index.html" target="_blank">正規表現テスター</a>をご利用ください。</p>
             <div class="integration-controls">
@@ -178,7 +146,6 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

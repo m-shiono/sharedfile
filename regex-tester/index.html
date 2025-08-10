@@ -4,28 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>正規表現テスター - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>正規表現テスター</h1>
+        <p>正規表現のパターンをリアルタイムでテスト・検証します。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="tool-container">
+        <div class="tool-card">
             <div class="regex-section">
                 <h2>正規表現パターン</h2>
                 <div class="regex-input-wrapper">
@@ -33,26 +26,11 @@
                     <input type="text" id="regexInput" placeholder="正規表現を入力してください">
                     <span class="regex-delimiter">/</span>
                     <div class="flags-section">
-                        <label class="flag-label">
-                            <input type="checkbox" id="flagGlobal" value="g">
-                            <span>g</span>
-                        </label>
-                        <label class="flag-label">
-                            <input type="checkbox" id="flagIgnoreCase" value="i">
-                            <span>i</span>
-                        </label>
-                        <label class="flag-label">
-                            <input type="checkbox" id="flagMultiline" value="m">
-                            <span>m</span>
-                        </label>
-                        <label class="flag-label">
-                            <input type="checkbox" id="flagDotAll" value="s">
-                            <span>s</span>
-                        </label>
-                        <label class="flag-label">
-                            <input type="checkbox" id="flagUnicode" value="u">
-                            <span>u</span>
-                        </label>
+                        <label class="flag-label"><input type="checkbox" id="flagGlobal" value="g"><span>g</span></label>
+                        <label class="flag-label"><input type="checkbox" id="flagIgnoreCase" value="i"><span>i</span></label>
+                        <label class="flag-label"><input type="checkbox" id="flagMultiline" value="m"><span>m</span></label>
+                        <label class="flag-label"><input type="checkbox" id="flagDotAll" value="s"><span>s</span></label>
+                        <label class="flag-label"><input type="checkbox" id="flagUnicode" value="u"><span>u</span></label>
                     </div>
                 </div>
                 <div class="regex-status" id="regexStatus"></div>
@@ -66,8 +44,8 @@
                         <button data-pattern="\d{4}-\d{2}-\d{2}">日付</button>
                         <button data-pattern="^\d+$">数字のみ</button>
                         <button data-pattern="^[a-zA-Z]+$">英字のみ</button>
-                        <button data-pattern="^[ひらがな]+$">ひらがな</button>
-                        <button data-pattern="^[カタカナ]+$">カタカナ</button>
+                        <button data-pattern="^[ぁ-んー]+$">ひらがな</button>
+                        <button data-pattern="^[ァ-ヶー]+$">カタカナ</button>
                     </div>
                 </div>
             </div>
@@ -82,7 +60,7 @@
             </div>
         </div>
         
-        <div class="results-section">
+        <div class="tool-card">
             <h2>マッチ結果</h2>
             <div class="results-summary" id="resultsSummary"></div>
             <div class="results-display">
@@ -91,7 +69,7 @@
             </div>
         </div>
         
-        <div class="replace-section">
+        <div class="tool-card">
             <h2>置換テスト</h2>
             <div class="replace-controls">
                 <div class="replace-input">
@@ -103,7 +81,7 @@
             <div class="replace-result" id="replaceResult"></div>
         </div>
         
-        <div class="info-section">
+        <div class="tool-card">
             <h3>正規表現について</h3>
             <div class="info-grid">
                 <div class="info-card">
@@ -153,7 +131,6 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

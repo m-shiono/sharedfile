@@ -4,29 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unixタイムスタンプ変換ツール - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>Unixタイムスタンプ変換ツール</h1>
+        <p>Unixタイムスタンプと日時を相互に変換します。</p>
     </header>
     
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="current-time-section">
+        <div class="tool-card">
             <h2>現在時刻</h2>
             <div id="statusBar" class="status-bar"></div>
             <div class="current-time-display">
@@ -48,141 +41,66 @@
             </div>
         </div>
         
-        <div class="converter-container">
-            <div class="timestamp-to-date-section">
-                <h2>Unixタイムスタンプ → 日時</h2>
-                <div class="converter-input">
-                    <div class="input-group">
-                        <label>Unixタイムスタンプ:</label>
-                        <input type="text" id="timestampInput" placeholder="例: 1640995200">
-                        <div class="unit-selector">
-                            <label class="radio-label">
-                                <input type="radio" name="timestampUnit" value="seconds" checked>
-                                <span>秒</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="timestampUnit" value="milliseconds">
-                                <span>ミリ秒</span>
-                            </label>
+        <div class="tool-card">
+            <div class="converter-container">
+                <div class="timestamp-to-date-section">
+                    <h2>Unixタイムスタンプ → 日時</h2>
+                    <div class="converter-input">
+                        <div class="input-group">
+                            <label>Unixタイムスタンプ:</label>
+                            <input type="text" id="timestampInput" placeholder="例: 1640995200">
+                            <div class="unit-selector">
+                                <label class="radio-label"><input type="radio" name="timestampUnit" value="seconds" checked><span>秒</span></label>
+                                <label class="radio-label"><input type="radio" name="timestampUnit" value="milliseconds"><span>ミリ秒</span></label>
+                            </div>
                         </div>
+                        <button id="convertTimestampBtn">変換</button>
                     </div>
-                    <button id="convertTimestampBtn">変換</button>
+                    
+                    <div class="conversion-results" id="timestampResults">
+                        <!-- 結果はここに動的に挿入されます -->
+                    </div>
                 </div>
                 
-                <div class="conversion-results" id="timestampResults">
-                    <div class="result-item">
-                        <label>ローカル時間:</label>
-                        <input type="text" id="localDateTime" readonly>
-                        <button class="copy-btn" data-target="localDateTime">コピー</button>
+                <div class="date-to-timestamp-section">
+                    <h2>日時 → Unixタイムスタンプ</h2>
+                    <div class="date-input-mode">
+                        <label class="radio-label"><input type="radio" name="dateInputMode" value="picker" checked><span>日時選択</span></label>
+                        <label class="radio-label"><input type="radio" name="dateInputMode" value="text"><span>テキスト入力</span></label>
                     </div>
-                    <div class="result-item">
-                        <label>UTC時間:</label>
-                        <input type="text" id="utcDateTime" readonly>
-                        <button class="copy-btn" data-target="utcDateTime">コピー</button>
-                    </div>
-                    <div class="result-item">
-                        <label>ISO 8601:</label>
-                        <input type="text" id="isoDateTime" readonly>
-                        <button class="copy-btn" data-target="isoDateTime">コピー</button>
-                    </div>
-                    <div class="result-item">
-                        <label>RFC 2822:</label>
-                        <input type="text" id="rfcDateTime" readonly>
-                        <button class="copy-btn" data-target="rfcDateTime">コピー</button>
-                    </div>
-                    <div class="result-item">
-                        <label>カスタム形式:</label>
-                        <input type="text" id="customFormat" placeholder="例: yyyy-MM-dd HH:mm:ss">
-                        <input type="text" id="customDateTime" readonly>
-                        <button class="copy-btn" data-target="customDateTime">コピー</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="date-to-timestamp-section">
-                <h2>日時 → Unixタイムスタンプ</h2>
-                <div class="date-input-mode">
-                    <label class="radio-label">
-                        <input type="radio" name="dateInputMode" value="picker" checked>
-                        <span>日時選択</span>
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="dateInputMode" value="text">
-                        <span>テキスト入力</span>
-                    </label>
-                </div>
-                
-                <div class="date-picker-inputs" id="datePickerInputs">
-                    <div class="datetime-inputs">
-                        <div class="input-group">
-                            <label>日付:</label>
-                            <input type="date" id="dateInput">
-                        </div>
-                        <div class="input-group">
-                            <label>時刻:</label>
-                            <input type="time" id="timeInput" step="1">
-                        </div>
-                        <div class="input-group">
-                            <label>タイムゾーン:</label>
-                            <select id="timezoneSelect">
+                    
+                    <div id="datePickerInputs">
+                        <div class="datetime-inputs">
+                            <div class="input-group"><label>日付:</label><input type="date" id="dateInput"></div>
+                            <div class="input-group"><label>時刻:</label><input type="time" id="timeInput" step="1"></div>
+                            <div class="input-group"><label>タイムゾーン:</label><select id="timezoneSelect">
                                 <option value="local">ローカル時間</option>
                                 <option value="UTC">UTC</option>
-                                <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
-                                <option value="America/New_York">America/New_York (EST)</option>
-                                <option value="Europe/London">Europe/London (GMT)</option>
-                                <option value="America/Los_Angeles">America/Los_Angeles (PST)</option>
-                            </select>
+                            </select></div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="date-text-inputs" id="dateTextInputs" style="display: none;">
-                    <div class="input-group">
-                        <label>日時文字列:</label>
-                        <input type="text" id="dateTextInput" placeholder="例: 2024-01-01 12:00:00">
-                        <div class="format-examples">
-                            <small>対応形式: ISO 8601, RFC 2822, yyyy-MM-dd HH:mm:ss など</small>
-                        </div>
+                    
+                    <div id="dateTextInputs" style="display: none;">
+                        <div class="input-group"><label>日時文字列:</label><input type="text" id="dateTextInput" placeholder="例: 2024-01-01 12:00:00"></div>
                     </div>
-                </div>
-                
-                <button id="convertDateBtn">変換</button>
-                
-                <div class="conversion-results" id="dateResults">
-                    <div class="result-item">
-                        <label>Unixタイムスタンプ (秒):</label>
-                        <input type="text" id="resultTimestampSeconds" readonly>
-                        <button class="copy-btn" data-target="resultTimestampSeconds">コピー</button>
-                    </div>
-                    <div class="result-item">
-                        <label>Unixタイムスタンプ (ミリ秒):</label>
-                        <input type="text" id="resultTimestampMilliseconds" readonly>
-                        <button class="copy-btn" data-target="resultTimestampMilliseconds">コピー</button>
+                    
+                    <button id="convertDateBtn">変換</button>
+                    
+                    <div class="conversion-results" id="dateResults">
+                        <!-- 結果はここに動的に挿入されます -->
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="batch-converter-section">
+        <div class="tool-card">
             <h2>一括変換</h2>
             <div class="batch-input">
-                <textarea id="batchInput" placeholder="複数のタイムスタンプまたは日時を改行区切りで入力...
-
-例:
-1640995200
-1641081600
-2024-01-01 12:00:00
-2024-12-31 23:59:59"></textarea>
+                <textarea id="batchInput" placeholder="複数のタイムスタンプまたは日時を改行区切りで入力..."></textarea>
                 <div class="batch-controls">
                     <div class="batch-mode">
-                        <label class="radio-label">
-                            <input type="radio" name="batchMode" value="timestamp" checked>
-                            <span>タイムスタンプ → 日時</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="batchMode" value="datetime">
-                            <span>日時 → タイムスタンプ</span>
-                        </label>
+                        <label class="radio-label"><input type="radio" name="batchMode" value="timestamp" checked><span>タイムスタンプ → 日時</span></label>
+                        <label class="radio-label"><input type="radio" name="batchMode" value="datetime"><span>日時 → タイムスタンプ</span></label>
                     </div>
                     <button id="batchConvertBtn">一括変換</button>
                 </div>
@@ -193,73 +111,23 @@
             </div>
         </div>
         
-        <div class="quick-timestamps-section">
+        <div class="tool-card">
             <h2>クイックタイムスタンプ</h2>
             <div class="quick-buttons">
                 <button class="quick-btn" data-offset="0">現在</button>
                 <button class="quick-btn" data-offset="-3600">1時間前</button>
                 <button class="quick-btn" data-offset="-86400">1日前</button>
                 <button class="quick-btn" data-offset="-604800">1週間前</button>
-                <button class="quick-btn" data-offset="-2592000">1ヶ月前</button>
-                <button class="quick-btn" data-offset="3600">1時間後</button>
-                <button class="quick-btn" data-offset="86400">1日後</button>
-                <button class="quick-btn" data-offset="604800">1週間後</button>
-                <button class="quick-btn" data-offset="2592000">1ヶ月後</button>
-            </div>
-            
-            <div class="quick-result-display">
-                <div class="quick-result-item">
-                    <label for="quickTimestampResult">Unixタイムスタンプ:</label>
-                    <input type="text" id="quickTimestampResult" readonly>
-                    <button class="copy-btn" data-target="quickTimestampResult">コピー</button>
-                </div>
-                <div class="quick-result-item">
-                    <label for="quickDateTimeResult">日時:</label>
-                    <input type="text" id="quickDateTimeResult" readonly>
-                    <button class="copy-btn" data-target="quickDateTimeResult">コピー</button>
-                </div>
             </div>
         </div>
         
-        <div class="info-section">
+        <div class="tool-card">
             <h3>Unixタイムスタンプについて</h3>
             <div class="info-grid">
-                <div class="info-card">
-                    <h4>基本概念</h4>
-                    <ul>
-                        <li><strong>定義:</strong> 1970年1月1日 00:00:00 UTC からの経過秒数</li>
-                        <li><strong>エポック時刻:</strong> Unix epoch とも呼ばれる</li>
-                        <li><strong>単位:</strong> 通常は秒、システムによりミリ秒</li>
-                        <li><strong>範囲:</strong> 32bit版は2038年問題あり</li>
-                    </ul>
-                </div>
-                <div class="info-card">
-                    <h4>使用場面</h4>
-                    <ul>
-                        <li><strong>データベース:</strong> 日時の保存形式</li>
-                        <li><strong>API:</strong> 時刻情報の交換</li>
-                        <li><strong>ログ解析:</strong> イベント時刻の記録</li>
-                        <li><strong>システム間連携:</strong> タイムゾーン非依存</li>
-                    </ul>
-                </div>
-                <div class="info-card">
-                    <h4>注意点</h4>
-                    <ul>
-                        <li><strong>タイムゾーン:</strong> UTCベースのため変換が必要</li>
-                        <li><strong>精度:</strong> 秒単位のため高精度が必要な場合は注意</li>
-                        <li><strong>2038年問題:</strong> 32bit環境では制限あり</li>
-                        <li><strong>うるう秒:</strong> 考慮されない場合が多い</li>
-                    </ul>
-                </div>
-                <div class="info-card">
-                    <h4>形式例</h4>
-                    <ul>
-                        <li><strong>秒:</strong> 1640995200</li>
-                        <li><strong>ミリ秒:</strong> 1640995200000</li>
-                        <li><strong>ISO 8601:</strong> 2024-01-01T12:00:00Z</li>
-                        <li><strong>RFC 2822:</strong> Mon, 01 Jan 2024 12:00:00 GMT</li>
-                    </ul>
-                </div>
+                <div class="info-card"><h4>基本概念</h4><ul><li><strong>定義:</strong> 1970年1月1日 00:00:00 UTC からの経過秒数</li></ul></div>
+                <div class="info-card"><h4>使用場面</h4><ul><li><strong>データベース:</strong> 日時の保存形式</li></ul></div>
+                <div class="info-card"><h4>注意点</h4><ul><li><strong>タイムゾーン:</strong> UTCベースのため変換が必要</li></ul></div>
+                <div class="info-card"><h4>形式例</h4><ul><li><strong>秒:</strong> 1640995200</li></ul></div>
             </div>
         </div>
     </main>
@@ -268,7 +136,6 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -4,127 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ハッシュ生成ツール - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>ハッシュ生成ツール</h1>
+        <p>テキストやファイルから各種ハッシュ値を生成・比較します。</p>
     </header>
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="tool-container">
-            <div class="input-section">
-                <h2>入力データ</h2>
-                <div class="input-mode-selector">
-                    <label class="radio-label">
-                        <input type="radio" name="inputMode" value="text" checked>
-                        <span>テキスト入力</span>
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="inputMode" value="file">
-                        <span>ファイル入力</span>
-                    </label>
-                </div>
-                
-                <div class="input-text-area" id="textInputArea">
-                    <textarea id="inputText" placeholder="ハッシュ化したいテキストを入力してください..."></textarea>
-                </div>
-                
-                <div class="input-file-area" id="fileInputArea" style="display: none;">
-                    <div class="file-drop-zone" id="fileDropZone">
-                        <div class="drop-zone-content">
-                            <div class="upload-icon">📁</div>
-                            <p>ファイルをドラッグ＆ドロップまたはクリックして選択</p>
-                            <input type="file" id="fileInput" hidden>
-                        </div>
-                    </div>
-                    <div class="file-info" id="fileInfo" style="display: none;"></div>
-                </div>
-                
-                <div class="input-controls">
-                    <button id="generateBtn">ハッシュ生成</button>
-                    <button id="clearBtn">クリア</button>
-                </div>
-            </div>
-            
-            <div class="output-section">
-                <h2>ハッシュ結果</h2>
-                <div id="statusBar" class="status-bar"></div>
-                <div class="hash-outputs" id="hashOutputs">
-                    <div class="hash-item">
-                        <div class="hash-label">
-                            <span class="hash-name">MD5</span>
-                            <span class="hash-description">128bit - 高速だが推奨されない</span>
-                        </div>
-                        <div class="hash-output">
-                            <input type="text" id="md5Hash" readonly>
-                            <button class="copy-btn" data-target="md5Hash">コピー</button>
-                        </div>
+        <div class="tool-card">
+            <div class="tool-container">
+                <div class="input-section">
+                    <h2>入力データ</h2>
+                    <div class="input-mode-selector">
+                        <label class="radio-label">
+                            <input type="radio" name="inputMode" value="text" checked>
+                            <span>テキスト入力</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="inputMode" value="file">
+                            <span>ファイル入力</span>
+                        </label>
                     </div>
                     
-                    <div class="hash-item">
-                        <div class="hash-label">
-                            <span class="hash-name">SHA-1</span>
-                            <span class="hash-description">160bit - Git等で使用（非推奨）</span>
-                        </div>
-                        <div class="hash-output">
-                            <input type="text" id="sha1Hash" readonly>
-                            <button class="copy-btn" data-target="sha1Hash">コピー</button>
-                        </div>
+                    <div class="input-text-area" id="textInputArea">
+                        <textarea id="inputText" placeholder="ハッシュ化したいテキストを入力してください..."></textarea>
                     </div>
                     
-                    <div class="hash-item">
-                        <div class="hash-label">
-                            <span class="hash-name">SHA-256</span>
-                            <span class="hash-description">256bit - 現在推奨される標準</span>
+                    <div class="input-file-area" id="fileInputArea" style="display: none;">
+                        <div class="file-drop-zone" id="fileDropZone">
+                            <div class="drop-zone-content">
+                                <div class="upload-icon">📁</div>
+                                <p>ファイルをドラッグ＆ドロップまたはクリックして選択</p>
+                                <input type="file" id="fileInput" hidden>
+                            </div>
                         </div>
-                        <div class="hash-output">
-                            <input type="text" id="sha256Hash" readonly>
-                            <button class="copy-btn" data-target="sha256Hash">コピー</button>
-                        </div>
+                        <div class="file-info" id="fileInfo" style="display: none;"></div>
                     </div>
                     
-                    <div class="hash-item">
-                        <div class="hash-label">
-                            <span class="hash-name">SHA-384</span>
-                            <span class="hash-description">384bit - 中程度のセキュリティ</span>
-                        </div>
-                        <div class="hash-output">
-                            <input type="text" id="sha384Hash" readonly>
-                            <button class="copy-btn" data-target="sha384Hash">コピー</button>
-                        </div>
-                    </div>
-                    
-                    <div class="hash-item">
-                        <div class="hash-label">
-                            <span class="hash-name">SHA-512</span>
-                            <span class="hash-description">512bit - 高セキュリティ</span>
-                        </div>
-                        <div class="hash-output">
-                            <input type="text" id="sha512Hash" readonly>
-                            <button class="copy-btn" data-target="sha512Hash">コピー</button>
-                        </div>
+                    <div class="input-controls">
+                        <button id="generateBtn">ハッシュ生成</button>
+                        <button id="clearBtn">クリア</button>
                     </div>
                 </div>
                 
-                <div class="hash-summary" id="hashSummary"></div>
+                <div class="output-section">
+                    <h2>ハッシュ結果</h2>
+                    <div id="statusBar" class="status-bar"></div>
+                    <div class="hash-outputs" id="hashOutputs">
+                        <!-- ハッシュ結果はここに動的に挿入されます -->
+                    </div>
+                    
+                    <div class="hash-summary" id="hashSummary"></div>
+                </div>
             </div>
         </div>
         
-        <div class="compare-section">
+        <div class="tool-card">
             <h2>ハッシュ比較・検証</h2>
             <div class="compare-inputs">
                 <div class="compare-input">
@@ -147,7 +89,7 @@
             <div class="compare-result" id="compareResult"></div>
         </div>
         
-        <div class="utils-section">
+        <div class="tool-card">
             <h2>ユーティリティ</h2>
             <div class="utils-grid">
                 <div class="util-card">
@@ -178,7 +120,7 @@
             </div>
         </div>
         
-        <div class="info-section">
+        <div class="tool-card">
             <h3>ハッシュアルゴリズムについて</h3>
             <div class="info-grid">
                 <div class="info-card">
@@ -225,7 +167,7 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
-    <script src="../common.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

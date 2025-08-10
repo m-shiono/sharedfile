@@ -1,1 +1,124 @@
 /* case-converter specific styles */
+
+.conversion-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.conversion-item {
+    background-color: #ffffff;
+    border: 1px solid #c8e6c9;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.3s ease;
+}
+
+.conversion-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.conversion-label {
+    margin-bottom: 0.75rem;
+}
+
+.case-name {
+    font-weight: bold;
+    color: #43a047;
+    font-size: 1.1rem;
+}
+
+.case-description {
+    font-size: 0.85rem;
+    color: #555;
+    margin-left: 0.5rem;
+}
+
+.conversion-output {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.conversion-output input {
+    flex-grow: 1;
+    background-color: #f9f9f9;
+    color: #333;
+    font-family: 'Fira Code', 'Courier New', monospace;
+}
+
+.copy-btn {
+    padding: 0.5rem 1rem;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.copy-btn:hover {
+    background-color: #45a049;
+}
+
+.input-controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+
+.example-btn {
+    background-color: #e8f5e9;
+    color: #43a047;
+    border: 1px solid #43a047;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.example-btn:hover {
+    background-color: #43a047;
+    color: white;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-card {
+    background-color: #ffffff;
+    border: 1px solid #c8e6c9;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.info-card h4 {
+    color: #43a047;
+    margin-bottom: 1rem;
+}
+
+.info-card ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.info-card li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.info-card li strong {
+    color: #2c3e50;
+}

@@ -1,1 +1,37 @@
 /* difftools specific styles */
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 2rem;
+}
+
+.input-box {
+    width: 100%;
+}
+
+#diff-result {
+    white-space: pre-wrap;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #c8e6c9;
+    font-family: 'Fira Code', 'Courier New', monospace;
+}
+
+.diff-added {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.diff-removed {
+    background-color: #f8d7da;
+    color: #721c24;
+    text-decoration: line-through;
+}
+
+@media (max-width: 768px) {
+    .input-container {
+        flex-direction: column;
+    }
+}

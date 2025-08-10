@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>クラシックテトリス - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../../common.css">
-    <link rel="stylesheet" href="style.css"> <!-- スタイルシートのパスを同じ階層に修正 -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
@@ -14,31 +13,28 @@
     </header>
     <nav>
         <ul>
-            <li>
-                <a href="../../index.html">ホームに戻る</a>
-                <a href="../index.html">ミニゲームコレクションに戻る</a>
-            </li> <!-- ナビゲーションリンクを追加 -->
+            <li><a href="../../index.html">ホームに戻る</a></li>
+            <li><a href="../index.html">ミニゲームコレクションに戻る</a></li>
         </ul>
     </nav>
     <main>
-        <div id="gameContainer">
-            <!--
-            <div id="score">得点: 0</div>
-            -->
-            <canvas id="game" width="200" height="400"></canvas>
-        </div>
-        <div id="controls">
-            <div id="startStop">
-                <button id="start">開始</button>
-                <button id="stop">停止</button>
+        <div class="tool-card">
+            <div id="gameContainer">
+                <canvas id="game" width="200" height="400"></canvas>
             </div>
-            <div id="control-block">
-                <button id="left">←</button>
-                <button id="right">→</button>
-            </div>
-            <div id="control-block">
-                <button id="rotate">回転</button>
-                <button id="down">落下</button>
+            <div id="controls">
+                <div id="startStop">
+                    <button id="start">開始</button>
+                    <button id="stop">停止</button>
+                </div>
+                <div id="control-block">
+                    <button id="left">←</button>
+                    <button id="right">→</button>
+                </div>
+                <div id="control-block">
+                    <button id="rotate">回転</button>
+                    <button id="down">落下</button>
+                </div>
             </div>
         </div>
     </main>

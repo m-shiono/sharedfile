@@ -1,1 +1,73 @@
 /* cron-generator specific styles */
+.tool-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.builder-section, .validator-section {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    width: 80px;
+    font-weight: bold;
+}
+
+.input-group select, .input-group input {
+    flex-grow: 1;
+}
+
+.button-group {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+#cronOutput {
+    font-family: 'Fira Code', 'Courier New', monospace;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+.status-bar {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.status-bar.success {
+    background-color: #e8f5e9;
+    color: #388e3c;
+    border: 1px solid #a5d6a7;
+}
+
+.status-bar.error {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #ef9a9a;
+}
+
+.hidden {
+    display: none;
+}
+
+.mode-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 900px) {
+    .tool-container {
+        grid-template-columns: 1fr;
+    }
+}

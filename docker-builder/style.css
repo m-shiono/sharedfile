@@ -1,1 +1,111 @@
 /* docker-builder specific styles */
+.tool-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.input-section, .output-section {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.config-group {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #c8e6c9;
+    padding-bottom: 1.5rem;
+}
+
+.config-group:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.config-group h3 {
+    color: #43a047;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.output-group {
+    margin-bottom: 1.5rem;
+}
+
+.output-group h3 {
+    color: #43a047;
+    margin-bottom: 0.5rem;
+}
+
+#dockerCommand, #dockerCompose {
+    width: 100%;
+    min-height: 120px;
+    font-family: 'Fira Code', 'Courier New', monospace;
+    background-color: #f9f9f9;
+    color: #333;
+    padding: 0.75rem;
+    resize: vertical;
+}
+
+#commandBreakdown {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid #c8e6c9;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+#commandBreakdown code {
+    background-color: rgba(0,0,0,0.05);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+}
+
+#commandBreakdown strong {
+    color: #43a047;
+}
+
+.status-bar {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-weight: bold;
+    display: none;
+}
+
+.status-bar.success {
+    background-color: #e8f5e9;
+    color: #388e3c;
+    border: 1px solid #a5d6a7;
+    display: block;
+}
+
+.status-bar.error {
+    background-color: #ffebee;
+    color: #d32f2f;
+    border: 1px solid #ef9a9a;
+    display: block;
+}
+
+@media (max-width: 900px) {
+    .tool-container {
+        grid-template-columns: 1fr;
+    }
+}

@@ -4,61 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YAML/JSON設定ファイル変換ツール - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>便利ツール＆ユーティリティ</h1>
-        <p>効率的なシステム運用を支援する便利なツール集</p>
+        <h1>YAML/JSON設定ファイル変換ツール</h1>
+        <p>YAMLとJSON形式の設定ファイルを相互に変換します。</p>
     </header>
     
     <nav>
         <ul>
             <li><a href="../index.html">ホームに戻る</a></li>
         </ul>
-        <div class="theme-switch-wrapper">
-            <label class="theme-switch" for="theme-switch">
-                <input type="checkbox" id="theme-switch" />
-                <div class="slider round"></div>
-            </label>
-        </div>
     </nav>
     
     <main>
-        <div class="tool-container">
-            <div class="input-section">
-                <h2>入力</h2>
-                <div class="format-selector">
-                    <label>
-                        <input type="radio" name="inputFormat" value="yaml" checked>
-                        YAML → JSON
-                    </label>
-                    <label>
-                        <input type="radio" name="inputFormat" value="json">
-                        JSON → YAML
-                    </label>
+        <div class="tool-card">
+            <div class="tool-container">
+                <div class="input-section">
+                    <h2>入力</h2>
+                    <div class="format-selector">
+                        <label><input type="radio" name="inputFormat" value="yaml" checked> YAML → JSON</label>
+                        <label><input type="radio" name="inputFormat" value="json"> JSON → YAML</label>
+                    </div>
+                    <textarea id="inputText" placeholder="YAML または JSON を入力してください..."></textarea>
+                    <div class="button-group">
+                        <button id="convertBtn">変換</button>
+                        <button id="clearBtn">クリア</button>
+                        <button id="sampleBtn">サンプル読み込み</button>
+                    </div>
                 </div>
-                <textarea id="inputText" placeholder="YAML または JSON を入力してください..."></textarea>
-                <div class="button-group">
-                    <button id="convertBtn">変換</button>
-                    <button id="clearBtn">クリア</button>
-                    <button id="sampleBtn">サンプル読み込み</button>
-                </div>
-            </div>
-            
-            <div class="output-section">
-                <h2>変換結果</h2>
-                <div id="statusBar" class="status-bar"></div>
-                <textarea id="outputText" readonly></textarea>
-                <div class="button-group">
-                    <button id="copyBtn">コピー</button>
-                    <button id="formatBtn">フォーマット</button>
+                
+                <div class="output-section">
+                    <h2>変換結果</h2>
+                    <div id="statusBar" class="status-bar"></div>
+                    <textarea id="outputText" readonly></textarea>
+                    <div class="button-group">
+                        <button id="copyBtn">コピー</button>
+                        <button id="formatBtn">フォーマット</button>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="templates-section">
+        <div class="tool-card">
             <h2>テンプレート</h2>
             <div class="template-grid">
                 <div class="template-card">
@@ -72,24 +61,9 @@
                     <button class="template-btn" data-template="k8s-pod">使用</button>
                 </div>
                 <div class="template-card">
-                    <h3>Kubernetes Service</h3>
-                    <p>Kubernetes Service設定</p>
-                    <button class="template-btn" data-template="k8s-service">使用</button>
-                </div>
-                <div class="template-card">
-                    <h3>Kubernetes Deployment</h3>
-                    <p>Kubernetes Deployment設定</p>
-                    <button class="template-btn" data-template="k8s-deployment">使用</button>
-                </div>
-                <div class="template-card">
                     <h3>GitHub Actions</h3>
                     <p>GitHub Actions ワークフロー</p>
                     <button class="template-btn" data-template="github-actions">使用</button>
-                </div>
-                <div class="template-card">
-                    <h3>Ansible Playbook</h3>
-                    <p>Ansible Playbook設定</p>
-                    <button class="template-btn" data-template="ansible">使用</button>
                 </div>
             </div>
         </div>
@@ -100,7 +74,6 @@
     </footer>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
-    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

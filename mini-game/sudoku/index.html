@@ -5,33 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>モダンナンプレ（数独マスター） - 便利ツール＆ユーティリティ</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-title">
-        数独マスター
-    </div>
+    <header>
+        <h1>数独マスター</h1>
+        <p>クラシックな数独パズルを楽しもう！</p>
+    </header>
     <nav>
         <ul>
             <li><a href="../../index.html">ホームに戻る</a></li>
             <li><a href="../index.html">ミニゲームコレクションに戻る</a></li>
         </ul>
     </nav>
-    <div class="container fade-in">
-        <div id="board"></div>
-        <div class="controls">
-            <select id="difficulty">
-                <option value="4">4x4</option>
-                <option value="9" selected>9x9</option>
-                <option value="16">16x16</option>
-            </select>
-            <button id="check">チェック</button>
-            <button id="solve">解く</button>
-            <button id="new">新しいゲーム</button>
+    <main>
+        <div class="tool-card">
+            <div id="board"></div>
+            <div class="controls">
+                <select id="difficulty">
+                    <option value="4">4x4</option>
+                    <option value="9" selected>9x9</option>
+                    <option value="16">16x16</option>
+                </select>
+                <button id="check">チェック</button>
+                <button id="solve">解く</button>
+                <button id="new">新しいゲーム</button>
+            </div>
+            <div id="number-pad" class="number-pad"></div>
         </div>
-    </div>
-    <div id="number-pad" class="number-pad"></div>
+    </main>
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
     <script src="script.js"></script>
 </body>
 </html>
