@@ -180,13 +180,13 @@ footer {
     font-weight: normal;
 }
 
-/* 各色の個別スタイル */
-.color-btn[data-color="#000000"] { background-color: #000000 !important; }
-.color-btn[data-color="#2e7d32"] { background-color: #2e7d32 !important; }
-.color-btn[data-color="#1976d2"] { background-color: #1976d2 !important; }
-.color-btn[data-color="#e53935"] { background-color: #e53935 !important; }
-.color-btn[data-color="#ff9800"] { background-color: #ff9800 !important; }
-.color-btn[data-color="#9c27b0"] { background-color: #9c27b0 !important; }
+/* 各色の個別スタイル（クラスベースアプローチ） */
+.color-options .color-btn.black { background-color: #000000; }
+.color-options .color-btn.green { background-color: #2e7d32; }
+.color-options .color-btn.blue { background-color: #1976d2; }
+.color-options .color-btn.red { background-color: #e53935; }
+.color-options .color-btn.orange { background-color: #ff9800; }
+.color-options .color-btn.purple { background-color: #9c27b0; }
 
 .color-btn.active {
     border-color: #4caf50;
