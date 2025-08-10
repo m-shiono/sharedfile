@@ -77,7 +77,6 @@ nav ul li a:hover {
     padding: 2rem;
     margin-bottom: 2rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
 }
 
 .tool-card:hover {
@@ -138,6 +137,12 @@ footer {
 /* qr-code specific styles */
 .qrcode-area {
     margin: 2rem 0;
+    text-align: center;
+}
+
+.description, .instructions {
+    text-align: left;
+    margin-bottom: 1.5rem;
 }
 
 .input-group {
@@ -174,4 +179,26 @@ footer {
 
 .button-group {
     margin-top: 1rem;
+    text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+    
+    .tool-card {
+        padding: 1.5rem;
+    }
+    
+    #qrcodeCanvas {
+        max-width: 100%;
+        height: auto;
+    }
+    
+    .color-options {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
 }
