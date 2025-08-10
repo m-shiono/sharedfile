@@ -71,15 +71,18 @@ class TimestampConverter {
         });
         
         document.getElementById('copyCurrentTimestamp').addEventListener('click', () => {
-            this.copyText(this.currentTimestamp.textContent);
+            const statusBar = document.getElementById('statusBar');
+            copyToClipboard(this.currentTimestamp.textContent, (message, type) => showStatus(statusBar, message, type));
         });
         
         document.getElementById('copyCurrentDateTime').addEventListener('click', () => {
-            this.copyText(this.currentDateTime.textContent);
+            const statusBar = document.getElementById('statusBar');
+            copyToClipboard(this.currentDateTime.textContent, (message, type) => showStatus(statusBar, message, type));
         });
         
         document.getElementById('copyCurrentDateTimeUTC').addEventListener('click', () => {
-            this.copyText(this.currentDateTimeUTC.textContent);
+            const statusBar = document.getElementById('statusBar');
+            copyToClipboard(this.currentDateTimeUTC.textContent, (message, type) => showStatus(statusBar, message, type));
         });
     }
     
