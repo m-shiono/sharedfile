@@ -810,7 +810,11 @@
     <script src="search.js" defer></script>
     <script>
         // ダークモード初期化
-        document.addEventListener('DOMContentLoaded', initializeThemeSwitcher);
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initializeThemeSwitcher === 'function') {
+                initializeThemeSwitcher();
+            }
+        });
     </script>
   </body>
 </html>
