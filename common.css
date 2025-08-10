@@ -154,6 +154,11 @@ footer {
     margin-top: auto;
 }
 
+/* ユーティリティクラス */
+.hidden {
+    display: none;
+}
+
 /* レスポンシブデザイン */
 @media (max-width: 768px) {
     main {

@@ -33,9 +33,9 @@ function switchTab(resourceType) {
     
     // Update forms
     document.querySelectorAll('.resource-form').forEach(form => {
-        form.classList.remove('active');
+        form.classList.add('hidden');
     });
-    document.getElementById(`${resourceType}-form`).classList.add('active');
+    document.getElementById(`${resourceType}-form`).classList.remove('hidden');
     
     // Clear output
     clearOutput();
@@ -257,13 +257,13 @@ function clearOutput() {
 }
 
 function showActionButtons() {
-    document.getElementById('copy-btn').style.display = 'inline-block';
-    document.getElementById('download-btn').style.display = 'inline-block';
+    document.getElementById('copy-btn').classList.remove('hidden');
+    document.getElementById('download-btn').classList.remove('hidden');
 }
 
 function hideActionButtons() {
-    document.getElementById('copy-btn').style.display = 'none';
-    document.getElementById('download-btn').style.display = 'none';
+    document.getElementById('copy-btn').classList.add('hidden');
+    document.getElementById('download-btn').classList.add('hidden');
 }
 
 function copyToClipboard() {
