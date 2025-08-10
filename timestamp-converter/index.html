@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unixタイムスタンプ変換ツール - 便利ツール＆ユーティリティ</title>
+    <title>Unixタイムスタンプ変換ツール - Web開発者向けユーティリティ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -58,7 +58,32 @@
                     </div>
                     
                     <div class="conversion-results" id="timestampResults">
-                        <!-- 結果はここに動的に挿入されます -->
+                        <div class="result-group">
+                            <label>ローカル時間:</label>
+                            <input type="text" id="localDateTime" readonly>
+                            <button class="copy-btn" data-target="localDateTime">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>UTC時間:</label>
+                            <input type="text" id="utcDateTime" readonly>
+                            <button class="copy-btn" data-target="utcDateTime">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>ISO形式:</label>
+                            <input type="text" id="isoDateTime" readonly>
+                            <button class="copy-btn" data-target="isoDateTime">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>RFC形式:</label>
+                            <input type="text" id="rfcDateTime" readonly>
+                            <button class="copy-btn" data-target="rfcDateTime">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>カスタムフォーマット:</label>
+                            <input type="text" id="customFormat" placeholder="yyyy-MM-dd HH:mm:ss" value="yyyy-MM-dd HH:mm:ss">
+                            <input type="text" id="customDateTime" readonly>
+                            <button class="copy-btn" data-target="customDateTime">コピー</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -87,7 +112,16 @@
                     <button id="convertDateBtn">変換</button>
                     
                     <div class="conversion-results" id="dateResults">
-                        <!-- 結果はここに動的に挿入されます -->
+                        <div class="result-group">
+                            <label>タイムスタンプ (秒):</label>
+                            <input type="text" id="resultTimestampSeconds" readonly>
+                            <button class="copy-btn" data-target="resultTimestampSeconds">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>タイムスタンプ (ミリ秒):</label>
+                            <input type="text" id="resultTimestampMilliseconds" readonly>
+                            <button class="copy-btn" data-target="resultTimestampMilliseconds">コピー</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -119,6 +153,18 @@
                 <button class="quick-btn" data-offset="-86400">1日前</button>
                 <button class="quick-btn" data-offset="-604800">1週間前</button>
             </div>
+            <div class="quick-results">
+                <div class="result-group">
+                    <label>タイムスタンプ:</label>
+                    <input type="text" id="quickTimestampResult" readonly>
+                    <button class="copy-btn" data-target="quickTimestampResult">コピー</button>
+                </div>
+                <div class="result-group">
+                    <label>日時:</label>
+                    <input type="text" id="quickDateTimeResult" readonly>
+                    <button class="copy-btn" data-target="quickDateTimeResult">コピー</button>
+                </div>
+            </div>
         </div>
         
         <div class="tool-card">
@@ -136,6 +182,7 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     
+    <script src="../common.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
