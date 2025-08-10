@@ -170,7 +170,23 @@ footer {
     border: 2px solid #fff;
     cursor: pointer;
     transition: transform 0.2s;
+    padding: 0;
+    margin: 0;
+    /* 一般的なボタンスタイルを無効化してインラインスタイルを優先 */
+    background: transparent;
+    background-image: none;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: normal;
 }
+
+/* 各色の個別スタイル */
+.color-btn[data-color="#000000"] { background-color: #000000 !important; }
+.color-btn[data-color="#2e7d32"] { background-color: #2e7d32 !important; }
+.color-btn[data-color="#1976d2"] { background-color: #1976d2 !important; }
+.color-btn[data-color="#e53935"] { background-color: #e53935 !important; }
+.color-btn[data-color="#ff9800"] { background-color: #ff9800 !important; }
+.color-btn[data-color="#9c27b0"] { background-color: #9c27b0 !important; }
 
 .color-btn.active {
     border-color: #4caf50;
