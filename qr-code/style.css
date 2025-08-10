@@ -182,7 +182,7 @@ footer {
     text-align: center;
 }
 
-/* レスポンシブ対応 */
+/* Responsive design */
 @media (max-width: 768px) {
     main {
         padding: 1rem;
