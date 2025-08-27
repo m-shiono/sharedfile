@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (trimmedPath.match(/^file:\/\/\//)) {
             return 'url';
-        } else if (trimmedPath.match(/\\\\\\\\/)) {
+        } else if (trimmedPath.includes('\\\\')) {
             return 'escaped';
         } else if (trimmedPath.match(/^\\\\[^\\]/)) {
             return 'unc';
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = result.replace(/\//g, '\\');
                     break;
                 case 'escaped':
-                    result = result.replace(/\\\\\\\\/g, '\\\\').replace(/\\\\/g, '\\');
+                    result = result.replace(/\\\\\\\\/g, '\\\\');
                     break;
                 case 'unc':
                     // UNC形式はそのまま
@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                 case 'escaped':
                     result = result.replace(/\\\\\\\\/g, '/');
-                    result = result.replace(/\\\\/g, '/');
                     result = result.replace(/^([A-Za-z]):/, '/$1');
                     break;
                 case 'url':
@@ -99,14 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 unixPath += '/' + parts.slice(2).join('/');
                             }
                             result = unixPath;
-                        } else {
-                            // Malformed UNC path, return as-is
-                            result = result;
                         }
-                    } else {
-                        // Not a UNC path, return as-is
-                        result = result;
-                    }
                     break;
             }
             
@@ -144,11 +136,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = 'file:///' + result.replace(/\\/g, '/');
                     break;
                 case 'unix':
-                    if (result.match(/^\/[A-Za-z](?:\/|$)/)) {
+                    if (result.match(/^\/[A-Za-z]/)) {
                         // It's a path with a drive letter like /C/Users...
-                        const pathAfterRoot = result.substring(1);
-                        const drive = pathAfterRoot.substring(0, 1);
-                        const rest = pathAfterRoot.substring(1);
+                        const drive = result.charAt(1);
+                        const rest = result.substring(2);
                         result = `file:///${drive}:${rest}`;
                     } else {
                         // It's a standard Unix path like /home/user...
@@ -160,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = 'file:///' + result;
                     break;
                 case 'unc':
-                    result = 'file://' + result.replace(/\\/g, '/');
+                    result = 'file:' + result.replace(/\\/g, '/');
                     break;
             }
             
