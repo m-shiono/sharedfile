@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>容量計算ツール - 便利ツール＆ユーティリティ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>容量計算ツール</h1>
+        <p>テキストをファイルとして保存した場合のサイズを計算します</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-card">
+            <h2>テキスト入力</h2>
+            <textarea id="textInput" placeholder="ここにテキストを入力してください..."></textarea>
+            
+            <div class="buttons">
+                <button id="clearButton">テキストをクリア</button>
+                <button id="calculateButton">サイズを計算</button>
+            </div>
+            
+            <h3>計算結果</h3>
+            <div id="result" class="result-area">
+                <p>テキストを入力して「サイズを計算」ボタンをクリックしてください。</p>
+            </div>
+            
+            <h3>使用方法</h3>
+            <ol>
+                <li>上のテキストエリアに計算したいテキストを入力します</li>
+                <li>「サイズを計算」ボタンをクリックします</li>
+                <li>結果エリアにファイルサイズが表示されます</li>
+                <li>「テキストをクリア」ボタンで入力内容を削除できます</li>
+            </ol>
+            
+            <h3>特徴</h3>
+            <ul>
+                <li>UTF-8エンコーディングでのバイト数を正確に計算</li>
+                <li>バイト、KB、MB単位で表示</li>
+                <li>文字数、行数も同時に表示</li>
+                <li>リアルタイムで計算結果を更新</li>
+            </ul>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 personal project for m-shiono</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
