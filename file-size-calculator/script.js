@@ -24,42 +24,33 @@ function calculateSize() {
         
         // 文字数と行数を計算
         const charCount = text.length;
-        const lineCount = text.split('\n').length;
+        const lineCount = text ? text.split('\n').length : 0;
         
         // サイズ単位の変換
         const kb = byteSize / 1024;
         const mb = kb / 1024;
         
         // 結果をHTMLで表示（XSS対策済み）
-        let resultHTML = '<div class="calculation-result">';
-        resultHTML += '<h4>計算結果</h4>';
-        resultHTML += '<div class="result-item">';
-        resultHTML += `<strong>ファイルサイズ:</strong><br>`;
-        resultHTML += `${escapeHtml(byteSize.toLocaleString())} バイト<br>`;
-        
-        if (kb >= 1) {
-            resultHTML += `${escapeHtml(kb.toFixed(2))} KB<br>`;
-        }
-        
-        if (mb >= 1) {
-            resultHTML += `${escapeHtml(mb.toFixed(2))} MB<br>`;
-        }
-        
-        resultHTML += '</div>';
-        
-        resultHTML += '<div class="result-item">';
-        resultHTML += `<strong>テキスト情報:</strong><br>`;
-        resultHTML += `文字数: ${escapeHtml(charCount.toLocaleString())} 文字<br>`;
-        resultHTML += `行数: ${escapeHtml(lineCount.toLocaleString())} 行`;
-        resultHTML += '</div>';
-        
-        // エンコーディング情報
-        resultHTML += '<div class="result-item">';
-        resultHTML += '<strong>エンコーディング:</strong> UTF-8<br>';
-        resultHTML += '<small>※ 実際のファイルサイズは保存形式やBOM（Byte Order Mark）の有無により若干異なる場合があります。</small>';
-        resultHTML += '</div>';
-        
-        resultHTML += '</div>';
+        const resultHTML = `
+            <div class="calculation-result">
+                <h4>計算結果</h4>
+                <div class="result-item">
+                    <strong>ファイルサイズ:</strong><br>
+                    ${escapeHtml(byteSize.toLocaleString())} バイト<br>
+                    ${kb >= 1 ? `${escapeHtml(kb.toFixed(2))} KB<br>` : ''}
+                    ${mb >= 1 ? `${escapeHtml(mb.toFixed(2))} MB<br>` : ''}
+                </div>
+                <div class="result-item">
+                    <strong>テキスト情報:</strong><br>
+                    文字数: ${escapeHtml(charCount.toLocaleString())} 文字<br>
+                    行数: ${escapeHtml(lineCount.toLocaleString())} 行
+                </div>
+                <div class="result-item">
+                    <strong>エンコーディング:</strong> UTF-8<br>
+                    <small>※ 実際のファイルサイズは保存形式やBOM（Byte Order Mark）の有無により若干異なる場合があります。</small>
+                </div>
+            </div>
+        `;
         
         resultDiv.innerHTML = resultHTML;
         
@@ -95,7 +86,18 @@ function escapeHtml(text) {
 // ページ読み込み時の初期化
 document.addEventListener('DOMContentLoaded', function() {
     const textInput = document.getElementById('textInput');
+    const calculateButton = document.getElementById('calculateButton');
+    const clearButton = document.getElementById('clearButton');
+    
     textInput.focus();
+    
+    // イベントリスナーを登録
+    if (calculateButton) {
+        calculateButton.addEventListener('click', calculateSize);
+    }
+    if (clearButton) {
+        clearButton.addEventListener('click', clearText);
+    }
     
     // Enterキーでの計算実行（Shift+Enterは改行）
     textInput.addEventListener('keydown', function(event) {
