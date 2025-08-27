@@ -167,6 +167,10 @@ main {
     margin-bottom: 1rem;
 }
 
+.hidden {
+    display: none;
+}
+
 .conversion-selector {
     display: grid;
     grid-template-columns: 1fr 1fr;

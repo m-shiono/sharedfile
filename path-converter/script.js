@@ -72,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             switch (fromFormat) {
                 case 'windows':
-                    result = result.replace(/\\\\/g, '/');
                     result = result.replace(/\\/g, '/');
                     // ドライブレターの処理
                     result = result.replace(/^([A-Za-z]):/, '/$1');
@@ -87,7 +86,27 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = result.replace(/^([A-Za-z]):/, '/$1');
                     break;
                 case 'unc':
-                    result = '/mnt/share' + result.substring(result.indexOf('\\', 2)).replace(/\\/g, '/');
+                    // Convert UNC path \\server\share\path\to\file to /mnt/server/share/path/to/file
+                    if (result.startsWith('\\\\')) {
+                        // Remove leading '\\'
+                        let uncPath = result.slice(2);
+                        // Split into components
+                        let parts = uncPath.split('\\');
+                        if (parts.length >= 2) {
+                            // /mnt/server/share/path/to/file
+                            let unixPath = '/mnt/' + parts[0] + '/' + parts[1];
+                            if (parts.length > 2) {
+                                unixPath += '/' + parts.slice(2).join('/');
+                            }
+                            result = unixPath;
+                        } else {
+                            // Malformed UNC path, return as-is
+                            result = result;
+                        }
+                    } else {
+                        // Not a UNC path, return as-is
+                        result = result;
+                    }
                     break;
             }
             
@@ -125,9 +144,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = 'file:///' + result.replace(/\\/g, '/');
                     break;
                 case 'unix':
-                    if (result.match(/^\/[A-Za-z]/)) {
-                        result = 'file:///' + result.substring(1) + ':' + result.substring(2);
+                    if (result.match(/^\/[A-Za-z](?:\/|$)/)) {
+                        // It's a path with a drive letter like /C/Users...
+                        const pathAfterRoot = result.substring(1);
+                        const drive = pathAfterRoot.substring(0, 1);
+                        const rest = pathAfterRoot.substring(1);
+                        result = `file:///${drive}:${rest}`;
                     } else {
+                        // It's a standard Unix path like /home/user...
                         result = 'file://' + result;
                     }
                     break;
@@ -196,12 +220,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // 手動変換の結果表示
             statusBar.innerHTML = '<span class="success">変換完了</span>';
             
+            const manualFormatNames = {
+                'windows': 'Windows形式',
+                'unix': 'Unix形式',
+                'escaped': 'エスケープ済み',
+                'url': 'URL形式'
+            };
+
             const resultDiv = document.createElement('div');
             resultDiv.className = 'result-item';
             resultDiv.innerHTML = `
-                <h4>${toFormat.value === 'windows' ? 'Windows形式' : 
-                      toFormat.value === 'unix' ? 'Unix形式' :
-                      toFormat.value === 'escaped' ? 'エスケープ済み' : 'URL形式'}</h4>
+                <h4>${manualFormatNames[toFormat.value] || toFormat.value}</h4>
                 <div class="result-text" data-path="${manualResult}">${escapeHtml(manualResult)}</div>
             `;
             resultsContainer.appendChild(resultDiv);
@@ -273,9 +302,9 @@ document.addEventListener('DOMContentLoaded', function() {
     modeRadios.forEach(radio => {
         radio.addEventListener('change', function() {
             if (this.value === 'manual') {
-                manualOptions.style.display = 'block';
+                manualOptions.classList.remove('hidden');
             } else {
-                manualOptions.style.display = 'none';
+                manualOptions.classList.add('hidden');
             }
         });
     });
