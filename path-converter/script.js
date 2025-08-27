@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (trimmedPath.match(/^file:\/\/\//)) {
             return 'url';
-        } else if (trimmedPath.includes('\\\\')) {
-            return 'escaped';
         } else if (trimmedPath.match(/^\\\\[^\\]/)) {
             return 'unc';
+        } else if (trimmedPath.includes('\\\\')) {
+            return 'escaped';
         } else if (trimmedPath.match(/^[A-Za-z]:\\/)) {
             return 'windows';
         } else if (trimmedPath.startsWith('/')) {
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = result.replace(/\//g, '\\');
                     break;
                 case 'escaped':
-                    result = result.replace(/\\\\\\\\/g, '\\\\');
+                    result = result.replace(/\\\\/g, '\\');
                     break;
                 case 'unc':
                     // UNC形式はそのまま
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = result.replace(/^([A-Za-z]):/, '/$1');
                     break;
                 case 'escaped':
-                    result = result.replace(/\\\\\\\\/g, '/');
+                    result = result.replace(/\\\\/g, '/');
                     result = result.replace(/^([A-Za-z]):/, '/$1');
                     break;
                 case 'url':
@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                             result = unixPath;
                         }
+                    }
                     break;
             }
             
@@ -151,7 +152,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = 'file:///' + result;
                     break;
                 case 'unc':
-                    result = 'file:' + result.replace(/\\/g, '/');
+                    // Remove leading \\ and convert to file://server/share format
+                    result = result.replace(/^\\\\/g, '');
+                    result = 'file://' + result.replace(/\\/g, '/');
                     break;
             }
             
@@ -222,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
             resultDiv.className = 'result-item';
             resultDiv.innerHTML = `
                 <h4>${manualFormatNames[toFormat.value] || toFormat.value}</h4>
-                <div class="result-text" data-path="${manualResult}">${escapeHtml(manualResult)}</div>
+                <div class="result-text" data-path="${escapeHtml(manualResult)}">${escapeHtml(manualResult)}</div>
             `;
             resultsContainer.appendChild(resultDiv);
         } else {
@@ -244,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const isOriginal = format === results.detected;
                 resultDiv.innerHTML = `
                     <h4>${formatNames[format]} ${isOriginal ? '<small>(元の形式)</small>' : ''}</h4>
-                    <div class="result-text ${isOriginal ? 'original' : ''}" data-path="${path}">${escapeHtml(path)}</div>
+                    <div class="result-text ${isOriginal ? 'original' : ''}" data-path="${escapeHtml(path)}">${escapeHtml(path)}</div>
                 `;
                 resultsContainer.appendChild(resultDiv);
             });
