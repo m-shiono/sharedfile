@@ -30,27 +30,27 @@ function calculateSize() {
         const kb = byteSize / 1024;
         const mb = kb / 1024;
         
-        // 結果をHTMLで表示
+        // 結果をHTMLで表示（XSS対策済み）
         let resultHTML = '<div class="calculation-result">';
         resultHTML += '<h4>計算結果</h4>';
         resultHTML += '<div class="result-item">';
         resultHTML += `<strong>ファイルサイズ:</strong><br>`;
-        resultHTML += `${byteSize.toLocaleString()} バイト<br>`;
+        resultHTML += `${escapeHtml(byteSize.toLocaleString())} バイト<br>`;
         
         if (kb >= 1) {
-            resultHTML += `${kb.toFixed(2)} KB<br>`;
+            resultHTML += `${escapeHtml(kb.toFixed(2))} KB<br>`;
         }
         
         if (mb >= 1) {
-            resultHTML += `${mb.toFixed(2)} MB<br>`;
+            resultHTML += `${escapeHtml(mb.toFixed(2))} MB<br>`;
         }
         
         resultHTML += '</div>';
         
         resultHTML += '<div class="result-item">';
         resultHTML += `<strong>テキスト情報:</strong><br>`;
-        resultHTML += `文字数: ${charCount.toLocaleString()} 文字<br>`;
-        resultHTML += `行数: ${lineCount.toLocaleString()} 行`;
+        resultHTML += `文字数: ${escapeHtml(charCount.toLocaleString())} 文字<br>`;
+        resultHTML += `行数: ${escapeHtml(lineCount.toLocaleString())} 行`;
         resultHTML += '</div>';
         
         // エンコーディング情報
