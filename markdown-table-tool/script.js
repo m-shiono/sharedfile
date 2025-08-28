@@ -1,0 +1,430 @@
+class MarkdownTableTool {
+    constructor() {
+        this.grid = document.getElementById('data-grid');
+        this.rowsInput = document.getElementById('rows');
+        this.colsInput = document.getElementById('cols');
+        this.importData = document.getElementById('import-data');
+        this.markdownOutput = document.getElementById('markdown-output');
+        this.csvOutput = document.getElementById('csv-output');
+        
+        this.currentRows = 5;
+        this.currentCols = 3;
+        
+        this.initializeEventListeners();
+        this.createGrid();
+    }
+    
+    initializeEventListeners() {
+        // グリッドサイズ変更
+        document.getElementById('resize-btn').addEventListener('click', () => this.resizeGrid());
+        
+        // グリッド操作
+        document.getElementById('clear-grid-btn').addEventListener('click', () => this.clearGrid());
+        document.getElementById('add-row-btn').addEventListener('click', () => this.addRow());
+        document.getElementById('add-col-btn').addEventListener('click', () => this.addColumn());
+        document.getElementById('remove-row-btn').addEventListener('click', () => this.removeRow());
+        document.getElementById('remove-col-btn').addEventListener('click', () => this.removeColumn());
+        
+        // インポート
+        document.getElementById('import-btn').addEventListener('click', () => this.importData());
+        document.getElementById('clear-import-btn').addEventListener('click', () => this.clearImport());
+        
+        // 出力生成
+        document.getElementById('generate-markdown-btn').addEventListener('click', () => this.generateMarkdown());
+        document.getElementById('generate-csv-btn').addEventListener('click', () => this.generateCSV());
+        
+        // コピー機能
+        document.getElementById('copy-markdown-btn').addEventListener('click', () => this.copyToClipboard('markdown'));
+        document.getElementById('copy-csv-btn').addEventListener('click', () => this.copyToClipboard('csv'));
+        
+        // ダウンロード機能
+        document.getElementById('download-markdown-btn').addEventListener('click', () => this.downloadFile('markdown'));
+        document.getElementById('download-csv-btn').addEventListener('click', () => this.downloadFile('csv'));
+        
+        // Enterキーでセル内改行
+        this.grid.addEventListener('keydown', (e) => this.handleKeyPress(e));
+    }
+    
+    createGrid() {
+        this.grid.innerHTML = '';
+        
+        // ヘッダー行を作成
+        const headerRow = document.createElement('tr');
+        
+        // 角のセル
+        const cornerCell = document.createElement('th');
+        cornerCell.className = 'corner-cell';
+        headerRow.appendChild(cornerCell);
+        
+        // 列ヘッダー
+        for (let col = 0; col < this.currentCols; col++) {
+            const th = document.createElement('th');
+            th.className = 'col-header';
+            th.textContent = this.getColumnLetter(col);
+            headerRow.appendChild(th);
+        }
+        this.grid.appendChild(headerRow);
+        
+        // データ行を作成
+        for (let row = 0; row < this.currentRows; row++) {
+            const tr = document.createElement('tr');
+            
+            // 行ヘッダー
+            const rowHeader = document.createElement('th');
+            rowHeader.className = 'row-header';
+            rowHeader.textContent = row + 1;
+            tr.appendChild(rowHeader);
+            
+            // データセル
+            for (let col = 0; col < this.currentCols; col++) {
+                const td = document.createElement('td');
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.dataset.row = row;
+                input.dataset.col = col;
+                td.appendChild(input);
+                tr.appendChild(td);
+            }
+            this.grid.appendChild(tr);
+        }
+    }
+    
+    getColumnLetter(index) {
+        let result = '';
+        let num = index;
+        while (num >= 0) {
+            result = String.fromCharCode(65 + (num % 26)) + result;
+            num = Math.floor(num / 26) - 1;
+            if (num < 0) break;
+        }
+        return result;
+    }
+    
+    resizeGrid() {
+        const newRows = parseInt(this.rowsInput.value);
+        const newCols = parseInt(this.colsInput.value);
+        
+        if (newRows < 1 || newRows > 20 || newCols < 1 || newCols > 10) {
+            this.showMessage('行数は1-20、列数は1-10の範囲で設定してください。', 'error');
+            return;
+        }
+        
+        // 現在のデータを保存
+        const currentData = this.getGridData();
+        
+        this.currentRows = newRows;
+        this.currentCols = newCols;
+        this.createGrid();
+        
+        // データを復元
+        this.setGridData(currentData);
+        this.showMessage('表サイズを変更しました。', 'success');
+    }
+    
+    getGridData() {
+        const data = [];
+        const inputs = this.grid.querySelectorAll('input[type="text"]');
+        inputs.forEach(input => {
+            const row = parseInt(input.dataset.row);
+            const col = parseInt(input.dataset.col);
+            if (!data[row]) data[row] = [];
+            data[row][col] = input.value;
+        });
+        return data;
+    }
+    
+    setGridData(data) {
+        const inputs = this.grid.querySelectorAll('input[type="text"]');
+        inputs.forEach(input => {
+            const row = parseInt(input.dataset.row);
+            const col = parseInt(input.dataset.col);
+            if (data[row] && data[row][col] !== undefined) {
+                input.value = data[row][col];
+            }
+        });
+    }
+    
+    clearGrid() {
+        const inputs = this.grid.querySelectorAll('input[type="text"]');
+        inputs.forEach(input => input.value = '');
+        this.showMessage('グリッドをクリアしました。', 'success');
+    }
+    
+    addRow() {
+        if (this.currentRows >= 20) {
+            this.showMessage('最大行数は20です。', 'error');
+            return;
+        }
+        this.currentRows++;
+        this.rowsInput.value = this.currentRows;
+        this.resizeGrid();
+    }
+    
+    addColumn() {
+        if (this.currentCols >= 10) {
+            this.showMessage('最大列数は10です。', 'error');
+            return;
+        }
+        this.currentCols++;
+        this.colsInput.value = this.currentCols;
+        this.resizeGrid();
+    }
+    
+    removeRow() {
+        if (this.currentRows <= 1) {
+            this.showMessage('最少行数は1です。', 'error');
+            return;
+        }
+        this.currentRows--;
+        this.rowsInput.value = this.currentRows;
+        this.resizeGrid();
+    }
+    
+    removeColumn() {
+        if (this.currentCols <= 1) {
+            this.showMessage('最少列数は1です。', 'error');
+            return;
+        }
+        this.currentCols--;
+        this.colsInput.value = this.currentCols;
+        this.resizeGrid();
+    }
+    
+    handleKeyPress(e) {
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+            e.preventDefault();
+            const currentValue = e.target.value;
+            const cursorPosition = e.target.selectionStart;
+            const beforeCursor = currentValue.substring(0, cursorPosition);
+            const afterCursor = currentValue.substring(cursorPosition);
+            e.target.value = beforeCursor + '\n' + afterCursor;
+            e.target.selectionStart = e.target.selectionEnd = cursorPosition + 1;
+        }
+    }
+    
+    importData() {
+        const data = this.importData.value.trim();
+        if (!data) {
+            this.showMessage('インポートするデータがありません。', 'error');
+            return;
+        }
+        
+        try {
+            let parsedData;
+            if (this.isMarkdownTable(data)) {
+                parsedData = this.parseMarkdownTable(data);
+                this.showMessage('Markdownテーブルをインポートしました。', 'success');
+            } else {
+                parsedData = this.parseCSV(data);
+                this.showMessage('CSVデータをインポートしました。', 'success');
+            }
+            
+            // グリッドサイズを調整
+            this.currentRows = parsedData.length;
+            this.currentCols = Math.max(...parsedData.map(row => row.length));
+            this.rowsInput.value = this.currentRows;
+            this.colsInput.value = this.currentCols;
+            
+            this.createGrid();
+            this.setGridData(parsedData);
+        } catch (error) {
+            this.showMessage('データの解析に失敗しました: ' + error.message, 'error');
+        }
+    }
+    
+    isMarkdownTable(data) {
+        return data.includes('|') && data.includes('---');
+    }
+    
+    parseMarkdownTable(data) {
+        const lines = data.split('\n').filter(line => line.trim());
+        const result = [];
+        
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (line.includes('---')) continue; // セパレーター行をスキップ
+            
+            if (line.startsWith('|') && line.endsWith('|')) {
+                const cells = line.slice(1, -1).split('|').map(cell => cell.trim());
+                result.push(cells);
+            }
+        }
+        
+        return result;
+    }
+    
+    parseCSV(data) {
+        const lines = data.split('\n').filter(line => line.trim());
+        return lines.map(line => this.parseCSVLine(line));
+    }
+    
+    parseCSVLine(line) {
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            
+            if (char === '"' && (i === 0 || line[i-1] === ',')) {
+                inQuotes = true;
+            } else if (char === '"' && inQuotes) {
+                inQuotes = false;
+            } else if (char === ',' && !inQuotes) {
+                result.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        result.push(current.trim());
+        
+        return result;
+    }
+    
+    clearImport() {
+        this.importData.value = '';
+        this.showMessage('インポートエリアをクリアしました。', 'success');
+    }
+    
+    generateMarkdown() {
+        const data = this.getGridData();
+        const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
+        
+        let markdown = '';
+        
+        for (let row = 0; row < data.length; row++) {
+            const rowData = data[row] || [];
+            let line = '|';
+            
+            for (let col = 0; col < this.currentCols; col++) {
+                let cellValue = rowData[col] || '';
+                cellValue = this.processLineBreaks(cellValue, lineBreakOption);
+                line += ' ' + cellValue + ' |';
+            }
+            
+            markdown += line + '\n';
+            
+            // ヘッダー行の後にセパレーターを追加
+            if (row === 0) {
+                let separator = '|';
+                for (let col = 0; col < this.currentCols; col++) {
+                    separator += '------|';
+                }
+                markdown += separator + '\n';
+            }
+        }
+        
+        this.markdownOutput.value = markdown;
+        this.showMessage('Markdownテーブルを生成しました。', 'success');
+    }
+    
+    generateCSV() {
+        const data = this.getGridData();
+        const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
+        
+        let csv = '';
+        
+        for (let row = 0; row < data.length; row++) {
+            const rowData = data[row] || [];
+            const csvRow = [];
+            
+            for (let col = 0; col < this.currentCols; col++) {
+                let cellValue = rowData[col] || '';
+                cellValue = this.processLineBreaks(cellValue, lineBreakOption);
+                
+                // CSVでは改行やカンマを含む場合にダブルクォートで囲む
+                if (cellValue.includes(',') || cellValue.includes('\n') || cellValue.includes('"')) {
+                    cellValue = '"' + cellValue.replace(/"/g, '""') + '"';
+                }
+                
+                csvRow.push(cellValue);
+            }
+            
+            csv += csvRow.join(',') + '\n';
+        }
+        
+        this.csvOutput.value = csv;
+        this.showMessage('CSVデータを生成しました。', 'success');
+    }
+    
+    processLineBreaks(text, option) {
+        if (!text) return '';
+        
+        switch (option) {
+            case 'br':
+                return text.replace(/\n/g, '<br />');
+            case 'newline':
+                return text; // \nをそのまま保持
+            case 'none':
+                return text.replace(/\n/g, ' ');
+            default:
+                return text;
+        }
+    }
+    
+    async copyToClipboard(type) {
+        const text = type === 'markdown' ? this.markdownOutput.value : this.csvOutput.value;
+        
+        if (!text) {
+            this.showMessage(`${type === 'markdown' ? 'Markdown' : 'CSV'}データが生成されていません。`, 'error');
+            return;
+        }
+        
+        try {
+            await navigator.clipboard.writeText(text);
+            this.showMessage(`${type === 'markdown' ? 'Markdown' : 'CSV'}データをクリップボードにコピーしました。`, 'success');
+        } catch (error) {
+            this.showMessage('クリップボードへのコピーに失敗しました。', 'error');
+        }
+    }
+    
+    downloadFile(type) {
+        const text = type === 'markdown' ? this.markdownOutput.value : this.csvOutput.value;
+        const filename = type === 'markdown' ? 'table.md' : 'table.csv';
+        const mimeType = type === 'markdown' ? 'text/markdown' : 'text/csv';
+        
+        if (!text) {
+            this.showMessage(`${type === 'markdown' ? 'Markdown' : 'CSV'}データが生成されていません。`, 'error');
+            return;
+        }
+        
+        const blob = new Blob([text], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        this.showMessage(`${filename}をダウンロードしました。`, 'success');
+    }
+    
+    showMessage(text, type = 'info') {
+        // 既存のメッセージを削除
+        const existingMessages = document.querySelectorAll('.error-message, .success-message, .info-message');
+        existingMessages.forEach(msg => msg.remove());
+        
+        const message = document.createElement('div');
+        message.className = type + '-message';
+        message.textContent = text;
+        
+        // メッセージを最初のツールカードの前に挿入
+        const firstCard = document.querySelector('.tool-card');
+        firstCard.parentNode.insertBefore(message, firstCard);
+        
+        // 3秒後にメッセージを削除
+        setTimeout(() => {
+            if (message.parentNode) {
+                message.parentNode.removeChild(message);
+            }
+        }, 3000);
+    }
+}
+
+// DOM読み込み完了後に初期化
+document.addEventListener('DOMContentLoaded', () => {
+    new MarkdownTableTool();
+});

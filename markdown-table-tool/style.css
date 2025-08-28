@@ -1,0 +1,211 @@
+/* 表設定セクション */
+.table-config {
+    margin-bottom: 1.5rem;
+}
+
+.config-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.config-row label {
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.config-row input[type="number"] {
+    width: 80px;
+    padding: 0.5rem;
+    border: 1px solid #81c784;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* グリッドコンテナ */
+.grid-container {
+    overflow-x: auto;
+    margin: 1rem 0;
+    border: 2px solid #4caf50;
+    border-radius: 8px;
+    background: white;
+}
+
+/* データグリッド */
+.data-grid {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px;
+}
+
+.data-grid th,
+.data-grid td {
+    border: 1px solid #c8e6c9;
+    padding: 8px 12px;
+    min-width: 120px;
+    position: relative;
+}
+
+.data-grid th {
+    background: linear-gradient(to bottom, #66bb6a, #4caf50);
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.data-grid td {
+    background: white;
+    vertical-align: top;
+}
+
+.data-grid input[type="text"] {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 4px;
+    font-size: 0.9rem;
+    min-height: 20px;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+}
+
+.data-grid input[type="text"]:focus {
+    background: #f1f8e9;
+    border: 1px solid #4caf50;
+    border-radius: 2px;
+}
+
+/* 行・列のヘッダー */
+.row-header {
+    background: linear-gradient(to right, #81c784, #66bb6a) !important;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    width: 40px;
+    min-width: 40px;
+    padding: 8px 4px !important;
+}
+
+.col-header {
+    background: linear-gradient(to bottom, #81c784, #66bb6a) !important;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    padding: 8px 4px !important;
+}
+
+.corner-cell {
+    background: linear-gradient(135deg, #66bb6a, #4caf50) !important;
+}
+
+/* インポートセクション */
+.import-section {
+    margin: 1rem 0;
+}
+
+.import-section h3 {
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+}
+
+#import-data {
+    height: 150px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+/* 出力セクション */
+.export-section {
+    margin: 1rem 0;
+}
+
+.export-section h3 {
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.export-section h3:first-child {
+    margin-top: 0;
+}
+
+#markdown-output,
+#csv-output {
+    height: 150px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    background: #f8f9fa;
+    border: 1px solid #c8e6c9;
+}
+
+/* ボタングループ */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.button-group button {
+    margin-bottom: 0.5rem;
+    margin-right: 0;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .config-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .config-row input[type="number"] {
+        width: 100px;
+    }
+    
+    .data-grid th,
+    .data-grid td {
+        min-width: 100px;
+        padding: 6px 8px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .button-group button {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+
+/* セル選択状態 */
+.data-grid td.selected {
+    background: #e8f5e9 !important;
+    border: 2px solid #4caf50 !important;
+}
+
+/* エラー表示 */
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    border-left: 4px solid #f44336;
+    font-size: 0.9rem;
+}
+
+/* 成功メッセージ */
+.success-message {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+    border-left: 4px solid #4caf50;
+    font-size: 0.9rem;
+}
