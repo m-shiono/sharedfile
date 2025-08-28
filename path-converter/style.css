@@ -130,11 +130,22 @@ main {
 /* モード選択 */
 .conversion-mode {
     margin-bottom: 1rem;
+    border: 1px solid #c8e6c9;
+    border-radius: 6px;
+    padding: 1rem;
+    background: rgba(232, 245, 233, 0.3);
+}
+
+.conversion-mode legend {
+    font-weight: bold;
+    color: #388e3c;
+    margin-bottom: 0.5rem;
+    padding: 0 0.5rem;
 }
 
 .conversion-mode label {
-    font-weight: bold;
-    color: #388e3c;
+    font-weight: normal;
+    color: #2c3e50;
     margin-bottom: 0.5rem;
     display: block;
 }
@@ -162,6 +173,14 @@ main {
     margin-right: 0.5rem;
 }
 
+.radio-label small {
+    display: block;
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    font-weight: normal;
+}
+
 /* 手動オプション */
 .manual-options {
     margin-bottom: 1rem;
@@ -169,6 +188,18 @@ main {
 
 .hidden {
     display: none;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .conversion-selector {

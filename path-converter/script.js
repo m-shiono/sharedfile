@@ -27,21 +27,46 @@ document.addEventListener('DOMContentLoaded', function() {
     function detectPathFormat(path) {
         const trimmedPath = path.trim();
         
+        // 空のパスチェック
+        if (!trimmedPath) {
+            return 'unknown';
+        }
+        
+        // URL形式のチェック (file:///で始まる)
         if (trimmedPath.match(/^file:\/\/\//)) {
             return 'url';
-        } else if (trimmedPath.match(/^\\\\[^\\]/)) {
+        }
+        
+        // UNC形式のチェック (\\server\shareの形式)
+        if (trimmedPath.match(/^\\\\[^\\]+\\[^\\]/)) {
             return 'unc';
-        } else if (trimmedPath.includes('\\\\')) {
-            return 'escaped';
-        } else if (trimmedPath.match(/^[A-Za-z]:\\/)) {
+        }
+        
+        // Windows形式のチェック (C:\pathの形式)
+        if (trimmedPath.match(/^[A-Za-z]:\\/)) {
             return 'windows';
-        } else if (trimmedPath.startsWith('/')) {
-            return 'unix';
-        } else if (trimmedPath.includes('\\')) {
-            return 'escaped';  // Fixed: Changed from 'windows' to 'escaped' for proper detection
-        } else if (trimmedPath.includes('/')) {
+        }
+        
+        // エスケープ済み形式のチェック (\\が含まれる)
+        if (trimmedPath.includes('\\\\')) {
+            return 'escaped';
+        }
+        
+        // Unix形式のチェック (/で始まる)
+        if (trimmedPath.startsWith('/')) {
             return 'unix';
         }
+        
+        // その他のバックスラッシュを含むパス (Windowsの可能性)
+        if (trimmedPath.includes('\\')) {
+            return 'windows';
+        }
+        
+        // その他のスラッシュを含むパス
+        if (trimmedPath.includes('/')) {
+            return 'unix';
+        }
+        
         return 'unknown';
     }
 
@@ -52,6 +77,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             switch (fromFormat) {
                 case 'unix':
+                    result = result.replace(/\//g, '\\');
+                    // ドライブレターの処理 (/C/ -> C:\)
+                    result = result.replace(/^\\([A-Za-z])/, '$1:');
+                    break;
                 case 'url':
                     result = result.replace(/^file:\/\/\//, '');
                     result = result.replace(/\//g, '\\');
@@ -137,8 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = 'file:///' + result.replace(/\\/g, '/');
                     break;
                 case 'unix':
-                    if (result.match(/^\/[A-Za-z]\//)) {
-                        // It's a path with a drive letter like /C/Users...
+                    if (result.match(/^\/[A-Za-z](?:\/|$)/)) {
+                        // It's a path with a drive letter like /C/Users... or /C
                         const drive = result.charAt(1);
                         const rest = result.substring(2);
                         result = `file:///${drive}:${rest}`;
@@ -162,9 +191,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // 入力値の検証
+    function validatePathInput(path) {
+        if (!path || typeof path !== 'string') {
+            return { valid: false, error: 'パスが入力されていません' };
+        }
+        
+        const trimmed = path.trim();
+        if (!trimmed) {
+            return { valid: false, error: 'パスが空です' };
+        }
+        
+        if (trimmed.length > 32768) {
+            return { valid: false, error: 'パスが長すぎます (32KB制限)' };
+        }
+        
+        // 危険な文字のチェック
+        const dangerousChars = /[\x00-\x1f\x7f]/;
+        if (dangerousChars.test(trimmed)) {
+            return { valid: false, error: '無効な制御文字が含まれています' };
+        }
+        
+        return { valid: true, path: trimmed };
+    }
+
     // 全形式に変換
     function convertToAllFormats(inputPath) {
-        const detectedFormat = detectPathFormat(inputPath);
+        const validation = validatePathInput(inputPath);
+        if (!validation.valid) {
+            return { error: validation.error };
+        }
+        
+        const cleanPath = validation.path;
+        const detectedFormat = detectPathFormat(cleanPath);
+        
+        if (detectedFormat === 'unknown') {
+            return { error: 'パス形式を判定できませんでした。正しいパス形式で入力してください。' };
+        }
+        
         const results = {
             detected: detectedFormat,
             conversions: {}
@@ -172,13 +236,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 各形式に変換
         try {
-            results.conversions.windows = pathConverters.toWindows(inputPath, detectedFormat);
-            results.conversions.unix = pathConverters.toUnix(inputPath, detectedFormat);
-            results.conversions.escaped = pathConverters.toEscaped(inputPath, detectedFormat);
-            results.conversions.url = pathConverters.toUrl(inputPath, detectedFormat);
+            results.conversions.windows = pathConverters.toWindows(cleanPath, detectedFormat);
+            results.conversions.unix = pathConverters.toUnix(cleanPath, detectedFormat);
+            results.conversions.escaped = pathConverters.toEscaped(cleanPath, detectedFormat);
+            results.conversions.url = pathConverters.toUrl(cleanPath, detectedFormat);
         } catch (error) {
             console.error('変換エラー:', error);
-            results.error = error.message;
+            results.error = `変換中にエラーが発生しました: ${error.message}`;
         }
 
         return results;
@@ -186,6 +250,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 手動変換
     function convertManual(inputPath, fromFormat, toFormat) {
+        const validation = validatePathInput(inputPath);
+        if (!validation.valid) {
+            throw new Error(validation.error);
+        }
+        
+        if (!fromFormat || !toFormat) {
+            throw new Error('変換元と変換先の形式を選択してください');
+        }
+        
         const converterMap = {
             'windows': pathConverters.toWindows,
             'unix': pathConverters.toUnix,
@@ -195,10 +268,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const converter = converterMap[toFormat];
         if (!converter) {
-            throw new Error('不明な変換形式です');
+            throw new Error('不明な変換形式です: ' + toFormat);
         }
 
-        return converter(inputPath, fromFormat);
+        if (!converterMap[fromFormat]) {
+            throw new Error('不明な変換元形式です: ' + fromFormat);
+        }
+
+        try {
+            return converter(validation.path, fromFormat);
+        } catch (error) {
+            throw new Error(`変換中にエラーが発生しました: ${error.message}`);
+        }
     }
 
     // 結果を表示
@@ -225,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
             resultDiv.className = 'result-item';
             resultDiv.innerHTML = `
                 <h4>${manualFormatNames[toFormat.value] || toFormat.value}</h4>
-                <div class="result-text" data-path="${escapeHtml(manualResult)}">${escapeHtml(manualResult)}</div>
+                <div class="result-text" data-path="${escapeHtmlAttribute(manualResult)}">${escapeHtml(manualResult)}</div>
             `;
             resultsContainer.appendChild(resultDiv);
         } else {
@@ -247,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const isOriginal = format === results.detected;
                 resultDiv.innerHTML = `
                     <h4>${formatNames[format]} ${isOriginal ? '<small>(元の形式)</small>' : ''}</h4>
-                    <div class="result-text ${isOriginal ? 'original' : ''}" data-path="${escapeHtml(path)}">${escapeHtml(path)}</div>
+                    <div class="result-text ${isOriginal ? 'original' : ''}" data-path="${escapeHtmlAttribute(path)}">${escapeHtml(path)}</div>
                 `;
                 resultsContainer.appendChild(resultDiv);
             });
@@ -271,6 +352,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    // HTML属性エスケープ
+    function escapeHtmlAttribute(text) {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#x27;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
     }
 
     // トースト通知

@@ -23,25 +23,27 @@
             <div class="tool-container">
                 <div class="input-section">
                     <h2>パス変換</h2>
-                    <div class="conversion-mode">
-                        <label>変換モード:</label>
+                    <fieldset class="conversion-mode">
+                        <legend>変換モード:</legend>
                         <div class="radio-group">
                             <label class="radio-label">
-                                <input type="radio" name="mode" value="auto" checked>
+                                <input type="radio" name="mode" value="auto" checked aria-describedby="auto-desc">
                                 <span>自動判定</span>
+                                <small id="auto-desc">パス形式を自動で判定し、全形式に変換します</small>
                             </label>
                             <label class="radio-label">
-                                <input type="radio" name="mode" value="manual">
+                                <input type="radio" name="mode" value="manual" aria-describedby="manual-desc">
                                 <span>手動選択</span>
+                                <small id="manual-desc">変換元と変換先の形式を手動で指定します</small>
                             </label>
                         </div>
-                    </div>
+                    </fieldset>
                     
                     <div id="manual-options" class="manual-options hidden">
                         <div class="conversion-selector">
                             <div>
                                 <label for="from-format">変換元:</label>
-                                <select id="from-format">
+                                <select id="from-format" aria-label="変換元のパス形式を選択">
                                     <option value="windows">Windows (バックスラッシュ)</option>
                                     <option value="unix">Unix (スラッシュ)</option>
                                     <option value="escaped">エスケープ済み (ダブルバックスラッシュ)</option>
@@ -50,7 +52,7 @@
                             </div>
                             <div>
                                 <label for="to-format">変換先:</label>
-                                <select id="to-format">
+                                <select id="to-format" aria-label="変換先のパス形式を選択">
                                     <option value="windows">Windows (バックスラッシュ)</option>
                                     <option value="unix">Unix (スラッシュ)</option>
                                     <option value="escaped">エスケープ済み (ダブルバックスラッシュ)</option>
@@ -60,7 +62,11 @@
                         </div>
                     </div>
                     
-                    <textarea id="inputPath" placeholder="変換したいパスを入力してください...&#10;例: C:\test\hoge, /home/user/file.txt, \\\\server\\share, etc."></textarea>
+                    <label for="inputPath" class="visually-hidden">変換したいパスを入力</label>
+                    <textarea id="inputPath" 
+                              placeholder="変換したいパスを入力してください...&#10;例: C:\test\hoge, /home/user/file.txt, \\\\server\\share, etc."
+                              aria-label="変換したいパスを入力してください"
+                              maxlength="32768"></textarea>
                     
                     <div class="button-group">
                         <button id="convertBtn">変換</button>
