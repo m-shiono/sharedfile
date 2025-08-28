@@ -1,0 +1,477 @@
+/* Path変換ツール - CSS */
+
+/* 基本リセット */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* body要素の統一スタイル */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #2c3e50;
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    min-height: 100vh;
+}
+
+/* ヘッダー */
+header {
+    background: linear-gradient(to right, #43a047, #66bb6a);
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* ナビゲーション */
+nav {
+    background: linear-gradient(to right, #66bb6a, #81c784);
+    padding: 1rem 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+nav ul li a:hover {
+    background-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+/* メインコンテンツ */
+main {
+    max-width: 1600px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+/* tool-card */
+.tool-card {
+    background: linear-gradient(135deg, #ffffff, #e8f5e9);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.tool-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #2e7d32;
+    border-bottom: 2px solid #4caf50;
+    padding-bottom: 0.5rem;
+}
+
+.tool-card h3 {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #388e3c;
+}
+
+/* ツールコンテナ */
+.tool-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* 入力・出力セクション */
+.input-section, .output-section {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: 1px solid #c8e6c9;
+}
+
+.input-section h2, .output-section h2 {
+    color: #2e7d32;
+    border-bottom: 1px solid #4caf50;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+/* モード選択 */
+.conversion-mode {
+    margin-bottom: 1rem;
+    border: 1px solid #c8e6c9;
+    border-radius: 6px;
+    padding: 1rem;
+    background: rgba(232, 245, 233, 0.3);
+}
+
+.conversion-mode legend {
+    font-weight: bold;
+    color: #388e3c;
+    margin-bottom: 0.5rem;
+    padding: 0 0.5rem;
+}
+
+.conversion-mode label {
+    font-weight: normal;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.radio-label input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.radio-label small {
+    display: block;
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    font-weight: normal;
+}
+
+/* 手動オプション */
+.manual-options {
+    margin-bottom: 1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.conversion-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.conversion-selector label {
+    font-weight: bold;
+    color: #388e3c;
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.conversion-selector select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #81c784;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+/* テキストエリア */
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 0.75rem;
+    border: 1px solid #81c784;
+    border-radius: 4px;
+    resize: vertical;
+    margin-bottom: 1rem;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+textarea::placeholder {
+    color: #999;
+}
+
+/* ボタン */
+button {
+    background: linear-gradient(to right, #4caf50, #45a049);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    margin-right: 0.5rem;
+}
+
+button:hover {
+    background: linear-gradient(to right, #45a049, #4caf50);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* ステータスバー */
+.status-bar {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.status-bar .success {
+    color: #2e7d32;
+    background: #e8f5e9;
+    padding: 0.3rem 0.5rem;
+    border-radius: 3px;
+}
+
+.status-bar .error {
+    color: #c62828;
+    background: #ffebee;
+    padding: 0.3rem 0.5rem;
+    border-radius: 3px;
+}
+
+/* 結果コンテナ */
+.results-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.result-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(232, 245, 233, 0.3);
+    border-radius: 6px;
+    border: 1px solid #c8e6c9;
+}
+
+.result-item h4 {
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.result-item h4 small {
+    color: #666;
+    font-weight: normal;
+    font-size: 0.8rem;
+}
+
+.result-text {
+    background: white;
+    padding: 0.75rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    word-break: break-all;
+}
+
+.result-text:hover {
+    background: #f5f5f5;
+    border-color: #4caf50;
+}
+
+.result-text.original {
+    background: #fff3e0;
+    border-color: #ff9800;
+}
+
+/* パターン説明 */
+.pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.pattern-card {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #c8e6c9;
+}
+
+.pattern-card h4 {
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+}
+
+.pattern-card p {
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.pattern-card code {
+    display: block;
+    background: #f5f5f5;
+    padding: 0.5rem;
+    border-radius: 3px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+}
+
+.pattern-card small {
+    color: #666;
+    font-style: italic;
+}
+
+/* トースト通知 */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #2e7d32;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* フッター */
+footer {
+    background: linear-gradient(to right, #43a047, #66bb6a);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    margin-top: 2rem;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    main {
+        padding: 0 1rem;
+    }
+    
+    .tool-card {
+        padding: 1.5rem;
+    }
+    
+    .tool-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .conversion-selector {
+        grid-template-columns: 1fr;
+    }
+    
+    .radio-group {
+        flex-direction: column;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .button-group button {
+        margin-bottom: 0.5rem;
+        margin-right: 0;
+    }
+    
+    .pattern-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    nav ul {
+        padding: 0 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.7rem;
+    }
+    
+    header p {
+        font-size: 1rem;
+    }
+    
+    .tool-card {
+        padding: 1rem;
+    }
+    
+    textarea {
+        height: 150px;
+    }
+    
+    .result-text {
+        font-size: 0.8rem;
+    }
+}
