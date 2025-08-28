@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (trimmedPath.startsWith('/')) {
             return 'unix';
         } else if (trimmedPath.includes('\\')) {
-            return 'windows';
+            return 'escaped';  // Fixed: Changed from 'windows' to 'escaped' for proper detection
         } else if (trimmedPath.includes('/')) {
             return 'unix';
         }
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     result = 'file:///' + result.replace(/\\/g, '/');
                     break;
                 case 'unix':
-                    if (result.match(/^\/[A-Za-z]/)) {
+                    if (result.match(/^\/[A-Za-z]\//)) {
                         // It's a path with a drive letter like /C/Users...
                         const drive = result.charAt(1);
                         const rest = result.substring(2);
