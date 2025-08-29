@@ -1,4 +1,8 @@
 class MarkdownTableTool {
+    static MAX_ROWS = 20;
+    static MAX_COLS = 10;
+    static DEFAULT_SEPARATOR = '------';
+    
     constructor() {
         this.grid = document.getElementById('data-grid');
         this.rowsInput = document.getElementById('rows');
@@ -91,11 +95,11 @@ class MarkdownTableTool {
     
     getColumnLetter(index) {
         let result = '';
-        let num = index;
-        while (num >= 0) {
-            result = String.fromCharCode(65 + (num % 26)) + result;
-            num = Math.floor(num / 26) - 1;
-            if (num < 0) break;
+        let num = index + 1;
+        while (num > 0) {
+            let rem = (num - 1) % 26;
+            result = String.fromCharCode(65 + rem) + result;
+            num = Math.floor((num - 1) / 26);
         }
         return result;
     }
@@ -104,8 +108,8 @@ class MarkdownTableTool {
         const newRows = parseInt(this.rowsInput.value);
         const newCols = parseInt(this.colsInput.value);
         
-        if (newRows < 1 || newRows > 20 || newCols < 1 || newCols > 10) {
-            this.showMessage('行数は1-20、列数は1-10の範囲で設定してください。', 'error');
+        if (newRows < 1 || newRows > MarkdownTableTool.MAX_ROWS || newCols < 1 || newCols > MarkdownTableTool.MAX_COLS) {
+            this.showMessage(`行数は1-${MarkdownTableTool.MAX_ROWS}、列数は1-${MarkdownTableTool.MAX_COLS}の範囲で設定してください。`, 'error');
             return;
         }
         
@@ -151,8 +155,8 @@ class MarkdownTableTool {
     }
     
     addRow() {
-        if (this.currentRows >= 20) {
-            this.showMessage('最大行数は20です。', 'error');
+        if (this.currentRows >= MarkdownTableTool.MAX_ROWS) {
+            this.showMessage(`最大行数は${MarkdownTableTool.MAX_ROWS}です。`, 'error');
             return;
         }
         this.currentRows++;
@@ -161,8 +165,8 @@ class MarkdownTableTool {
     }
     
     addColumn() {
-        if (this.currentCols >= 10) {
-            this.showMessage('最大列数は10です。', 'error');
+        if (this.currentCols >= MarkdownTableTool.MAX_COLS) {
+            this.showMessage(`最大列数は${MarkdownTableTool.MAX_COLS}です。`, 'error');
             return;
         }
         this.currentCols++;
@@ -266,15 +270,39 @@ class MarkdownTableTool {
         for (let i = 0; i < line.length; i++) {
             const char = line[i];
             
-            if (char === '"' && (i === 0 || line[i-1] === ',')) {
-                inQuotes = true;
-            } else if (char === '"' && inQuotes) {
-                inQuotes = false;
-            } else if (char === ',' && !inQuotes) {
-                result.push(current.trim());
-                current = '';
+            if (inQuotes) {
+                if (char === '"') {
+                    // 次の文字が " ならエスケープされたクォート
+                    if (i + 1 < line.length && line[i + 1] === '"') {
+                        current += '"';
+                        i++; // 次の " をスキップ
+                    } else {
+                        inQuotes = false;
+                    }
+                } else {
+                    current += char;
+                }
             } else {
-                current += char;
+                if (char === '"') {
+                    // Check if quote starts a quoted field: previous non-whitespace char is comma or start of line
+                    let prevNonWs = -1;
+                    for (let j = i - 1; j >= 0; j--) {
+                        if (line[j] !== ' ' && line[j] !== '\t') {
+                            prevNonWs = j;
+                            break;
+                        }
+                    }
+                    if (i === 0 || (prevNonWs >= 0 && line[prevNonWs] === ',')) {
+                        inQuotes = true;
+                    } else {
+                        current += char;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
             }
         }
         result.push(current.trim());
@@ -309,7 +337,7 @@ class MarkdownTableTool {
             if (row === 0) {
                 let separator = '|';
                 for (let col = 0; col < this.currentCols; col++) {
-                    separator += '------|';
+                    separator += `${MarkdownTableTool.DEFAULT_SEPARATOR}|`;
                 }
                 markdown += separator + '\n';
             }

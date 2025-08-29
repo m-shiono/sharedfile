@@ -8,6 +8,15 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
+    border: none;
+    padding: 0;
+}
+
+.config-row legend {
+    font-weight: bold;
+    color: #2e7d32;
+    padding: 0;
+    margin-bottom: 0.5rem;
 }
 
 .config-row label {
@@ -79,26 +88,26 @@
 }
 
 /* 行・列のヘッダー */
-.row-header {
-    background: linear-gradient(to right, #81c784, #66bb6a) !important;
+.data-grid .row-header {
+    background: linear-gradient(to right, #81c784, #66bb6a);
     color: white;
     text-align: center;
     font-weight: bold;
     width: 40px;
     min-width: 40px;
-    padding: 8px 4px !important;
+    padding: 8px 4px;
 }
 
-.col-header {
-    background: linear-gradient(to bottom, #81c784, #66bb6a) !important;
+.data-grid .col-header {
+    background: linear-gradient(to bottom, #81c784, #66bb6a);
     color: white;
     text-align: center;
     font-weight: bold;
-    padding: 8px 4px !important;
+    padding: 8px 4px;
 }
 
-.corner-cell {
-    background: linear-gradient(135deg, #66bb6a, #4caf50) !important;
+.data-grid .corner-cell {
+    background: linear-gradient(135deg, #66bb6a, #4caf50);
 }
 
 /* インポートセクション */
@@ -184,8 +193,8 @@
 
 /* セル選択状態 */
 .data-grid td.selected {
-    background: #e8f5e9 !important;
-    border: 2px solid #4caf50 !important;
+    background: #e8f5e9;
+    border: 2px solid #4caf50;
 }
 
 /* エラー表示 */
