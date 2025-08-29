@@ -282,6 +282,10 @@ main {
     margin-bottom: 1rem;
 }
 
+.tool-card p:last-of-type {
+    margin-bottom: 1.5rem;
+}
+
 .tool-card ul,
 .tool-card ol {
     margin-bottom: 1rem;
