@@ -291,6 +291,10 @@ main {
     margin-bottom: 1rem;
 }
 
+.tool-card p:last-of-type:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+
 .tool-card p:last-child,
 .tool-card ul:last-child,
 .tool-card ol:last-child {
