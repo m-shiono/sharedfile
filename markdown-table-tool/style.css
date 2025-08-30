@@ -60,6 +60,13 @@ nav ul li a:hover {
     transform: translateY(-2px);
 }
 
+/* メッセージコンテナ */
+#message-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
 /* メインコンテンツ */
 main {
     max-width: 1600px;
@@ -221,19 +228,20 @@ footer {
     vertical-align: top;
 }
 
-.data-grid input[type="text"] {
+.data-grid textarea {
     width: 100%;
     border: none;
     background: transparent;
     padding: 4px;
     font-size: 0.9rem;
     min-height: 20px;
-    resize: none;
+    resize: vertical;
     outline: none;
     font-family: inherit;
+    overflow-y: auto;
 }
 
-.data-grid input[type="text"]:focus {
+.data-grid textarea:focus {
     background: #f1f8e9;
     border: 1px solid #4caf50;
     border-radius: 2px;

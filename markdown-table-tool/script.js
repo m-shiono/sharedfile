@@ -10,6 +10,7 @@ class MarkdownTableTool {
         this.importData = document.getElementById('import-data');
         this.markdownOutput = document.getElementById('markdown-output');
         this.csvOutput = document.getElementById('csv-output');
+        this.messageContainer = document.getElementById('message-container');
         
         this.currentRows = 5;
         this.currentCols = 3;
@@ -82,11 +83,11 @@ class MarkdownTableTool {
             // データセル
             for (let col = 0; col < this.currentCols; col++) {
                 const td = document.createElement('td');
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.dataset.row = row;
-                input.dataset.col = col;
-                td.appendChild(input);
+                const textarea = document.createElement('textarea');
+                textarea.dataset.row = row;
+                textarea.dataset.col = col;
+                textarea.rows = 1;
+                td.appendChild(textarea);
                 tr.appendChild(td);
             }
             this.grid.appendChild(tr);
@@ -127,30 +128,30 @@ class MarkdownTableTool {
     
     getGridData() {
         const data = [];
-        const inputs = this.grid.querySelectorAll('input[type="text"]');
-        inputs.forEach(input => {
-            const row = parseInt(input.dataset.row);
-            const col = parseInt(input.dataset.col);
+        const textareas = this.grid.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            const row = parseInt(textarea.dataset.row);
+            const col = parseInt(textarea.dataset.col);
             if (!data[row]) data[row] = [];
-            data[row][col] = input.value;
+            data[row][col] = textarea.value;
         });
         return data;
     }
     
     setGridData(data) {
-        const inputs = this.grid.querySelectorAll('input[type="text"]');
-        inputs.forEach(input => {
-            const row = parseInt(input.dataset.row);
-            const col = parseInt(input.dataset.col);
+        const textareas = this.grid.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            const row = parseInt(textarea.dataset.row);
+            const col = parseInt(textarea.dataset.col);
             if (data[row] && data[row][col] !== undefined) {
-                input.value = data[row][col];
+                textarea.value = data[row][col];
             }
         });
     }
     
     clearGrid() {
-        const inputs = this.grid.querySelectorAll('input[type="text"]');
-        inputs.forEach(input => input.value = '');
+        const textareas = this.grid.querySelectorAll('textarea');
+        textareas.forEach(textarea => textarea.value = '');
         this.showMessage('グリッドをクリアしました。', 'success');
     }
     
@@ -195,15 +196,8 @@ class MarkdownTableTool {
     }
     
     handleKeyPress(e) {
-        if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
-            e.preventDefault();
-            const currentValue = e.target.value;
-            const cursorPosition = e.target.selectionStart;
-            const beforeCursor = currentValue.substring(0, cursorPosition);
-            const afterCursor = currentValue.substring(cursorPosition);
-            e.target.value = beforeCursor + '\n' + afterCursor;
-            e.target.selectionStart = e.target.selectionEnd = cursorPosition + 1;
-        }
+        // Textareas handle Enter key natively for line breaks
+        // This method is kept for potential future enhancements
     }
     
     importData() {
@@ -258,8 +252,76 @@ class MarkdownTableTool {
     }
     
     parseCSV(data) {
-        const lines = data.split('\n').filter(line => line.trim());
-        return lines.map(line => this.parseCSVLine(line));
+        const result = [];
+        let current = '';
+        let inQuotes = false;
+        let currentRow = [];
+        
+        for (let i = 0; i < data.length; i++) {
+            const char = data[i];
+            
+            if (inQuotes) {
+                if (char === '"') {
+                    // Check if it's an escaped quote
+                    if (i + 1 < data.length && data[i + 1] === '"') {
+                        current += '"';
+                        i++; // Skip next quote
+                    } else {
+                        inQuotes = false;
+                    }
+                } else {
+                    current += char;
+                }
+            } else {
+                if (char === '"') {
+                    // Check if quote starts a quoted field
+                    let prevNonWs = -1;
+                    for (let j = i - 1; j >= 0 && (data[j] === ' ' || data[j] === '\t'); j--) {
+                        // Skip whitespace
+                    }
+                    for (let j = i - 1; j >= 0; j--) {
+                        if (data[j] !== ' ' && data[j] !== '\t') {
+                            prevNonWs = j;
+                            break;
+                        }
+                    }
+                    if (i === 0 || (prevNonWs >= 0 && data[prevNonWs] === ',')) {
+                        inQuotes = true;
+                    } else {
+                        current += char;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    currentRow.push(current.trim());
+                    current = '';
+                } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                    // End of row
+                    if (current.trim() || currentRow.length > 0) {
+                        currentRow.push(current.trim());
+                        if (currentRow.some(cell => cell !== '')) {
+                            result.push(currentRow);
+                        }
+                        currentRow = [];
+                        current = '';
+                    }
+                    // Skip \r\n combination
+                    if (char === '\r' && i + 1 < data.length && data[i + 1] === '\n') {
+                        i++;
+                    }
+                } else {
+                    current += char;
+                }
+            }
+        }
+        
+        // Handle last field/row
+        if (current.trim() || currentRow.length > 0) {
+            currentRow.push(current.trim());
+            if (currentRow.some(cell => cell !== '')) {
+                result.push(currentRow);
+            }
+        }
+        
+        return result;
     }
     
     parseCSVLine(line) {
@@ -432,16 +494,13 @@ class MarkdownTableTool {
     
     showMessage(text, type = 'info') {
         // 既存のメッセージを削除
-        const existingMessages = document.querySelectorAll('.error-message, .success-message, .info-message');
-        existingMessages.forEach(msg => msg.remove());
+        this.messageContainer.innerHTML = '';
         
         const message = document.createElement('div');
         message.className = type + '-message';
         message.textContent = text;
         
-        // メッセージを最初のツールカードの前に挿入
-        const firstCard = document.querySelector('.tool-card');
-        firstCard.parentNode.insertBefore(message, firstCard);
+        this.messageContainer.appendChild(message);
         
         // 3秒後にメッセージを削除
         setTimeout(() => {
