@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown表作成ツール - 便利ツール＆ユーティリティ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Markdown表作成ツール</h1>
+        <p>Excel風の入力画面でMarkdown形式の表を簡単作成</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+    
+    <div id="message-container"></div>
+    
+    <main>
+        <div class="tool-card">
+            <h2>表の設定</h2>
+            
+            <div class="table-config">
+                <div class="config-row">
+                    <label for="rows">行数:</label>
+                    <input type="number" id="rows" value="5" min="1" max="20">
+                    
+                    <label for="cols">列数:</label>
+                    <input type="number" id="cols" value="3" min="1" max="10">
+                    
+                    <button id="resize-btn">表サイズ変更</button>
+                </div>
+                
+                <fieldset class="config-row">
+                    <legend>セル内改行の出力:</legend>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="line-break" value="br" checked>
+                            &lt;br /&gt;
+                        </label>
+                        <label>
+                            <input type="radio" name="line-break" value="newline">
+                            \n
+                        </label>
+                        <label>
+                            <input type="radio" name="line-break" value="none">
+                            なし
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        
+        <div class="tool-card">
+            <h2>データ入力</h2>
+            
+            <div class="grid-container">
+                <table id="data-grid" class="data-grid">
+                </table>
+            </div>
+            
+            <div class="button-group">
+                <button id="clear-grid-btn">グリッドクリア</button>
+                <button id="add-row-btn">行追加</button>
+                <button id="add-col-btn">列追加</button>
+                <button id="remove-row-btn">行削除</button>
+                <button id="remove-col-btn">列削除</button>
+            </div>
+        </div>
+        
+        <div class="tool-card">
+            <h2>データインポート</h2>
+            
+            <div class="import-section">
+                <h3>Markdown表またはCSVデータを貼り付け</h3>
+                <textarea id="import-data" placeholder="Markdown表またはCSVデータを貼り付けてください...
+
+Markdown例:
+| 名前 | 年齢 | 職業 |
+|------|------|------|
+| 田中 | 30 | エンジニア |
+| 佐藤 | 25 | デザイナー |
+
+CSV例:
+名前,年齢,職業
+田中,30,エンジニア
+佐藤,25,デザイナー"></textarea>
+                
+                <div class="button-group">
+                    <button id="import-btn">データインポート</button>
+                    <button id="clear-import-btn">インポートエリアクリア</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tool-card">
+            <h2>出力</h2>
+            
+            <div class="export-section">
+                <h3>Markdown出力</h3>
+                <textarea id="markdown-output" readonly placeholder="Markdown形式の表がここに生成されます..."></textarea>
+                
+                <h3>CSV出力</h3>
+                <textarea id="csv-output" readonly placeholder="CSV形式のデータがここに生成されます..."></textarea>
+                
+                <div class="button-group">
+                    <button id="generate-markdown-btn">Markdown生成</button>
+                    <button id="generate-csv-btn">CSV生成</button>
+                    <button id="copy-markdown-btn">Markdownコピー</button>
+                    <button id="copy-csv-btn">CSVコピー</button>
+                    <button id="download-markdown-btn">Markdownダウンロード</button>
+                    <button id="download-csv-btn">CSVダウンロード</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 personal project for m-shiono</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>
