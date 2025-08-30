@@ -324,54 +324,6 @@ class MarkdownTableTool {
         return result;
     }
     
-    parseCSVLine(line) {
-        const result = [];
-        let current = '';
-        let inQuotes = false;
-        
-        for (let i = 0; i < line.length; i++) {
-            const char = line[i];
-            
-            if (inQuotes) {
-                if (char === '"') {
-                    // 次の文字が " ならエスケープされたクォート
-                    if (i + 1 < line.length && line[i + 1] === '"') {
-                        current += '"';
-                        i++; // 次の " をスキップ
-                    } else {
-                        inQuotes = false;
-                    }
-                } else {
-                    current += char;
-                }
-            } else {
-                if (char === '"') {
-                    // Check if quote starts a quoted field: previous non-whitespace char is comma or start of line
-                    let prevNonWs = -1;
-                    for (let j = i - 1; j >= 0; j--) {
-                        if (line[j] !== ' ' && line[j] !== '\t') {
-                            prevNonWs = j;
-                            break;
-                        }
-                    }
-                    if (i === 0 || (prevNonWs >= 0 && line[prevNonWs] === ',')) {
-                        inQuotes = true;
-                    } else {
-                        current += char;
-                    }
-                } else if (char === ',' && !inQuotes) {
-                    result.push(current.trim());
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-        }
-        result.push(current.trim());
-        
-        return result;
-    }
-    
     clearImport() {
         this.importData.value = '';
         this.showMessage('インポートエリアをクリアしました。', 'success');
