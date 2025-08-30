@@ -7,7 +7,7 @@ class MarkdownTableTool {
         this.grid = document.getElementById('data-grid');
         this.rowsInput = document.getElementById('rows');
         this.colsInput = document.getElementById('cols');
-        this.importData = document.getElementById('import-data');
+        this.importDataElement = document.getElementById('import-data');
         this.markdownOutput = document.getElementById('markdown-output');
         this.csvOutput = document.getElementById('csv-output');
         this.messageContainer = document.getElementById('message-container');
@@ -201,7 +201,7 @@ class MarkdownTableTool {
     }
     
     importTableData() {
-        const data = this.importData.value.trim();
+        const data = this.importDataElement.value.trim();
         if (!data) {
             this.showMessage('インポートするデータがありません。', 'error');
             return;
@@ -325,7 +325,7 @@ class MarkdownTableTool {
     }
     
     clearImport() {
-        this.importData.value = '';
+        this.importDataElement.value = '';
         this.showMessage('インポートエリアをクリアしました。', 'success');
     }
     
