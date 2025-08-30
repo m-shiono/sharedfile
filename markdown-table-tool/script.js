@@ -31,7 +31,7 @@ class MarkdownTableTool {
         document.getElementById('remove-col-btn').addEventListener('click', () => this.removeColumn());
         
         // インポート
-        document.getElementById('import-btn').addEventListener('click', () => this.importData());
+        document.getElementById('import-btn').addEventListener('click', () => this.importTableData());
         document.getElementById('clear-import-btn').addEventListener('click', () => this.clearImport());
         
         // 出力生成
@@ -200,7 +200,7 @@ class MarkdownTableTool {
         // This method is kept for potential future enhancements
     }
     
-    importData() {
+    importTableData() {
         const data = this.importData.value.trim();
         if (!data) {
             this.showMessage('インポートするデータがありません。', 'error');
