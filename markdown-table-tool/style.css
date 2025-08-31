@@ -210,8 +210,8 @@ footer {
 .data-grid th,
 .data-grid td {
     border: 1px solid #c8e6c9;
-    padding: 8px 12px;
-    min-width: 120px;
+    padding: 6px 8px;
+    min-width: 60px;
     position: relative;
 }
 
@@ -350,8 +350,8 @@ footer {
     
     .data-grid th,
     .data-grid td {
-        min-width: 100px;
-        padding: 6px 8px;
+        min-width: 50px;
+        padding: 4px 6px;
     }
     
     .button-group {
