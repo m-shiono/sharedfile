@@ -1,3 +1,14 @@
+/* CSS Custom Properties - Cell Sizing Variables */
+:root {
+    /* Desktop cell dimensions */
+    --cell-padding-desktop: 6px 8px;
+    --cell-min-width-desktop: 60px;
+    
+    /* Mobile cell dimensions (約83%のスケール) */
+    --cell-padding-mobile: 4px 6px;
+    --cell-min-width-mobile: 50px;
+}
+
 /* 基本リセット */
 * {
     margin: 0;
@@ -210,8 +221,8 @@ footer {
 .data-grid th,
 .data-grid td {
     border: 1px solid #c8e6c9;
-    padding: 6px 8px;
-    min-width: 60px;
+    padding: var(--cell-padding-desktop);
+    min-width: var(--cell-min-width-desktop);
     position: relative;
 }
 
@@ -350,8 +361,8 @@ footer {
     
     .data-grid th,
     .data-grid td {
-        min-width: 50px;
-        padding: 4px 6px;
+        min-width: var(--cell-min-width-mobile);
+        padding: var(--cell-padding-mobile);
     }
     
     .button-group {
