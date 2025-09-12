@@ -1,11 +1,11 @@
 /* CSS Custom Properties - Cell Sizing Variables */
 :root {
     /* Desktop cell dimensions */
-    --cell-padding-desktop: 6px 8px;
+    --cell-padding-desktop: 3px 4px;
     --cell-min-width-desktop: 60px;
     
     /* Mobile cell dimensions (約83%のスケール) */
-    --cell-padding-mobile: 4px 6px;
+    --cell-padding-mobile: 2px 3px;
     --cell-min-width-mobile: 50px;
 }
 
@@ -224,6 +224,7 @@ footer {
     padding: var(--cell-padding-desktop);
     min-width: var(--cell-min-width-desktop);
     position: relative;
+    line-height: 1.2;
 }
 
 .data-grid th {
@@ -231,7 +232,7 @@ footer {
     color: white;
     font-weight: bold;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .data-grid td {
@@ -243,9 +244,10 @@ footer {
     width: 100%;
     border: none;
     background: transparent;
-    padding: 4px;
-    font-size: 0.9rem;
-    min-height: 20px;
+    padding: 2px;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    min-height: 10px;
     resize: vertical;
     outline: none;
     font-family: inherit;
@@ -266,7 +268,9 @@ footer {
     font-weight: bold;
     width: 40px;
     min-width: 40px;
-    padding: 8px 4px;
+    padding: 3px 2px;
+    line-height: 1.2;
+    font-size: 0.85rem;
 }
 
 .data-grid .col-header {
@@ -274,7 +278,9 @@ footer {
     color: white;
     text-align: center;
     font-weight: bold;
-    padding: 8px 4px;
+    padding: 3px 2px;
+    line-height: 1.2;
+    font-size: 0.85rem;
 }
 
 .data-grid .corner-cell {
