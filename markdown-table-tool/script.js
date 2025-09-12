@@ -408,8 +408,8 @@ class MarkdownTableTool {
         this.gridContainer.style.maxHeight = 'none';
         // コンテンツ実高の取得（ヘッダーも含む）
         const contentHeight = this.grid.scrollHeight;
-        // 半分の高さ（最低100pxは確保）
-        const half = Math.max(100, Math.floor(contentHeight / 2));
+        // 半分の高さ（最低40pxは確保）
+        const half = Math.max(40, Math.floor(contentHeight / 2));
         this.gridContainer.style.maxHeight = half + 'px';
         // もし横スクロールのみ必要で高さが小さい場合でも縦スクロール可能
         this.gridContainer.style.overflowY = 'auto';
