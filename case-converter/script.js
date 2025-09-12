@@ -3,25 +3,30 @@ class CaseConverter {
         this.inputText = document.getElementById('inputText');
         this.clearBtn = document.getElementById('clearBtn');
         this.convertAllBtn = document.getElementById('convertAllBtn');
-        this.copyButtons = document.querySelectorAll('.copy-btn');
         this.exampleButtons = document.querySelectorAll('.example-btn');
-        
-        this.outputs = {
-            camelCase: document.getElementById('camelCase'),
-            pascalCase: document.getElementById('pascalCase'),
-            snakeCase: document.getElementById('snakeCase'),
-            screamingSnakeCase: document.getElementById('screamingSnakeCase'),
-            kebabCase: document.getElementById('kebabCase'),
-            screamingKebabCase: document.getElementById('screamingKebabCase'),
-            trainCase: document.getElementById('trainCase'),
-            dotCase: document.getElementById('dotCase'),
-            pathCase: document.getElementById('pathCase'),
-            titleCase: document.getElementById('titleCase'),
-            sentenceCase: document.getElementById('sentenceCase'),
-            lowerCase: document.getElementById('lowerCase'),
-            upperCase: document.getElementById('upperCase')
-        };
-        
+        this.conversionGrid = document.getElementById('conversionGrid');
+
+        // 出力要素の参照を格納
+        this.outputs = {};
+
+        // 表示用メタ情報
+        this.caseDefinitions = [
+            { key: 'camelCase', name: 'camelCase', desc: '先頭小文字＋単語の先頭を大文字' },
+            { key: 'pascalCase', name: 'PascalCase', desc: '各単語の先頭を大文字' },
+            { key: 'snakeCase', name: 'snake_case', desc: '小文字単語をアンダースコア区切り' },
+            { key: 'screamingSnakeCase', name: 'SCREAMING_SNAKE_CASE', desc: '大文字＋アンダースコア区切り' },
+            { key: 'kebabCase', name: 'kebab-case', desc: '小文字単語をハイフン区切り' },
+            { key: 'screamingKebabCase', name: 'SCREAMING-KEBAB-CASE', desc: '大文字＋ハイフン区切り' },
+            { key: 'trainCase', name: 'Train-Case', desc: '各単語の先頭大文字＋ハイフン区切り' },
+            { key: 'dotCase', name: 'dot.case', desc: '小文字単語をドット区切り' },
+            { key: 'pathCase', name: 'path/case', desc: '小文字単語をスラッシュ区切り' },
+            { key: 'titleCase', name: 'Title Case', desc: '英語タイトルの大文字小文字規則' },
+            { key: 'sentenceCase', name: 'Sentence case', desc: '文頭のみ大文字' },
+            { key: 'lowerCase', name: 'lower case', desc: 'すべて小文字' },
+            { key: 'upperCase', name: 'UPPER CASE', desc: 'すべて大文字' }
+        ];
+
+        this.renderConversionItems();
         this.initializeEventListeners();
         this.updatePlaceholder();
     }
@@ -31,23 +36,10 @@ class CaseConverter {
         this.inputText.addEventListener('paste', () => {
             setTimeout(() => this.convertAll(), 10);
         });
-        
+
         this.clearBtn.addEventListener('click', () => this.clearAll());
         this.convertAllBtn.addEventListener('click', () => this.convertAll());
-        
-        copyButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const targetId = this.dataset.target;
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    copyToClipboard(targetElement.value, (message, type) => {
-                        // このツールにはstatusBarがないため、アラートで代用
-                        alert(message);
-                    });
-                }
-            });
-        });
-        
+
         this.exampleButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 const exampleText = e.target.getAttribute('data-text');
@@ -55,11 +47,58 @@ class CaseConverter {
                 this.convertAll();
             });
         });
-        
+
         this.inputText.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 this.convertAll();
             }
+        });
+    }
+
+    renderConversionItems() {
+        if (!this.conversionGrid) return;
+        this.conversionGrid.innerHTML = '';
+        this.outputs = {};
+
+        this.caseDefinitions.forEach(def => {
+            const item = document.createElement('div');
+            item.className = 'conversion-item';
+
+            const label = document.createElement('div');
+            label.className = 'conversion-label';
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'case-name';
+            nameSpan.textContent = def.name;
+            const descSpan = document.createElement('span');
+            descSpan.className = 'case-description';
+            descSpan.textContent = def.desc;
+            label.appendChild(nameSpan);
+            label.appendChild(descSpan);
+
+            const output = document.createElement('div');
+            output.className = 'conversion-output';
+            const textarea = document.createElement('textarea');
+            textarea.id = def.key;
+            textarea.readOnly = true;
+            textarea.rows = 1;
+            textarea.spellcheck = false;
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.type = 'button';
+            copyBtn.textContent = 'コピー';
+            copyBtn.dataset.target = def.key;
+            copyBtn.addEventListener('click', (e) => {
+                this.copyToClipboard(def.key, e.currentTarget);
+            });
+
+            output.appendChild(textarea);
+            output.appendChild(copyBtn);
+
+            item.appendChild(label);
+            item.appendChild(output);
+            this.conversionGrid.appendChild(item);
+
+            this.outputs[def.key] = textarea;
         });
     }
     
@@ -94,6 +133,7 @@ api rate limit
         
         Object.keys(results).forEach(caseType => {
             this.outputs[caseType].value = results[caseType];
+            this.autoResizeOutput(this.outputs[caseType]);
         });
     }
     
@@ -217,7 +257,8 @@ api rate limit
     }
     
     async copyToClipboard(targetId, button) {
-        const text = this.outputs[targetId].value;
+        const outputEl = this.outputs[targetId];
+        const text = outputEl ? outputEl.value : '';
         
         if (!text) {
             this.showCopyFeedback(button, 'コピーするテキストがありません', 'error');
@@ -275,7 +316,14 @@ api rate limit
     clearOutputs() {
         Object.values(this.outputs).forEach(output => {
             output.value = '';
+            this.autoResizeOutput(output);
         });
+    }
+
+    autoResizeOutput(element) {
+        if (!element) return;
+        element.style.height = 'auto';
+        element.style.height = element.scrollHeight + 'px';
     }
     
     exportResults() {
