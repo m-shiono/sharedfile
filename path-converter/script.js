@@ -286,12 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayResults(results, isManual = false, manualResult = null) {
         resultsContainer.innerHTML = '';
 
-        if (results.error) {
-            statusBar.innerHTML = `<span class="error">エラー: ${results.error}</span>`;
-            return;
-        }
-
-        if (isManual && manualResult) {
+        if (isManual) {
             // 手動変換の結果表示
             statusBar.innerHTML = '<span class="success">変換完了</span>';
             
@@ -311,6 +306,11 @@ document.addEventListener('DOMContentLoaded', function() {
             resultsContainer.appendChild(resultDiv);
         } else {
             // 自動変換の結果表示
+            if (results && results.error) {
+                statusBar.innerHTML = `<span class="error">エラー: ${results.error}</span>`;
+                return;
+            }
+
             const formatNames = {
                 'windows': 'Windows形式 (\\)',
                 'unix': 'Unix形式 (/)', 
