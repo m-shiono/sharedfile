@@ -8,6 +8,7 @@ class MarkdownTableTool {
         this.gridContainer = document.querySelector('.grid-container');
         this.rowsInput = document.getElementById('rows');
         this.colsInput = document.getElementById('cols');
+        this.fullHeightToggle = document.getElementById('full-height-toggle');
         this.importDataElement = document.getElementById('import-data');
         this.markdownOutput = document.getElementById('markdown-output');
         this.csvOutput = document.getElementById('csv-output');
@@ -57,6 +58,11 @@ class MarkdownTableTool {
 
         // ウィンドウリサイズ時に高さ再計算
         window.addEventListener('resize', () => this.applyHalfHeight());
+
+        // 全体表示トグル変更で高さ再計算
+        if (this.fullHeightToggle) {
+            this.fullHeightToggle.addEventListener('change', () => this.applyHalfHeight());
+        }
     }
     
     createGrid() {
@@ -399,6 +405,23 @@ class MarkdownTableTool {
         
         this.csvOutput.value = csv;
         this.showMessage('CSVデータを生成しました。', 'success');
+    }
+
+    applyHalfHeight() {
+        if (!this.gridContainer) return;
+        const isFull = this.fullHeightToggle && this.fullHeightToggle.checked;
+        if (isFull) {
+            // 全体表示: スクロール無効、制約解除
+            this.gridContainer.style.maxHeight = 'none';
+            this.gridContainer.style.overflowY = 'visible';
+            return;
+        }
+        // 実高を計測するため一時的に制約解除
+        this.gridContainer.style.maxHeight = 'none';
+        const contentHeight = this.grid.scrollHeight;
+        const half = Math.max(40, Math.floor(contentHeight / 2));
+        this.gridContainer.style.maxHeight = half + 'px';
+        this.gridContainer.style.overflowY = 'auto';
     }
     
     processLineBreaks(text, option) {
