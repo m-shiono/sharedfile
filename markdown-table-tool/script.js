@@ -5,6 +5,7 @@ class MarkdownTableTool {
     
     constructor() {
         this.grid = document.getElementById('data-grid');
+        this.gridContainer = document.querySelector('.grid-container');
         this.rowsInput = document.getElementById('rows');
         this.colsInput = document.getElementById('cols');
         this.importDataElement = document.getElementById('import-data');
@@ -17,6 +18,8 @@ class MarkdownTableTool {
         
         this.initializeEventListeners();
         this.createGrid();
+        // 初期化後に高さを適用
+        this.applyHalfHeight();
     }
     
     initializeEventListeners() {
@@ -48,6 +51,12 @@ class MarkdownTableTool {
         
         // Enterキーでセル内改行
         this.grid.addEventListener('keydown', (e) => this.handleKeyPress(e));
+
+        // 入力時に高さ再計算
+        this.grid.addEventListener('input', () => this.applyHalfHeight());
+
+        // ウィンドウリサイズ時に高さ再計算
+        window.addEventListener('resize', () => this.applyHalfHeight());
     }
     
     createGrid() {
@@ -124,6 +133,7 @@ class MarkdownTableTool {
         // データを復元
         this.setGridData(currentData);
         this.showMessage('表サイズを変更しました。', 'success');
+        this.applyHalfHeight();
     }
     
     getGridData() {
@@ -225,6 +235,7 @@ class MarkdownTableTool {
             
             this.createGrid();
             this.setGridData(parsedData);
+            this.applyHalfHeight();
         } catch (error) {
             this.showMessage('データの解析に失敗しました: ' + error.message, 'error');
         }
@@ -388,6 +399,21 @@ class MarkdownTableTool {
         
         this.csvOutput.value = csv;
         this.showMessage('CSVデータを生成しました。', 'success');
+    }
+
+    applyHalfHeight() {
+        if (!this.gridContainer) return;
+        // 一時的に自動高さにして実高を取得
+        const previousMaxHeight = this.gridContainer.style.maxHeight;
+        this.gridContainer.style.maxHeight = 'none';
+        // コンテンツ実高の取得（ヘッダーも含む）
+        const contentHeight = this.grid.scrollHeight;
+        // 半分の高さ（最低100pxは確保）
+        const half = Math.max(100, Math.floor(contentHeight / 2));
+        this.gridContainer.style.maxHeight = half + 'px';
+        // もし横スクロールのみ必要で高さが小さい場合でも縦スクロール可能
+        this.gridContainer.style.overflowY = 'auto';
+        // 以前のmaxHeightは不要のため保持しない
     }
     
     processLineBreaks(text, option) {
