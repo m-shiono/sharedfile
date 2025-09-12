@@ -248,7 +248,7 @@ footer {
     padding: 2px;
     font-size: 0.85rem;
     line-height: 1.2;
-    min-height: 10px;
+    min-height: 30px;
     resize: vertical;
     outline: none;
     font-family: inherit;

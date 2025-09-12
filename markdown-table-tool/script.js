@@ -400,21 +400,6 @@ class MarkdownTableTool {
         this.csvOutput.value = csv;
         this.showMessage('CSVデータを生成しました。', 'success');
     }
-
-    applyHalfHeight() {
-        if (!this.gridContainer) return;
-        // 一時的に自動高さにして実高を取得
-        const previousMaxHeight = this.gridContainer.style.maxHeight;
-        this.gridContainer.style.maxHeight = 'none';
-        // コンテンツ実高の取得（ヘッダーも含む）
-        const contentHeight = this.grid.scrollHeight;
-        // 半分の高さ（最低40pxは確保）
-        const half = Math.max(40, Math.floor(contentHeight / 2));
-        this.gridContainer.style.maxHeight = half + 'px';
-        // もし横スクロールのみ必要で高さが小さい場合でも縦スクロール可能
-        this.gridContainer.style.overflowY = 'auto';
-        // 以前のmaxHeightは不要のため保持しない
-    }
     
     processLineBreaks(text, option) {
         if (!text) return '';
