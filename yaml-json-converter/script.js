@@ -39,7 +39,13 @@ class YamlJsonConverter {
     }
 
     showStatus(message, type = 'info') {
-        showStatus(this.statusBar, message, type);
+        this.showStatusInternal(this.statusBar, message, type);
+    }
+
+    showStatusInternal(statusBarElement, message, type = 'info') {
+        if (!statusBarElement) return;
+        statusBarElement.textContent = message;
+        statusBarElement.className = `status-bar status-${type}`;
     }
 
     getInputFormat() {
@@ -98,8 +104,39 @@ class YamlJsonConverter {
         this.showStatus('クリア完了', 'success');
     }
 
-    copyToClipboard() {
-        copyToClipboard(this.outputText.value, (message, type) => this.showStatus(message, type));
+    async copyToClipboard() {
+        const text = this.outputText.value;
+        if (!text) {
+            this.showStatus('コピーするデータがありません', 'error');
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(text);
+            this.showStatus('クリップボードにコピーしました', 'success');
+        } catch (error) {
+            this.fallbackCopyTextToClipboard(text);
+        }
+    }
+
+    fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            this.showStatus('クリップボードにコピーしました', 'success');
+        } catch (error) {
+            this.showStatus('コピーに失敗しました', 'error');
+        }
+
+        document.body.removeChild(textArea);
     }
 
     formatOutput() {

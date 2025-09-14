@@ -165,6 +165,12 @@ footer {
     display: none;
 }
 
+.status-bar.info {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    display: block;
+}
+
 .status-bar.success {
     background-color: #e8f5e9;
     color: #388e3c;
