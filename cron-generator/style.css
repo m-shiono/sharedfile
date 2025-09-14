@@ -66,8 +66,86 @@
     margin-bottom: 1rem;
 }
 
+.cron-rules {
+    background-color: #f8f9fa;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.cron-rules h3 {
+    color: #2e7d32;
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #4caf50;
+    padding-bottom: 0.25rem;
+}
+
+.format-info {
+    margin-bottom: 1rem;
+}
+
+.format-info p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.rule-item {
+    background-color: white;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 0.85rem;
+}
+
+.rule-item strong {
+    color: #2e7d32;
+}
+
+.special-chars h4 {
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.chars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+}
+
+.chars-grid div {
+    background-color: white;
+    padding: 0.4rem;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 0.8rem;
+}
+
+.chars-grid strong {
+    color: #d32f2f;
+    font-family: monospace;
+}
+
 @media (max-width: 900px) {
     .tool-container {
+        grid-template-columns: 1fr;
+    }
+
+    .rules-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chars-grid {
         grid-template-columns: 1fr;
     }
 }

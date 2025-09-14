@@ -57,6 +57,49 @@
                         <label for="year">年:</label>
                         <select id="year"></select>
                     </div>
+
+                    <div class="cron-rules">
+                        <h3>Cron式フォーマット</h3>
+                        <div class="format-info">
+                            <p><strong>Linux Cron:</strong> 分 時 日 月 曜日</p>
+                            <p><strong>AWS EventBridge:</strong> 分 時 日 月 曜日 年</p>
+                        </div>
+                        <div class="rules-grid">
+                            <div class="rule-item">
+                                <strong>分:</strong> 0-59
+                            </div>
+                            <div class="rule-item">
+                                <strong>時:</strong> 0-23
+                            </div>
+                            <div class="rule-item">
+                                <strong>日:</strong> 1-31
+                            </div>
+                            <div class="rule-item">
+                                <strong>月:</strong> 1-12 または JAN-DEC
+                            </div>
+                            <div class="rule-item">
+                                <strong>曜日:</strong> 0-7 (0と7は日曜日)<br>
+                                0=日, 1=月, 2=火, 3=水, 4=木, 5=金, 6=土
+                            </div>
+                            <div class="rule-item">
+                                <strong>年:</strong> 1970-2099 (AWSのみ)
+                            </div>
+                        </div>
+                        <div class="special-chars">
+                            <h4>特殊文字</h4>
+                            <div class="chars-grid">
+                                <div><strong>*</strong> - すべての値</div>
+                                <div><strong>?</strong> - 任意の値（日・曜日のみ）</div>
+                                <div><strong>-</strong> - 範囲指定 (例: 1-5)</div>
+                                <div><strong>,</strong> - 複数値指定 (例: 1,3,5)</div>
+                                <div><strong>/</strong> - 間隔指定 (例: */5)</div>
+                                <div><strong>L</strong> - 月末・月末曜日</div>
+                                <div><strong>W</strong> - 平日</div>
+                                <div><strong>#</strong> - 第N曜日 (例: 1#2=第2月曜)</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="button-group">
                         <button id="generateBtn">生成</button>
                         <button id="clearBtn">クリア</button>
