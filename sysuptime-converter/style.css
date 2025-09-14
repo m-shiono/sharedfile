@@ -151,6 +151,28 @@ footer {
     border: 1px solid #c8e6c9;
 }
 
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-item label {
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.result-item span {
+    color: #388e3c;
+    font-weight: 500;
+}
+
 .example-buttons {
     display: flex;
     flex-wrap: wrap;
