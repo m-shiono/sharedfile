@@ -177,6 +177,24 @@ footer {
     margin-top: 1rem;
 }
 
+.subnet-item {
+    background-color: #f5f5f5;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid #c8e6c9;
+}
+
+.subnet-item h3 {
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.subnet-item p {
+    margin-bottom: 0.3rem;
+}
+
 .status-bar {
     padding: 1rem;
     margin-bottom: 1rem;
@@ -187,4 +205,14 @@ footer {
 .status-bar.error {
     background-color: #ffebee;
     color: #d32f2f;
+}
+
+.status-bar.success {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+}
+
+.status-bar.info {
+    background-color: #e3f2fd;
+    color: #1976d2;
 }

@@ -27,7 +27,11 @@ class IPCalculator {
     }
 
     showStatus(message, type = 'info') {
-        showStatus(this.statusBar, message, type);
+        if (this.statusBar) {
+            this.statusBar.textContent = message;
+            this.statusBar.className = `status-bar ${type}`;
+            this.statusBar.style.display = 'block';
+        }
     }
 
     validateIPAddress(ip) {
