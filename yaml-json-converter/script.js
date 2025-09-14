@@ -53,7 +53,44 @@ class YamlJsonConverter {
     }
 
     onFormatChange() {
-        this.convert();
+        // フォーマット変更時に、入力が空またはサンプルデータの場合は新しいサンプルを読み込む
+        const currentInput = this.inputText.value.trim();
+        if (!currentInput || this.isSampleContent(currentInput)) {
+            this.loadSampleContent();
+        } else {
+            this.convert();
+        }
+    }
+
+    isSampleContent(content) {
+        // 現在の入力がサンプルコンテンツかどうかを判定
+        const yamlSample = `apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-config
+  namespace: default
+data:
+  database_url: "postgresql://user:pass@localhost/db"
+  redis_url: "redis://localhost:6379"
+  debug: "true"
+  max_connections: "100"`;
+
+        const jsonSample = `{
+  "apiVersion": "v1",
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "sample-config",
+    "namespace": "default"
+  },
+  "data": {
+    "database_url": "postgresql://user:pass@localhost/db",
+    "redis_url": "redis://localhost:6379",
+    "debug": "true",
+    "max_connections": "100"
+  }
+}`;
+
+        return content === yamlSample.trim() || content === jsonSample.trim();
     }
 
     convert() {
@@ -173,7 +210,12 @@ class YamlJsonConverter {
     }
 
     loadSampleContent() {
-        const sampleYaml = `apiVersion: v1
+        const inputFormat = this.getInputFormat();
+        let sample;
+
+        if (inputFormat === 'yaml') {
+            // YAML → JSON の場合はYAMLサンプル
+            sample = `apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sample-config
@@ -183,8 +225,25 @@ data:
   redis_url: "redis://localhost:6379"
   debug: "true"
   max_connections: "100"`;
+        } else {
+            // JSON → YAML の場合はJSONサンプル
+            sample = `{
+  "apiVersion": "v1",
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "sample-config",
+    "namespace": "default"
+  },
+  "data": {
+    "database_url": "postgresql://user:pass@localhost/db",
+    "redis_url": "redis://localhost:6379",
+    "debug": "true",
+    "max_connections": "100"
+  }
+}`;
+        }
 
-        this.inputText.value = sampleYaml;
+        this.inputText.value = sample;
         this.convert();
     }
 
