@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Path加工ツール - 便利ツール＆ユーティリティ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Path加工ツール</h1>
+        <p>Windows・Unix・アプリケーション形式のパス文字列を相互変換します。</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-card">
+            <div class="tool-container">
+                <div class="input-section">
+                    <h2>パス変換</h2>
+                    <fieldset class="conversion-mode">
+                        <legend>変換モード:</legend>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="mode" value="auto" checked aria-describedby="auto-desc">
+                                <span>自動判定</span>
+                                <small id="auto-desc">パス形式を自動で判定し、全形式に変換します</small>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="mode" value="manual" aria-describedby="manual-desc">
+                                <span>手動選択</span>
+                                <small id="manual-desc">変換元と変換先の形式を手動で指定します</small>
+                            </label>
+                        </div>
+                    </fieldset>
+                    
+                    <div id="manual-options" class="manual-options hidden">
+                        <div class="conversion-selector">
+                            <div>
+                                <label for="from-format">変換元:</label>
+                                <select id="from-format" aria-label="変換元のパス形式を選択">
+                                    <option value="windows">Windows (バックスラッシュ)</option>
+                                    <option value="unix">Unix (スラッシュ)</option>
+                                    <option value="escaped">エスケープ済み (ダブルバックスラッシュ)</option>
+                                    <option value="url">URL形式</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="to-format">変換先:</label>
+                                <select id="to-format" aria-label="変換先のパス形式を選択">
+                                    <option value="windows">Windows (バックスラッシュ)</option>
+                                    <option value="unix">Unix (スラッシュ)</option>
+                                    <option value="escaped">エスケープ済み (ダブルバックスラッシュ)</option>
+                                    <option value="url">URL形式</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <label for="inputPath" class="visually-hidden">変換したいパスを入力</label>
+                    <textarea id="inputPath" 
+                              placeholder="変換したいパスを入力してください...&#10;例: C:\test\hoge, /home/user/file.txt, \\\\server\\share, etc."
+                              aria-label="変換したいパスを入力してください"
+                              maxlength="32768"></textarea>
+                    
+                    <div class="button-group">
+                        <button id="convertBtn">変換</button>
+                        <button id="clearBtn">クリア</button>
+                        <button id="sampleBtn">サンプル</button>
+                    </div>
+                </div>
+                
+                <div class="output-section">
+                    <h2>変換結果</h2>
+                    <div id="statusBar" class="status-bar"></div>
+                    <div id="results" class="results-container">
+                        <!-- 変換結果がここに表示される -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tool-card">
+            <h3>Path変換パターン</h3>
+            <p>このツールは以下のパス形式間での相互変換を行います。</p>
+            <div class="pattern-grid">
+                <div class="pattern-card">
+                    <h4>Windows形式</h4>
+                    <p>バックスラッシュ区切り</p>
+                    <code>C:\test\hoge.txt</code>
+                    <small>Windows標準のパス形式</small>
+                </div>
+                <div class="pattern-card">
+                    <h4>Unix形式</h4>
+                    <p>スラッシュ区切り</p>
+                    <code>/home/user/test.txt</code>
+                    <small>Linux/macOS標準のパス形式</small>
+                </div>
+                <div class="pattern-card">
+                    <h4>エスケープ済み</h4>
+                    <p>プログラミング用</p>
+                    <code>C:\\test\\hoge.txt</code>
+                    <small>JavaScript、JSON等で使用</small>
+                </div>
+                <div class="pattern-card">
+                    <h4>URL形式</h4>
+                    <p>Web用パス</p>
+                    <code>file:///C:/test/hoge.txt</code>
+                    <small>ブラウザ、Web API用</small>
+                </div>
+                <div class="pattern-card">
+                    <h4>UNC形式</h4>
+                    <p>ネットワークパス</p>
+                    <code>\\server\share\file</code>
+                    <small>Windows共有フォルダ</small>
+                </div>
+                <div class="pattern-card">
+                    <h4>POSIX形式</h4>
+                    <p>標準Unix形式</p>
+                    <code>/mnt/share/file.txt</code>
+                    <small>POSIX準拠システム</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tool-card">
+            <h3>使用方法</h3>
+            <ol>
+                <li><strong>自動変換モード:</strong> パスを入力すると自動的に判定し、全形式に変換</li>
+                <li><strong>手動変換モード:</strong> 変換元と変換先の形式を指定して変換</li>
+                <li><strong>サンプルボタン:</strong> 各種パス形式のサンプルを確認</li>
+                <li><strong>結果コピー:</strong> 各変換結果をクリックでクリップボードにコピー</li>
+            </ol>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 personal project for m-shiono</p>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html>

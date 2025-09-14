@@ -176,6 +176,23 @@ footer {
     color: #d32f2f;
 }
 
+/* 互換: 共通JSのクラス付与方式に合わせる */
+.status-bar.status-error {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
+
+/* 追加: ステータス種別ごとのスタイル */
+.status-bar.status-info {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+.status-bar.status-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
 @media (max-width: 900px) {
     .tool-container {
         grid-template-columns: 1fr;

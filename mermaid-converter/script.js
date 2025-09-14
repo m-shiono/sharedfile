@@ -83,8 +83,19 @@ const templates = {
 };
 
 // ユーティリティ関数
-function showStatus(message, type = 'info') {
-    showStatus(statusBar, message, type);
+function updateStatus(message, type = 'info') {
+    // ステータスバーを表示状態に戻す
+    if (statusBar) {
+        statusBar.style.display = 'block';
+    }
+    // 共通の showStatus があれば利用し、なければフォールバック
+    if (typeof window.showStatus === 'function') {
+        window.showStatus(statusBar, message, type);
+    } else {
+        if (!statusBar) return;
+        statusBar.textContent = message;
+        statusBar.className = `status-bar status-${type}`;
+    }
 }
 
 function hideStatus() {
@@ -102,12 +113,12 @@ async function generateDiagram() {
     const inputText = mermaidInput.value.trim();
     
     if (!inputText) {
-        showStatus('Mermaidテキストを入力してください', 'error');
+        updateStatus('Mermaidテキストを入力してください', 'error');
         return;
     }
     
     try {
-        showStatus('図を生成中...', 'info');
+        updateStatus('図を生成中...', 'info');
         
         // 前の図をクリア
         diagramOutput.innerHTML = '';
@@ -128,11 +139,11 @@ async function generateDiagram() {
         downloadSvgBtn.disabled = false;
         downloadPngBtn.disabled = false;
         
-        showStatus('図の生成が完了しました', 'success');
+        updateStatus('図の生成が完了しました', 'success');
         
     } catch (error) {
         console.error('Mermaid generation error:', error);
-        showStatus(`エラー: ${error.message}`, 'error');
+        updateStatus(`エラー: ${error.message}`, 'error');
         diagramOutput.innerHTML = '<p style="color: #721c24;">図の生成に失敗しました。Mermaidの記法を確認してください。</p>';
         
         // ダウンロードボタンを無効化
@@ -145,7 +156,7 @@ async function generateDiagram() {
 function downloadSvg() {
     const svgElement = diagramOutput.querySelector('svg');
     if (!svgElement) {
-        showStatus(statusBar, 'ダウンロードする図がありません', 'error');
+        updateStatus('ダウンロードする図がありません', 'error');
         return;
     }
     
@@ -167,11 +178,11 @@ function downloadSvg() {
         // URLオブジェクトを解放
         URL.revokeObjectURL(downloadLink.href);
         
-        showStatus(statusBar, 'SVGファイルをダウンロードしました', 'success');
+        updateStatus('SVGファイルをダウンロードしました', 'success');
         
     } catch (error) {
         console.error('SVG download error:', error);
-        showStatus(statusBar, 'SVGダウンロードに失敗しました', 'error');
+        updateStatus('SVGダウンロードに失敗しました', 'error');
     }
 }
 
@@ -179,7 +190,7 @@ function downloadSvg() {
 function downloadPng() {
     const svgElement = diagramOutput.querySelector('svg');
     if (!svgElement) {
-        showStatus(statusBar, 'ダウンロードする図がありません', 'error');
+        updateStatus('ダウンロードする図がありません', 'error');
         return;
     }
     
@@ -225,7 +236,7 @@ function downloadPng() {
                 document.body.removeChild(downloadLink);
                 
                 URL.revokeObjectURL(downloadLink.href);
-                showStatus(statusBar, 'PNGファイルをダウンロードしました', 'success');
+                updateStatus('PNGファイルをダウンロードしました', 'success');
             }, 'image/png');
             
             URL.revokeObjectURL(url);
@@ -233,7 +244,7 @@ function downloadPng() {
         
         img.onerror = function() {
             URL.revokeObjectURL(url);
-            showStatus(statusBar, 'PNG変換に失敗しました', 'error');
+            updateStatus('PNG変換に失敗しました', 'error');
         };
         
         img.src = url;
@@ -257,7 +268,7 @@ function clearInput() {
 function insertTemplate(templateKey) {
     if (templates[templateKey]) {
         mermaidInput.value = templates[templateKey];
-        showStatus(`${templateKey}テンプレートを挿入しました`, 'info');
+        updateStatus(`${templateKey}テンプレートを挿入しました`, 'info');
     }
 }
 
@@ -291,5 +302,5 @@ document.addEventListener('DOMContentLoaded', function() {
     downloadPngBtn.disabled = true;
     
     // 初期メッセージ
-    showStatus('Mermaidテキストを入力して「図を生成」ボタンを押してください', 'info');
+    updateStatus('Mermaidテキストを入力して「図を生成」ボタンを押してください', 'info');
 });
