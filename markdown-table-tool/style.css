@@ -216,7 +216,7 @@ footer {
 .data-grid {
     width: 100%;
     border-collapse: collapse;
-    min-width: 250px;
+    min-width: 400px;
 }
 
 .data-grid th,
