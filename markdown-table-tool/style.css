@@ -216,13 +216,13 @@ footer {
 .data-grid {
     width: 100%;
     border-collapse: collapse;
-    min-width: 400px;
+    min-width: 40px;
 }
 
 .data-grid th,
 .data-grid td {
     border: 1px solid #c8e6c9;
-    padding: var(--cell-padding-desktop);
+    padding: 0; /* セル高さをtextareaに合わせる（th側で後から上書き） */
     min-width: var(--cell-min-width-desktop);
     position: relative;
     line-height: 1.2;
@@ -234,6 +234,7 @@ footer {
     font-weight: bold;
     text-align: center;
     font-size: 0.85rem;
+    padding: var(--cell-padding-desktop); /* ヘッダーの余白は維持 */
 }
 
 .data-grid td {
@@ -245,7 +246,7 @@ footer {
     width: 100%;
     border: none;
     background: transparent;
-    padding: 2px;
+    padding: 2px; /* 既定値に戻す（入力エリアサイズはそのまま） */
     font-size: 0.85rem;
     line-height: 1.2;
     min-height: 30px;
@@ -366,10 +367,13 @@ footer {
         width: 100px;
     }
     
-    .data-grid th,
-    .data-grid td {
+    .data-grid th {
         min-width: var(--cell-min-width-mobile);
         padding: var(--cell-padding-mobile);
+    }
+    .data-grid td {
+        min-width: var(--cell-min-width-mobile);
+        padding: 0; /* モバイルでもセル高さをtextareaに合わせる */
     }
     
     .button-group {

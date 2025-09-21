@@ -419,8 +419,9 @@ class MarkdownTableTool {
         // 実高を計測するため一時的に制約解除
         this.gridContainer.style.maxHeight = 'none';
         const contentHeight = this.grid.scrollHeight;
-        const half = Math.max(40, Math.floor(contentHeight / 2));
-        this.gridContainer.style.maxHeight = half + 'px';
+        // 既存の半分(0.5)から1.2倍の0.6へ変更
+        const sixtyPercent = Math.max(40, Math.floor(contentHeight * 0.6));
+        this.gridContainer.style.maxHeight = sixtyPercent + 'px';
         this.gridContainer.style.overflowY = 'auto';
     }
     
