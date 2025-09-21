@@ -432,7 +432,8 @@ class MarkdownTableTool {
             case 'br':
                 return text.replace(/\n/g, '<br />');
             case 'newline':
-                return text; // \nをそのまま保持
+                // 実際の改行(\r\n/\n)をリテラルの \n に変換
+                return text.replace(/\r\n/g, '\n').replace(/\n/g, '\\n');
             case 'none':
                 return text.replace(/\n/g, ' ');
             default:
