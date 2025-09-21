@@ -80,11 +80,37 @@
         </div>
         
         <div class="tool-card">
-            <h2>データインポート</h2>
-            
-            <div class="import-section">
-                <h3>Markdown表またはCSVデータを貼り付け</h3>
-                <textarea id="import-data" placeholder="Markdown表またはCSVデータを貼り付けてください...
+            <h2>インポート / 出力</h2>
+            <div class="tabs">
+                <input type="radio" id="tab-output" name="io-tabs" checked>
+                <label for="tab-output" class="tab-label">出力</label>
+                <input type="radio" id="tab-import" name="io-tabs">
+                <label for="tab-import" class="tab-label">データインポート</label>
+
+                <div class="tabs-content">
+                    <section id="panel-output" class="tab-panel">
+                        <div class="export-section">
+                            <h3>Markdown出力</h3>
+                            <textarea id="markdown-output" readonly placeholder="Markdown形式の表がここに生成されます..."></textarea>
+
+                            <h3>CSV出力</h3>
+                            <textarea id="csv-output" readonly placeholder="CSV形式のデータがここに生成されます..."></textarea>
+
+                            <div class="button-group">
+                                <button id="generate-markdown-btn">Markdown生成</button>
+                                <button id="generate-csv-btn">CSV生成</button>
+                                <button id="copy-markdown-btn">Markdownコピー</button>
+                                <button id="copy-csv-btn">CSVコピー</button>
+                                <button id="download-markdown-btn">Markdownダウンロード</button>
+                                <button id="download-csv-btn">CSVダウンロード</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="panel-import" class="tab-panel">
+                        <div class="import-section">
+                            <h3>Markdown表またはCSVデータを貼り付け</h3>
+                            <textarea id="import-data" placeholder="Markdown表またはCSVデータを貼り付けてください...
 
 Markdown例:
 | 名前 | 年齢 | 職業 |
@@ -96,31 +122,13 @@ CSV例:
 名前,年齢,職業
 田中,30,エンジニア
 佐藤,25,デザイナー"></textarea>
-                
-                <div class="button-group">
-                    <button id="import-btn">データインポート</button>
-                    <button id="clear-import-btn">インポートエリアクリア</button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="tool-card">
-            <h2>出力</h2>
-            
-            <div class="export-section">
-                <h3>Markdown出力</h3>
-                <textarea id="markdown-output" readonly placeholder="Markdown形式の表がここに生成されます..."></textarea>
-                
-                <h3>CSV出力</h3>
-                <textarea id="csv-output" readonly placeholder="CSV形式のデータがここに生成されます..."></textarea>
-                
-                <div class="button-group">
-                    <button id="generate-markdown-btn">Markdown生成</button>
-                    <button id="generate-csv-btn">CSV生成</button>
-                    <button id="copy-markdown-btn">Markdownコピー</button>
-                    <button id="copy-csv-btn">CSVコピー</button>
-                    <button id="download-markdown-btn">Markdownダウンロード</button>
-                    <button id="download-csv-btn">CSVダウンロード</button>
+
+                            <div class="button-group">
+                                <button id="import-btn">データインポート</button>
+                                <button id="clear-import-btn">インポートエリアクリア</button>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </div>

@@ -418,3 +418,44 @@ footer {
     border-left: 4px solid #4caf50;
     font-size: 0.9rem;
 }
+
+/* タブUI */
+.tabs {
+    margin-top: 0.5rem;
+}
+.tabs input[type="radio"] {
+    display: none;
+}
+.tab-label {
+    display: inline-block;
+    padding: 0.6rem 1rem;
+    margin-right: 0.25rem;
+    border-radius: 8px 8px 0 0;
+    background: #e8f5e9;
+    color: #2e7d32;
+    cursor: pointer;
+    font-weight: bold;
+    border: 1px solid #c8e6c9;
+    border-bottom: none;
+}
+#tab-output:checked + label,
+#tab-import:checked + label {
+    background: #ffffff;
+    color: #2e7d32;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.06);
+}
+.tabs-content {
+    border: 1px solid #c8e6c9;
+    border-radius: 0 8px 8px 8px;
+    background: #ffffff;
+    padding: 1rem;
+}
+.tab-panel {
+    display: none;
+}
+#tab-output:checked ~ .tabs-content #panel-output {
+    display: block;
+}
+#tab-import:checked ~ .tabs-content #panel-import {
+    display: block;
+}
