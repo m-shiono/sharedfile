@@ -262,8 +262,21 @@ class MarkdownTableTool {
             if (line.startsWith('|') && line.endsWith('|')) {
                 const cells = line.slice(1, -1).split('|').map(cell => {
                     let cellValue = cell.trim();
+                    const originalValue = cellValue;
+
+                    // HTMLエンティティをデコード（&lt;br /&gt; → <br />）
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = cellValue;
+                    cellValue = tempDiv.textContent || tempDiv.innerText || '';
+
                     // HTMLの<br />タグを改行コードに変換
                     cellValue = cellValue.replace(/<br\s*\/?>/gi, '\n');
+
+                    // デバッグ用ログ（変換があった場合のみ）
+                    if (originalValue !== cellValue) {
+                        console.log('変換:', originalValue, '→', cellValue);
+                    }
+
                     return cellValue;
                 });
                 result.push(cells);
