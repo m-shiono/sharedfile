@@ -267,7 +267,8 @@ class MarkdownTableTool {
                     // HTMLエンティティをデコード（&lt;br /&gt; → <br />）
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = cellValue;
-                    cellValue = tempDiv.textContent || tempDiv.innerText || '';
+                    // innerHTMLを使ってHTMLタグを保持したままデコード
+                    cellValue = tempDiv.innerHTML;
 
                     // HTMLの<br />タグを改行コードに変換
                     cellValue = cellValue.replace(/<br\s*\/?>/gi, '\n');
