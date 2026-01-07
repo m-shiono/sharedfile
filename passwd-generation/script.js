@@ -77,16 +77,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function generatePassword(charset, length) {
-        // Validate inputs
-        if (!charset || charset.length === 0) {
-            throw new Error('文字セットが空です。');
+        // Validate inputs more defensively
+        const charsetLength = charset ? charset.length : 0;
+        if (charsetLength <= 0) {
+            throw new Error('文字セットが空です。少なくとも1つの文字タイプを選択してください。');
         }
         if (length <= 0) {
             return '';
         }
 
         let password = '';
-        const charsetLength = charset.length;
 
         // Use cryptographically secure randomness via window.crypto.getRandomValues
         const cryptoObj = window.crypto;
