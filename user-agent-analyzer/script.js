@@ -359,19 +359,51 @@ function analyzeUserAgent(ua) {
     `;
 
     // User-Agent構成要素
-    let componentsHtml = '<div class="component-part"><strong>原文:</strong><br>' + ua + '</div><br>';
-    
+    const fragment = document.createDocumentFragment();
+
+    const originalWrapper = document.createElement('div');
+    originalWrapper.className = 'component-part';
+
+    const originalLabel = document.createElement('strong');
+    originalLabel.textContent = '原文:';
+    originalWrapper.appendChild(originalLabel);
+    originalWrapper.appendChild(document.createElement('br'));
+
+    const originalText = document.createElement('span');
+    originalText.textContent = ua;
+    originalWrapper.appendChild(originalText);
+
+    fragment.appendChild(originalWrapper);
+    fragment.appendChild(document.createElement('br'));
+
     if (analysis.components.length > 0) {
-        componentsHtml += '<strong>検出されたコンポーネント:</strong><br>';
+        const componentsTitle = document.createElement('strong');
+        componentsTitle.textContent = '検出されたコンポーネント:';
+        fragment.appendChild(componentsTitle);
+        fragment.appendChild(document.createElement('br'));
+
         analysis.components.forEach(component => {
-            componentsHtml += `<div class="component-part">
-                <strong>${component.name}</strong> ${component.version}<br>
-                <small>${component.raw}</small>
-            </div>`;
+            const compDiv = document.createElement('div');
+            compDiv.className = 'component-part';
+
+            const nameStrong = document.createElement('strong');
+            nameStrong.textContent = component.name;
+            compDiv.appendChild(nameStrong);
+
+            const versionText = document.createTextNode(' ' + component.version);
+            compDiv.appendChild(versionText);
+            compDiv.appendChild(document.createElement('br'));
+
+            const rawSmall = document.createElement('small');
+            rawSmall.textContent = component.raw;
+            compDiv.appendChild(rawSmall);
+
+            fragment.appendChild(compDiv);
         });
     }
-    
-    uaComponents.innerHTML = componentsHtml;
+
+    uaComponents.innerHTML = '';
+    uaComponents.appendChild(fragment);
 
     // 結果セクションを表示
     resultsSection.style.display = 'block';
