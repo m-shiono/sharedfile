@@ -359,7 +359,7 @@ function analyzeUserAgent(ua) {
     `;
 
     // User-Agent構成要素
-    uaComponents.innerHTML = '';
+    const fragment = document.createDocumentFragment();
 
     const originalWrapper = document.createElement('div');
     originalWrapper.className = 'component-part';
@@ -373,14 +373,14 @@ function analyzeUserAgent(ua) {
     originalText.textContent = ua;
     originalWrapper.appendChild(originalText);
 
-    uaComponents.appendChild(originalWrapper);
-    uaComponents.appendChild(document.createElement('br'));
+    fragment.appendChild(originalWrapper);
+    fragment.appendChild(document.createElement('br'));
 
     if (analysis.components.length > 0) {
         const componentsTitle = document.createElement('strong');
         componentsTitle.textContent = '検出されたコンポーネント:';
-        uaComponents.appendChild(componentsTitle);
-        uaComponents.appendChild(document.createElement('br'));
+        fragment.appendChild(componentsTitle);
+        fragment.appendChild(document.createElement('br'));
 
         analysis.components.forEach(component => {
             const compDiv = document.createElement('div');
@@ -398,9 +398,12 @@ function analyzeUserAgent(ua) {
             rawSmall.textContent = component.raw;
             compDiv.appendChild(rawSmall);
 
-            uaComponents.appendChild(compDiv);
+            fragment.appendChild(compDiv);
         });
     }
+
+    uaComponents.innerHTML = '';
+    uaComponents.appendChild(fragment);
 
     // 結果セクションを表示
     resultsSection.style.display = 'block';
