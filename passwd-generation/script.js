@@ -73,10 +73,42 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function generatePassword(charset, length) {
         let password = '';
+
+        // Use cryptographically secure randomness via window.crypto.getRandomValues
+        const cryptoObj = window.crypto || window.msCrypto;
+        if (!cryptoObj || !cryptoObj.getRandomValues) {
+            // Fallback should be avoided for real security, but keeps function usable
+            // if crypto is unavailable in the environment.
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * charset.length);
+                password += charset[randomIndex];
+            }
+            return password;
+        }
+
+        // Rejection-sampling to avoid modulo bias when mapping bytes to charset indices
+        const charsetLength = charset.length;
+        const maxUnbiased = Math.floor(256 / charsetLength) * charsetLength;
+        const buffer = new Uint8Array(length * 2); // extra space in case of rejections
+        let bufferIndex = buffer.length; // force initial refill
+
         for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * charset.length);
+            let byte;
+            while (true) {
+                if (bufferIndex >= buffer.length) {
+                    cryptoObj.getRandomValues(buffer);
+                    bufferIndex = 0;
+                }
+                byte = buffer[bufferIndex++];
+                if (byte < maxUnbiased) {
+                    break;
+                }
+                // otherwise, reject and draw again
+            }
+            const randomIndex = byte % charsetLength;
             password += charset[randomIndex];
         }
+
         return password;
     }
     
