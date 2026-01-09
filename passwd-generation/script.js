@@ -63,20 +63,74 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // パスワード生成
         const passwords = [];
-        for (let i = 0; i < passwordCount; i++) {
-            passwords.push(generatePassword(charset, passwordLength));
+        try {
+            for (let i = 0; i < passwordCount; i++) {
+                passwords.push(generatePassword(charset, passwordLength));
+            }
+            
+            // 結果の表示
+            displayPasswords(passwords);
+        } catch (error) {
+            errorMessage.textContent = error.message;
+            return;
         }
-        
-        // 結果の表示
-        displayPasswords(passwords);
     }
     
     function generatePassword(charset, length) {
+        // Validate inputs more defensively
+        const charsetLength = charset ? charset.length : 0;
+        if (charsetLength <= 0) {
+            throw new Error('文字セットが空です。少なくとも1つの文字タイプを選択してください。');
+        }
+        if (length <= 0) {
+            return '';
+        }
+
         let password = '';
+
+        // Use cryptographically secure randomness via window.crypto.getRandomValues
+        const cryptoObj = window.crypto;
+        if (!cryptoObj || !cryptoObj.getRandomValues) {
+            // Security fix: Don't fallback to insecure Math.random()
+            // Instead throw an error to inform the user
+            throw new Error('暗号学的に安全な乱数生成器が利用できません。モダンなブラウザでアクセスしてください。');
+        }
+
+        // Handle large charset edge case to prevent infinite loop
+        if (charsetLength > 255) {
+            // For very large charsets, accept slight modulo bias rather than infinite loop
+            // This is an edge case that's unlikely with typical usage but needs handling
+            const buffer = new Uint8Array(length);
+            cryptoObj.getRandomValues(buffer);
+            for (let i = 0; i < length; i++) {
+                const randomIndex = buffer[i] % charsetLength;
+                password += charset[randomIndex];
+            }
+            return password;
+        }
+
+        // Rejection-sampling to avoid modulo bias when mapping bytes to charset indices
+        const maxUnbiased = Math.floor(256 / charsetLength) * charsetLength;
+        const buffer = new Uint8Array(length * 2); // extra space in case of rejections
+        let bufferIndex = buffer.length; // force initial refill
+
         for (let i = 0; i < length; i++) {
-            const randomIndex = Math.floor(Math.random() * charset.length);
+            let byte;
+            while (true) {
+                if (bufferIndex >= buffer.length) {
+                    cryptoObj.getRandomValues(buffer);
+                    bufferIndex = 0;
+                }
+                byte = buffer[bufferIndex++];
+                if (byte < maxUnbiased) {
+                    break;
+                }
+                // otherwise, reject and draw again
+            }
+            const randomIndex = byte % charsetLength;
             password += charset[randomIndex];
         }
+
         return password;
     }
     
