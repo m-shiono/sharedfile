@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown to HTML Converter - 便利ツール＆ユーティリティ</title>
-    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header>
         <h1>Markdown to HTML Converter</h1>
@@ -18,28 +20,28 @@
     </nav>
     <main>
         <div class="tool-card">
-          <h2>機能説明</h2>
-          <p>入力枠に Markdown 形式で入力し変換ボタンをクリックすると、プレビュー表示とともにHTMLのコードが出力されます。</p>
-          <p>※このツールはJavascriptとHTMLのみで作成されています。</p>
-          <div class="row">
-              <div class="col">
-                  <h3>Markdown 入力</h3>
-                  <textarea id="editor" placeholder="Type your markdown here..."></textarea>
-              </div>
-              <div class="col">
-                  <h3>プレビュー</h3>
-                  <div id="preview" class="preview"></div>
-              </div>
-          </div>
+            <h2>機能説明</h2>
+            <p>入力枠に Markdown 形式で入力し変換ボタンをクリックすると、プレビュー表示とともにHTMLのコードが出力されます。</p>
+            <p>※このツールはJavascriptとHTMLのみで作成されています。</p>
+            <div class="row">
+                <div class="col">
+                    <h3>Markdown 入力</h3>
+                    <textarea id="editor" placeholder="Type your markdown here..."></textarea>
+                </div>
+                <div class="col">
+                    <h3>プレビュー</h3>
+                    <div id="preview" class="preview"></div>
+                </div>
+            </div>
 
-          <div class="button-group">
-            <button id="convert">変換</button>
-          </div>
+            <div class="button-group">
+                <button id="convert">変換</button>
+            </div>
 
-          <h3>HTML 出力</h3>
+            <h3>HTML 出力</h3>
             <pre id="output"></pre>
             <div class="button-group">
-              <button id="copy" class="copy-button">HTMLをコピー</button>
+                <button id="copy" class="copy-button">HTMLをコピー</button>
             </div>
 
         </div>
@@ -48,6 +50,8 @@
         <p>&copy; 2024 m-shiono personal project</p>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/marked@2.1.3/lib/marked.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

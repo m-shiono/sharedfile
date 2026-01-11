@@ -266,8 +266,10 @@ class MarkdownTableTool {
 
                     // HTMLエンティティをデコード（&lt;br /&gt; → <br />）
                     const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = cellValue;
+                    // XSS対策: DOMPurifyでサニタイズしてからinnerHTMLに設定
+                    tempDiv.innerHTML = DOMPurify.sanitize(cellValue);
                     // innerHTMLを使ってHTMLタグを保持したままデコード
+
                     cellValue = tempDiv.innerHTML;
 
                     // HTMLの<br />タグを改行コードに変換

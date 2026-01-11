@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     convertButton.addEventListener('click', () => {
         const markdown = editor.value;
         const html = marked(markdown);
-        preview.innerHTML = html;
+        // XSS対策: DOMPurifyでサニタイズ
+        preview.innerHTML = DOMPurify.sanitize(html);
         output.textContent = html;
     });
 
