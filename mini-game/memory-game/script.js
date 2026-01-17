@@ -201,20 +201,37 @@ function endGame() {
     // 勝利メッセージを表示
     setTimeout(() => {
         // 勝利メッセージのHTML
-        const winnerHTML = `
-            <div class="winner-message show">
-                <div class="winner-content">
-                    <h2>🎉 クリアおめでとう！ 🎉</h2>
-                    <p>すべてのペアを見つけました！</p>
-                    <p>手数: ${moveCount}</p>
-                    <p>タイム: ${gameTimer}秒</p>
-                    <button id="play-again">もう一度プレイする</button>
-                </div>
-            </div>
-        `;
+        const overlay = document.createElement('div');
+        overlay.className = 'winner-message show';
+
+        const content = document.createElement('div');
+        content.className = 'winner-content';
+
+        const title = document.createElement('h2');
+        title.textContent = '🎉 クリアおめでとう！ 🎉';
+
+        const message = document.createElement('p');
+        message.textContent = 'すべてのペアを見つけました！';
+
+        const moves = document.createElement('p');
+        moves.textContent = `手数: ${moveCount}`;
+
+        const time = document.createElement('p');
+        time.textContent = `タイム: ${gameTimer}秒`;
+
+        const replayBtn = document.createElement('button');
+        replayBtn.id = 'play-again';
+        replayBtn.textContent = 'もう一度プレイする';
+
+        content.appendChild(title);
+        content.appendChild(message);
+        content.appendChild(moves);
+        content.appendChild(time);
+        content.appendChild(replayBtn);
+        overlay.appendChild(content);
         
         // 勝利メッセージを追加
-        document.body.insertAdjacentHTML('beforeend', winnerHTML);
+        document.body.appendChild(overlay);
         
         // もう一度プレイするボタンにイベントリスナーを追加
         document.getElementById('play-again').addEventListener('click', () => {

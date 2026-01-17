@@ -145,13 +145,26 @@ class ColorTool {
         this.contrastPreview.style.backgroundColor = bg;
         
         const contrast = this.calculateContrast(fg, bg);
-        this.contrastRatio.innerHTML = `
-            <span>コントラスト比: ${contrast.toFixed(2)}:1</span>
-            <div class="wcag-compliance">
-                <span class="wcag-aa ${contrast >= 4.5 ? 'pass' : 'fail'}">WCAG AA: ${contrast >= 4.5 ? '✓' : '✗'}</span>
-                <span class="wcag-aaa ${contrast >= 7 ? 'pass' : 'fail'}">WCAG AAA: ${contrast >= 7 ? '✓' : '✗'}</span>
-            </div>
-        `;
+        this.contrastRatio.textContent = '';
+        const ratioSpan = document.createElement('span');
+        ratioSpan.textContent = `コントラスト比: ${contrast.toFixed(2)}:1`;
+
+        const complianceDiv = document.createElement('div');
+        complianceDiv.className = 'wcag-compliance';
+
+        const aaSpan = document.createElement('span');
+        aaSpan.className = `wcag-aa ${contrast >= 4.5 ? 'pass' : 'fail'}`;
+        aaSpan.textContent = `WCAG AA: ${contrast >= 4.5 ? '✓' : '✗'}`;
+
+        const aaaSpan = document.createElement('span');
+        aaaSpan.className = `wcag-aaa ${contrast >= 7 ? 'pass' : 'fail'}`;
+        aaaSpan.textContent = `WCAG AAA: ${contrast >= 7 ? '✓' : '✗'}`;
+
+        complianceDiv.appendChild(aaSpan);
+        complianceDiv.appendChild(aaaSpan);
+
+        this.contrastRatio.appendChild(ratioSpan);
+        this.contrastRatio.appendChild(complianceDiv);
     }
     
     generateComplementaryPalette() {

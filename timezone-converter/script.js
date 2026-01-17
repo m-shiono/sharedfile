@@ -60,7 +60,7 @@ function convertTimezone() {
     const sourceDate = new Date(inputValue + ':00');
     
     // 結果をクリア
-    resultsContainer.innerHTML = '';
+    resultsContainer.textContent = '';
 
     // 各タイムゾーンに変換
     timezones.forEach(timezone => {
@@ -93,15 +93,11 @@ function convertTimezone() {
 
             const formattedTime = convertedTime.toLocaleString('ja-JP', options);
 
-            resultDiv.innerHTML = `
-                <div class="timezone-name">${timezone.display}</div>
-                <div class="timezone-time">${formattedTime}</div>
-            `;
+            resultDiv.appendChild(createTimezoneName(timezone.display));
+            resultDiv.appendChild(createTimezoneTime(formattedTime));
         } catch (error) {
-            resultDiv.innerHTML = `
-                <div class="timezone-name">${timezone.display}</div>
-                <div class="timezone-time">変換エラー</div>
-            `;
+            resultDiv.appendChild(createTimezoneName(timezone.display));
+            resultDiv.appendChild(createTimezoneTime('変換エラー'));
         }
 
         resultsContainer.appendChild(resultDiv);
@@ -127,7 +123,7 @@ function convertTimezoneAccurate() {
     const sourceTimezone = inputTimezone.value;
     
     // 結果をクリア
-    resultsContainer.innerHTML = '';
+    resultsContainer.textContent = '';
 
     // 各タイムゾーンに変換
     timezones.forEach(timezone => {
@@ -162,19 +158,29 @@ function convertTimezoneAccurate() {
             const formatter = new Intl.DateTimeFormat('ja-JP', options);
             const formattedTime = formatter.format(displayTime);
 
-            resultDiv.innerHTML = `
-                <div class="timezone-name">${timezone.display}</div>
-                <div class="timezone-time">${formattedTime}</div>
-            `;
+            resultDiv.appendChild(createTimezoneName(timezone.display));
+            resultDiv.appendChild(createTimezoneTime(formattedTime));
         } catch (error) {
-            resultDiv.innerHTML = `
-                <div class="timezone-name">${timezone.display}</div>
-                <div class="timezone-time">変換エラー</div>
-            `;
+            resultDiv.appendChild(createTimezoneName(timezone.display));
+            resultDiv.appendChild(createTimezoneTime('変換エラー'));
         }
 
         resultsContainer.appendChild(resultDiv);
     });
+}
+
+function createTimezoneName(text) {
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'timezone-name';
+    nameDiv.textContent = text;
+    return nameDiv;
+}
+
+function createTimezoneTime(text) {
+    const timeDiv = document.createElement('div');
+    timeDiv.className = 'timezone-time';
+    timeDiv.textContent = text;
+    return timeDiv;
 }
 
 // イベントリスナーの設定

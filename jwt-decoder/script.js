@@ -45,7 +45,7 @@ class JWTDecoder {
         this.headerOutput.value = '';
         this.payloadOutput.value = '';
         this.signatureOutput.value = '';
-        this.claimsInfo.innerHTML = '';
+        this.claimsInfo.textContent = '';
         this.clearStatus();
         this.jwtInput.focus();
     }
@@ -181,7 +181,7 @@ class JWTDecoder {
     }
     
     displayClaims(payload) {
-        this.claimsInfo.innerHTML = '';
+        this.claimsInfo.textContent = '';
         
         const standardClaims = {
             'iss': 'Issuer（発行者）',
@@ -281,7 +281,11 @@ class JWTDecoder {
         });
         
         if (Object.keys(payload).length === 0) {
-            this.claimsInfo.innerHTML = '<p style="color: #666; font-style: italic;">クレームが見つかりません</p>';
+            const emptyMessage = document.createElement('p');
+            emptyMessage.style.color = '#666';
+            emptyMessage.style.fontStyle = 'italic';
+            emptyMessage.textContent = 'クレームが見つかりません';
+            this.claimsInfo.appendChild(emptyMessage);
         }
     }
     
@@ -289,7 +293,7 @@ class JWTDecoder {
         this.headerOutput.value = '';
         this.payloadOutput.value = '';
         this.signatureOutput.value = '';
-        this.claimsInfo.innerHTML = '';
+        this.claimsInfo.textContent = '';
     }
     
     copyOutput(textarea) {
