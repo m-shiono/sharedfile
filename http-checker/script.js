@@ -11,12 +11,12 @@ class HTTPChecker {
         this.statusDetails = document.getElementById('statusDetails');
         this.securityHeaders = document.getElementById('securityHeaders');
         this.responseHeaders = document.getElementById('responseHeaders');
-        
+
         this.initializeEventListeners();
         this.initializeStatusCodeDescriptions();
         this.initializeSecurityHeadersInfo();
     }
-    
+
     initializeEventListeners() {
         this.checkBtn.addEventListener('click', () => this.performCheck());
         this.urlInput.addEventListener('keypress', (e) => {
@@ -25,7 +25,7 @@ class HTTPChecker {
             }
         });
     }
-    
+
     initializeStatusCodeDescriptions() {
         this.statusCodes = {
             200: { name: 'OK', description: 'リクエストが成功しました。レスポンスの内容は要求されたリソースに依存します。', category: 'success' },
@@ -46,7 +46,7 @@ class HTTPChecker {
             504: { name: 'Gateway Timeout', description: 'ゲートウェイタイムアウトが発生しました。', category: 'error' }
         };
     }
-    
+
     initializeSecurityHeadersInfo() {
         this.securityHeaders = {
             'strict-transport-security': {
@@ -81,28 +81,28 @@ class HTTPChecker {
             }
         };
     }
-    
+
     showStatus(message, type = 'info') {
         showStatus(this.statusBar, message, type);
     }
-    
+
     clearStatus() {
         this.statusBar.textContent = '';
         this.statusBar.className = 'status-bar';
     }
-    
+
     showLoading() {
         this.loadingIndicator.classList.remove('hidden');
         this.results.classList.add('hidden');
         this.checkBtn.disabled = true;
     }
-    
+
     hideLoading() {
         this.loadingIndicator.classList.add('hidden');
         this.results.classList.remove('hidden');
         this.checkBtn.disabled = false;
     }
-    
+
     validateURL(url) {
         try {
             const urlObj = new URL(url);
@@ -111,23 +111,23 @@ class HTTPChecker {
             return false;
         }
     }
-    
+
     async performCheck() {
         const url = this.urlInput.value.trim();
-        
+
         if (!url) {
             this.showStatus('URLを入力してください。', 'error');
             return;
         }
-        
+
         if (!this.validateURL(url)) {
             this.showStatus('有効なURLを入力してください。(http://またはhttps://)', 'error');
             return;
         }
-        
+
         this.showLoading();
         this.clearStatus();
-        
+
         try {
             const response = await this.fetchWithTimeout(url);
             this.displayResults(response, url);
@@ -137,11 +137,11 @@ class HTTPChecker {
             this.showStatus(`エラー: ${error.message}`, 'error');
         }
     }
-    
+
     async fetchWithTimeout(url, timeout = 10000) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeout);
-        
+
         try {
             const response = await fetch(url, {
                 signal: controller.signal,
@@ -149,15 +149,15 @@ class HTTPChecker {
                 method: 'GET',
                 redirect: this.followRedirects.checked ? 'follow' : 'manual'
             });
-            
+
             clearTimeout(timeoutId);
-            
+
             // レスポンスヘッダーを収集
             const headers = {};
             for (const [key, value] of response.headers.entries()) {
                 headers[key.toLowerCase()] = value;
             }
-            
+
             return {
                 url: response.url,
                 status: response.status,
@@ -175,47 +175,47 @@ class HTTPChecker {
             throw error;
         }
     }
-    
+
     displayResults(response, originalUrl) {
         this.hideLoading();
-        
+
         // 基本情報を表示
         this.displayBasicInfo(response, originalUrl);
-        
+
         // ステータスコード詳細を表示
         this.displayStatusDetails(response);
-        
+
         // セキュリティヘッダーを検証
         this.displaySecurityHeaders(response.headers);
-        
+
         // レスポンスヘッダーを表示
         if (this.includeHeaders.checked) {
             this.displayResponseHeaders(response.headers);
         }
     }
-    
+
     displayBasicInfo(response, originalUrl) {
         const info = [
-            `リクエストURL: ${originalUrl}`,
-            `最終URL: ${response.url}`,
+            `リクエストURL: ${this.escapeHtml(originalUrl)}`,
+            `最終URL: ${this.escapeHtml(response.url)}`,
             `ステータスコード: ${response.status}`,
-            `ステータステキスト: ${response.statusText}`,
-            `レスポンスタイプ: ${response.type}`,
+            `ステータステキスト: ${this.escapeHtml(response.statusText)}`,
+            `レスポンスタイプ: ${this.escapeHtml(response.type)}`,
             `リダイレクト: ${response.redirected ? 'はい' : 'いいえ'}`
         ];
-        
+
         this.basicInfo.innerHTML = info.map(item => `<div>${item}</div>`).join('');
     }
-    
+
     displayStatusDetails(response) {
         const statusInfo = this.statusCodes[response.status] || {
             name: 'Unknown',
             description: 'このステータスコードの詳細情報は利用できません。',
             category: 'error'
         };
-        
+
         const statusCodeClass = `status-${statusInfo.category}-code`;
-        
+
         this.statusDetails.innerHTML = `
             <div class="status-code ${statusCodeClass}">
                 ${response.status} ${statusInfo.name}
@@ -228,7 +228,7 @@ class HTTPChecker {
             </div>
         `;
     }
-    
+
     getCategoryName(category) {
         const categories = {
             success: '成功',
@@ -237,18 +237,18 @@ class HTTPChecker {
         };
         return categories[category] || 'その他';
     }
-    
+
     displaySecurityHeaders(headers) {
         const checks = [];
-        
+
         Object.entries(this.securityHeaders).forEach(([headerName, headerInfo]) => {
             const isPresent = headers.hasOwnProperty(headerName);
             const status = isPresent ? 'pass' : (headerInfo.required ? 'fail' : 'warning');
             const icon = isPresent ? '✓' : (headerInfo.required ? '✗' : '⚠');
-            const message = isPresent ? 
-                `${headerInfo.name}: 設定済み` : 
+            const message = isPresent ?
+                `${headerInfo.name}: 設定済み` :
                 `${headerInfo.name}: ${headerInfo.required ? '必須ヘッダーが不足' : '推奨ヘッダーが不足'}`;
-            
+
             checks.push(`
                 <div class="security-check ${status}">
                     <span class="security-check-icon">${icon}</span>
@@ -256,7 +256,7 @@ class HTTPChecker {
                 </div>
             `);
         });
-        
+
         // CORS ヘッダーもチェック
         if (headers['access-control-allow-origin']) {
             checks.push(`
@@ -266,30 +266,37 @@ class HTTPChecker {
                 </div>
             `);
         }
-        
+
         this.securityHeaders.innerHTML = checks.join('');
     }
-    
+
     displayResponseHeaders(headers) {
         if (Object.keys(headers).length === 0) {
             this.responseHeaders.innerHTML = '<div>レスポンスヘッダーが取得できませんでした。</div>';
             return;
         }
-        
+
         const headerItems = Object.entries(headers).map(([name, value]) => `
             <div class="header-item">
-                <div class="header-name">${name}</div>
-                <div class="header-value">${value}</div>
+                <div class="header-name">${this.escapeHtml(name)}</div>
+                <div class="header-value">${this.escapeHtml(value)}</div>
             </div>
         `).join('');
-        
+
         this.responseHeaders.innerHTML = headerItems;
+    }
+
+    escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     new HTTPChecker();
-    
+
     // URLの例を設定
     const urlInput = document.getElementById('urlInput');
     urlInput.placeholder = 'チェックするURLを入力してください... (例: https://example.com)';

@@ -32,7 +32,7 @@ class UserAgentAnalyzer {
 
     detectBrowser() {
         const ua = this.ua;
-        
+
         // Chrome系の判定
         if (/Edg\//.test(ua)) {
             const version = this.extractVersion(ua, /Edg\/([\d.]+)/);
@@ -42,7 +42,7 @@ class UserAgentAnalyzer {
                 type: 'Chromium系'
             };
         }
-        
+
         if (/OPR\//.test(ua)) {
             const version = this.extractVersion(ua, /OPR\/([\d.]+)/);
             return {
@@ -51,7 +51,7 @@ class UserAgentAnalyzer {
                 type: 'Chromium系'
             };
         }
-        
+
         if (/Chrome\//.test(ua) && !/Chromium\//.test(ua)) {
             const version = this.extractVersion(ua, /Chrome\/([\d.]+)/);
             return {
@@ -60,7 +60,7 @@ class UserAgentAnalyzer {
                 type: 'Chromium系'
             };
         }
-        
+
         if (/Chromium\//.test(ua)) {
             const version = this.extractVersion(ua, /Chromium\/([\d.]+)/);
             return {
@@ -69,18 +69,18 @@ class UserAgentAnalyzer {
                 type: 'Chromium系'
             };
         }
-        
+
         // Safari
         if (/Safari\//.test(ua) && !/Chrome/.test(ua)) {
-            const version = this.extractVersion(ua, /Version\/([\d.]+)/) || 
-                           this.extractVersion(ua, /Safari\/([\d.]+)/);
+            const version = this.extractVersion(ua, /Version\/([\d.]+)/) ||
+                this.extractVersion(ua, /Safari\/([\d.]+)/);
             return {
                 name: 'Safari',
                 version: version,
                 type: 'WebKit系'
             };
         }
-        
+
         // Firefox
         if (/Firefox\//.test(ua)) {
             const version = this.extractVersion(ua, /Firefox\/([\d.]+)/);
@@ -90,18 +90,18 @@ class UserAgentAnalyzer {
                 type: 'Gecko系'
             };
         }
-        
+
         // Internet Explorer
         if (/MSIE|Trident/.test(ua)) {
             let version = this.extractVersion(ua, /MSIE ([\d.]+)/) ||
-                         this.extractVersion(ua, /rv:([\d.]+)/);
+                this.extractVersion(ua, /rv:([\d.]+)/);
             return {
                 name: 'Internet Explorer',
                 version: version,
                 type: 'Trident系'
             };
         }
-        
+
         return {
             name: '不明',
             version: '不明',
@@ -111,7 +111,7 @@ class UserAgentAnalyzer {
 
     detectOS() {
         const ua = this.ua;
-        
+
         // Windows
         if (/Windows NT/.test(ua)) {
             const version = this.extractVersion(ua, /Windows NT ([\d.]+)/);
@@ -123,9 +123,9 @@ class UserAgentAnalyzer {
                 '6.0': 'Windows Vista',
                 '5.1': 'Windows XP'
             };
-            
+
             const arch = /WOW64|Win64|x64/.test(ua) ? '64-bit' : '32-bit';
-            
+
             return {
                 name: windowsVersions[version] || `Windows NT ${version}`,
                 version: version,
@@ -133,7 +133,7 @@ class UserAgentAnalyzer {
                 platform: 'Windows'
             };
         }
-        
+
         // macOS
         if (/Mac OS X/.test(ua)) {
             const version = this.extractVersion(ua, /Mac OS X ([\d_]+)/)?.replace(/_/g, '.');
@@ -144,13 +144,13 @@ class UserAgentAnalyzer {
                 platform: 'macOS'
             };
         }
-        
+
         // iOS
         if (/iPhone|iPad|iPod/.test(ua)) {
             const version = this.extractVersion(ua, /OS ([\d_]+)/)?.replace(/_/g, '.');
-            const device = /iPhone/.test(ua) ? 'iPhone' : 
-                          /iPad/.test(ua) ? 'iPad' : 'iPod';
-            
+            const device = /iPhone/.test(ua) ? 'iPhone' :
+                /iPad/.test(ua) ? 'iPad' : 'iPod';
+
             return {
                 name: 'iOS',
                 version: version,
@@ -158,7 +158,7 @@ class UserAgentAnalyzer {
                 platform: 'iOS'
             };
         }
-        
+
         // Android
         if (/Android/.test(ua)) {
             const version = this.extractVersion(ua, /Android ([\d.]+)/);
@@ -168,19 +168,19 @@ class UserAgentAnalyzer {
                 platform: 'Android'
             };
         }
-        
+
         // Linux
         if (/Linux/.test(ua)) {
-            const arch = /x86_64|amd64/.test(ua) ? '64-bit' : 
-                        /i686|i386/.test(ua) ? '32-bit' : 'Unknown';
-            
+            const arch = /x86_64|amd64/.test(ua) ? '64-bit' :
+                /i686|i386/.test(ua) ? '32-bit' : 'Unknown';
+
             return {
                 name: 'Linux',
                 architecture: arch,
                 platform: 'Linux'
             };
         }
-        
+
         return {
             name: '不明',
             platform: '不明'
@@ -189,7 +189,7 @@ class UserAgentAnalyzer {
 
     detectDevice() {
         const ua = this.ua;
-        
+
         if (/Mobile|Android/.test(ua) && !/Tablet/.test(ua)) {
             if (/iPhone/.test(ua)) {
                 return { type: 'スマートフォン', brand: 'Apple', model: 'iPhone' };
@@ -200,21 +200,21 @@ class UserAgentAnalyzer {
             }
             return { type: 'スマートフォン', brand: '不明', model: '不明' };
         }
-        
+
         if (/iPad/.test(ua)) {
             return { type: 'タブレット', brand: 'Apple', model: 'iPad' };
         }
-        
+
         if (/Tablet|Tab/.test(ua)) {
             return { type: 'タブレット', brand: '不明', model: '不明' };
         }
-        
+
         return { type: 'デスクトップ/ノートPC', brand: '不明', model: '不明' };
     }
 
     detectEngine() {
         const ua = this.ua;
-        
+
         if (/AppleWebKit/.test(ua)) {
             const version = this.extractVersion(ua, /AppleWebKit\/([\d.]+)/);
             const engine = /Blink/.test(ua) ? 'Blink' : 'WebKit';
@@ -224,7 +224,7 @@ class UserAgentAnalyzer {
                 family: 'WebKit系'
             };
         }
-        
+
         if (/Gecko/.test(ua) && !/like Gecko/.test(ua)) {
             const version = this.extractVersion(ua, /rv:([\d.]+)/);
             return {
@@ -233,7 +233,7 @@ class UserAgentAnalyzer {
                 family: 'Gecko系'
             };
         }
-        
+
         if (/Trident/.test(ua)) {
             const version = this.extractVersion(ua, /Trident\/([\d.]+)/);
             return {
@@ -242,7 +242,7 @@ class UserAgentAnalyzer {
                 family: 'Trident系'
             };
         }
-        
+
         return {
             name: '不明',
             version: '不明',
@@ -253,7 +253,7 @@ class UserAgentAnalyzer {
     parseComponents() {
         const ua = this.ua;
         const components = [];
-        
+
         // 主要コンポーネントを抽出
         const patterns = [
             { name: 'Mozilla', pattern: /Mozilla\/([\d.]+)/ },
@@ -264,7 +264,7 @@ class UserAgentAnalyzer {
             { name: 'Edge', pattern: /Edg\/([\d.]+)/ },
             { name: 'Opera', pattern: /OPR\/([\d.]+)/ }
         ];
-        
+
         patterns.forEach(pattern => {
             const match = ua.match(pattern.pattern);
             if (match) {
@@ -275,7 +275,7 @@ class UserAgentAnalyzer {
                 });
             }
         });
-        
+
         return components;
     }
 
@@ -292,7 +292,7 @@ class UserAgentAnalyzer {
             const parts = info.split(';');
             for (let part of parts) {
                 part = part.trim();
-                if (part && !part.includes('Android') && !part.includes('Mobile') && 
+                if (part && !part.includes('Android') && !part.includes('Mobile') &&
                     !part.includes('wv') && !part.includes('Linux')) {
                     return part;
                 }
@@ -350,12 +350,12 @@ function analyzeUserAgent(ua) {
     // 詳細解析情報
     detailedInfo.innerHTML = `
         <strong>判定されたユーザー環境:</strong><br>
-        ${analysis.browser.name} ${analysis.browser.version} on ${analysis.os.name} (${analysis.device.type})<br><br>
+        ${escapeHtml(analysis.browser.name)} ${escapeHtml(analysis.browser.version)} on ${escapeHtml(analysis.os.name)} (${escapeHtml(analysis.device.type)})<br><br>
         
         <strong>技術的詳細:</strong><br>
-        エンジン: ${analysis.engine.name} ${analysis.engine.version}<br>
-        プラットフォーム: ${analysis.os.platform}<br>
-        ${analysis.os.architecture ? `アーキテクチャ: ${analysis.os.architecture}<br>` : ''}
+        エンジン: ${escapeHtml(analysis.engine.name)} ${escapeHtml(analysis.engine.version)}<br>
+        プラットフォーム: ${escapeHtml(analysis.os.platform)}<br>
+        ${analysis.os.architecture ? `アーキテクチャ: ${escapeHtml(analysis.os.architecture)}<br>` : ''}
     `;
 
     // User-Agent構成要素
@@ -413,10 +413,17 @@ function analyzeUserAgent(ua) {
 function createInfoItems(items) {
     return items.map(item => `
         <div class="info-item">
-            <span class="info-label">${item.label}:</span>
-            <span class="info-value">${item.value}</span>
+            <span class="info-label">${escapeHtml(item.label)}:</span>
+            <span class="info-value">${escapeHtml(item.value)}</span>
         </div>
     `).join('');
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // サンプルUser-Agentを設定
@@ -427,7 +434,7 @@ function setSampleUA() {
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Mozilla/5.0 (Linux; Android 14; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
     ];
-    
+
     const randomSample = samples[Math.floor(Math.random() * samples.length)];
     userAgentInput.value = randomSample;
 }
