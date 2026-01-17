@@ -5,7 +5,10 @@ mermaid.initialize({
     securityLevel: 'loose',
     flowchart: {
         useMaxWidth: true,
-        htmlLabels: true
+        htmlLabels: false
+    },
+    classDiagram: {
+        htmlLabels: false
     }
 });
 
