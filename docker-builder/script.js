@@ -359,7 +359,7 @@ class DockerBuilder {
             if (!imageName) {
                 console.log('DockerBuilder: No image name provided, clearing output');
                 this.dockerCommand.value = '';
-                this.commandBreakdown.innerHTML = '';
+                this.commandBreakdown.textContent = '';
                 return;
             }
         } catch (error) {
@@ -556,15 +556,30 @@ class DockerBuilder {
     }
     
     renderCommandBreakdown(breakdown) {
-        const html = breakdown.map(item => `
-            <div class="breakdown-item">
-                <span class="breakdown-flag">${item.flag}</span>
-                ${item.value ? `<span class="breakdown-value"> ${item.value}</span>` : ''}
-                <div class="breakdown-description">${item.description}</div>
-            </div>
-        `).join('');
-        
-        this.commandBreakdown.innerHTML = html;
+        this.commandBreakdown.textContent = '';
+        breakdown.forEach(item => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'breakdown-item';
+
+            const flagSpan = document.createElement('span');
+            flagSpan.className = 'breakdown-flag';
+            flagSpan.textContent = item.flag;
+            wrapper.appendChild(flagSpan);
+
+            if (item.value) {
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'breakdown-value';
+                valueSpan.textContent = ` ${item.value}`;
+                wrapper.appendChild(valueSpan);
+            }
+
+            const descDiv = document.createElement('div');
+            descDiv.className = 'breakdown-description';
+            descDiv.textContent = item.description;
+            wrapper.appendChild(descDiv);
+
+            this.commandBreakdown.appendChild(wrapper);
+        });
     }
     
     generateDockerCompose() {

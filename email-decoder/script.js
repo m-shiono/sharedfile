@@ -213,7 +213,7 @@ class EmailDecoder {
     }
 
     displayResult(result) {
-        this.output.innerHTML = '';
+        this.output.textContent = '';
         
         const decodedDiv = document.createElement('div');
         decodedDiv.className = 'decoded-text';
@@ -223,32 +223,51 @@ class EmailDecoder {
         decodedDiv.appendChild(pre);
         this.output.appendChild(decodedDiv);
         
-        this.encodingInfo.innerHTML = '';
+        this.encodingInfo.textContent = '';
         
         if (result.detectedEncodings.length > 0) {
             const encodingDiv = document.createElement('div');
-            encodingDiv.innerHTML = `<strong>検出されたエンコーディング:</strong> ${result.detectedEncodings.join(', ')}`;
+            const encodingLabel = document.createElement('strong');
+            encodingLabel.textContent = '検出されたエンコーディング:';
+            encodingDiv.appendChild(encodingLabel);
+            encodingDiv.appendChild(document.createTextNode(` ${result.detectedEncodings.join(', ')}`));
             this.encodingInfo.appendChild(encodingDiv);
         }
         
         if (result.bodyEncoding && result.bodyEncoding !== 'none') {
             const bodyEncodingDiv = document.createElement('div');
-            bodyEncodingDiv.innerHTML = `<strong>メール本文のエンコーディング:</strong> ${result.bodyEncoding}`;
+            const bodyEncodingLabel = document.createElement('strong');
+            bodyEncodingLabel.textContent = 'メール本文のエンコーディング:';
+            bodyEncodingDiv.appendChild(bodyEncodingLabel);
+            bodyEncodingDiv.appendChild(document.createTextNode(` ${result.bodyEncoding}`));
             this.encodingInfo.appendChild(bodyEncodingDiv);
         }
         
         if (result.encodedWords.length > 0) {
             const detailDiv = document.createElement('div');
-            detailDiv.innerHTML = '<strong>エンコードされた部分:</strong>';
+            const detailLabel = document.createElement('strong');
+            detailLabel.textContent = 'エンコードされた部分:';
+            detailDiv.appendChild(detailLabel);
             const wordsList = document.createElement('ul');
             
             result.encodedWords.forEach(word => {
                 const listItem = document.createElement('li');
-                listItem.innerHTML = `
-                    <strong>元のテキスト:</strong> ${this.escapeHtml(word.original)}<br>
-                    <strong>文字セット:</strong> ${word.charset}<br>
-                    <strong>エンコード:</strong> ${word.encoding.toUpperCase() === 'B' ? 'Base64' : 'Quoted-Printable'}
-                `;
+                const originalLabel = document.createElement('strong');
+                originalLabel.textContent = '元のテキスト:';
+                listItem.appendChild(originalLabel);
+                listItem.appendChild(document.createTextNode(` ${word.original}`));
+                listItem.appendChild(document.createElement('br'));
+
+                const charsetLabel = document.createElement('strong');
+                charsetLabel.textContent = '文字セット:';
+                listItem.appendChild(charsetLabel);
+                listItem.appendChild(document.createTextNode(` ${word.charset}`));
+                listItem.appendChild(document.createElement('br'));
+
+                const encodingLabel = document.createElement('strong');
+                encodingLabel.textContent = 'エンコード:';
+                listItem.appendChild(encodingLabel);
+                listItem.appendChild(document.createTextNode(` ${word.encoding.toUpperCase() === 'B' ? 'Base64' : 'Quoted-Printable'}`));
                 wordsList.appendChild(listItem);
             });
             
@@ -258,8 +277,12 @@ class EmailDecoder {
     }
 
     showError(message) {
-        this.output.innerHTML = `<div class="error">${this.escapeHtml(message)}</div>`;
-        this.encodingInfo.innerHTML = '';
+        this.output.textContent = '';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error';
+        errorDiv.textContent = message;
+        this.output.appendChild(errorDiv);
+        this.encodingInfo.textContent = '';
     }
 
     escapeHtml(text) {
@@ -270,8 +293,8 @@ class EmailDecoder {
 
     clearAll() {
         this.emailInput.value = '';
-        this.output.innerHTML = '';
-        this.encodingInfo.innerHTML = '';
+        this.output.textContent = '';
+        this.encodingInfo.textContent = '';
     }
 }
 

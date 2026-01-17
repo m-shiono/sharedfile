@@ -196,15 +196,20 @@ class HTTPChecker {
 
     displayBasicInfo(response, originalUrl) {
         const info = [
-            `リクエストURL: ${this.escapeHtml(originalUrl)}`,
-            `最終URL: ${this.escapeHtml(response.url)}`,
+            `リクエストURL: ${originalUrl}`,
+            `最終URL: ${response.url}`,
             `ステータスコード: ${response.status}`,
-            `ステータステキスト: ${this.escapeHtml(response.statusText)}`,
-            `レスポンスタイプ: ${this.escapeHtml(response.type)}`,
+            `ステータステキスト: ${response.statusText}`,
+            `レスポンスタイプ: ${response.type}`,
             `リダイレクト: ${response.redirected ? 'はい' : 'いいえ'}`
         ];
 
-        this.basicInfo.innerHTML = info.map(item => `<div>${item}</div>`).join('');
+        this.basicInfo.textContent = '';
+        info.forEach(item => {
+            const line = document.createElement('div');
+            line.textContent = item;
+            this.basicInfo.appendChild(line);
+        });
     }
 
     displayStatusDetails(response) {
@@ -216,17 +221,22 @@ class HTTPChecker {
 
         const statusCodeClass = `status-${statusInfo.category}-code`;
 
-        this.statusDetails.innerHTML = `
-            <div class="status-code ${statusCodeClass}">
-                ${response.status} ${statusInfo.name}
-            </div>
-            <div class="status-description">
-                ${statusInfo.description}
-            </div>
-            <div class="status-category">
-                カテゴリ: ${this.getCategoryName(statusInfo.category)}
-            </div>
-        `;
+        this.statusDetails.textContent = '';
+        const codeDiv = document.createElement('div');
+        codeDiv.className = `status-code ${statusCodeClass}`;
+        codeDiv.textContent = `${response.status} ${statusInfo.name}`;
+
+        const descDiv = document.createElement('div');
+        descDiv.className = 'status-description';
+        descDiv.textContent = statusInfo.description;
+
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'status-category';
+        categoryDiv.textContent = `カテゴリ: ${this.getCategoryName(statusInfo.category)}`;
+
+        this.statusDetails.appendChild(codeDiv);
+        this.statusDetails.appendChild(descDiv);
+        this.statusDetails.appendChild(categoryDiv);
     }
 
     getCategoryName(category) {
@@ -276,14 +286,23 @@ class HTTPChecker {
             return;
         }
 
-        const headerItems = Object.entries(headers).map(([name, value]) => `
-            <div class="header-item">
-                <div class="header-name">${this.escapeHtml(name)}</div>
-                <div class="header-value">${this.escapeHtml(value)}</div>
-            </div>
-        `).join('');
+        this.responseHeaders.textContent = '';
+        Object.entries(headers).forEach(([name, value]) => {
+            const item = document.createElement('div');
+            item.className = 'header-item';
 
-        this.responseHeaders.innerHTML = headerItems;
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'header-name';
+            nameDiv.textContent = name;
+
+            const valueDiv = document.createElement('div');
+            valueDiv.className = 'header-value';
+            valueDiv.textContent = value;
+
+            item.appendChild(nameDiv);
+            item.appendChild(valueDiv);
+            this.responseHeaders.appendChild(item);
+        });
     }
 
     escapeHtml(text) {

@@ -121,7 +121,7 @@ async function generateDiagram() {
         updateStatus('図を生成中...', 'info');
         
         // 前の図をクリア
-        diagramOutput.innerHTML = '';
+        diagramOutput.textContent = '';
         
         // 一意のIDを生成
         const diagramId = `mermaid-${Date.now()}`;
@@ -132,8 +132,12 @@ async function generateDiagram() {
         // 図を生成
         const { svg } = await mermaid.render(diagramId, inputText);
         
-        // SVGを表示
-        diagramOutput.innerHTML = svg;
+        // SVGを表示（サニタイズ）
+        const safeSvg = sanitizeSvg(svg);
+        if (!safeSvg) {
+            throw new Error('SVGの解析に失敗しました');
+        }
+        diagramOutput.appendChild(safeSvg);
         
         // ダウンロードボタンを有効化
         downloadSvgBtn.disabled = false;
@@ -144,12 +148,40 @@ async function generateDiagram() {
     } catch (error) {
         console.error('Mermaid generation error:', error);
         updateStatus(`エラー: ${error.message}`, 'error');
-        diagramOutput.innerHTML = '<p style="color: #721c24;">図の生成に失敗しました。Mermaidの記法を確認してください。</p>';
+        diagramOutput.textContent = '';
+        const errorMessage = document.createElement('p');
+        errorMessage.style.color = '#721c24';
+        errorMessage.textContent = '図の生成に失敗しました。Mermaidの記法を確認してください。';
+        diagramOutput.appendChild(errorMessage);
         
         // ダウンロードボタンを無効化
         downloadSvgBtn.disabled = true;
         downloadPngBtn.disabled = true;
     }
+}
+
+function sanitizeSvg(svgMarkup) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgMarkup, 'image/svg+xml');
+    const svg = doc.querySelector('svg');
+    if (!svg) return null;
+
+    svg.querySelectorAll('script').forEach(script => script.remove());
+    svg.querySelectorAll('*').forEach(el => {
+        [...el.attributes].forEach(attr => {
+            const name = attr.name.toLowerCase();
+            const value = attr.value || '';
+            if (name.startsWith('on')) {
+                el.removeAttribute(attr.name);
+                return;
+            }
+            if ((name === 'href' || name === 'xlink:href') && value.trim().toLowerCase().startsWith('javascript:')) {
+                el.removeAttribute(attr.name);
+            }
+        });
+    });
+
+    return svg;
 }
 
 // SVGダウンロード
@@ -258,7 +290,7 @@ function downloadPng() {
 // テキストクリア
 function clearInput() {
     mermaidInput.value = '';
-    diagramOutput.innerHTML = '';
+    diagramOutput.textContent = '';
     hideStatus();
     downloadSvgBtn.disabled = true;
     downloadPngBtn.disabled = true;

@@ -153,7 +153,7 @@ class IPCalculator {
         this.ipInput.value = '';
         this.baseNetwork.value = '';
         this.subnetCount.value = '4';
-        this.subnetResults.innerHTML = '';
+        this.subnetResults.textContent = '';
         
         // 結果をクリア
         const results = ['networkAddress', 'broadcastAddress', 'subnetMask', 'ipRange', 'totalHosts', 'availableHosts', 'ipClass', 'privateAddress'];
@@ -194,14 +194,13 @@ class IPCalculator {
             
             const subnetSize = Math.pow(2, 32 - newPrefix);
             const availableSubnets = Math.pow(2, bitsNeeded);
-            
-            let html = `<div class="subnet-item">
-                <h3>分割情報</h3>
-                <p>ベースネットワーク: ${this.intToIp(networkInt)}/${prefix}</p>
-                <p>新しいプレフィックス: /${newPrefix}</p>
-                <p>サブネットあたりのホスト数: ${subnetSize.toLocaleString()}</p>
-                <p>利用可能なサブネット数: ${availableSubnets}</p>
-            </div>`;
+            this.subnetResults.textContent = '';
+            this.subnetResults.appendChild(this.createSubnetItem('分割情報', [
+                `ベースネットワーク: ${this.intToIp(networkInt)}/${prefix}`,
+                `新しいプレフィックス: /${newPrefix}`,
+                `サブネットあたりのホスト数: ${subnetSize.toLocaleString()}`,
+                `利用可能なサブネット数: ${availableSubnets}`
+            ]));
             
             for (let i = 0; i < Math.min(subnetCountValue, availableSubnets); i++) {
                 const subnetNetworkInt = networkInt + (i * subnetSize);
@@ -210,21 +209,33 @@ class IPCalculator {
                 const subnetBroadcastAddress = this.intToIp(subnetBroadcastInt);
                 const firstUsable = this.intToIp(subnetNetworkInt + 1);
                 const lastUsable = this.intToIp(subnetBroadcastInt - 1);
-                
-                html += `<div class="subnet-item">
-                    <h3>サブネット ${i + 1}</h3>
-                    <p>ネットワーク: ${subnetNetworkAddress}/${newPrefix}</p>
-                    <p>ブロードキャスト: ${subnetBroadcastAddress}</p>
-                    <p>利用可能範囲: ${firstUsable} - ${lastUsable}</p>
-                    <p>利用可能ホスト数: ${(subnetSize - 2).toLocaleString()}</p>
-                </div>`;
+                this.subnetResults.appendChild(this.createSubnetItem(`サブネット ${i + 1}`, [
+                    `ネットワーク: ${subnetNetworkAddress}/${newPrefix}`,
+                    `ブロードキャスト: ${subnetBroadcastAddress}`,
+                    `利用可能範囲: ${firstUsable} - ${lastUsable}`,
+                    `利用可能ホスト数: ${(subnetSize - 2).toLocaleString()}`
+                ]));
             }
-            
-            this.subnetResults.innerHTML = html;
             this.showStatus('サブネット計算完了', 'success');
         } catch (error) {
             this.showStatus(error.message, 'error');
         }
+    }
+
+    createSubnetItem(title, lines) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'subnet-item';
+        const heading = document.createElement('h3');
+        heading.textContent = title;
+        wrapper.appendChild(heading);
+
+        lines.forEach(text => {
+            const line = document.createElement('p');
+            line.textContent = text;
+            wrapper.appendChild(line);
+        });
+
+        return wrapper;
     }
 }
 

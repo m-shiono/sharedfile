@@ -282,13 +282,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function setStatus(message, type) {
+        statusBar.textContent = '';
+        if (!message) return;
+        const statusSpan = document.createElement('span');
+        statusSpan.className = type;
+        statusSpan.textContent = message;
+        statusBar.appendChild(statusSpan);
+    }
+
     // 結果を表示
     function displayResults(results, isManual = false, manualResult = null) {
-        resultsContainer.innerHTML = '';
+        resultsContainer.textContent = '';
 
         if (isManual) {
             // 手動変換の結果表示
-            statusBar.innerHTML = '<span class="success">変換完了</span>';
+            setStatus('変換完了', 'success');
             
             const manualFormatNames = {
                 'windows': 'Windows形式',
@@ -299,15 +308,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const resultDiv = document.createElement('div');
             resultDiv.className = 'result-item';
-            resultDiv.innerHTML = `
-                <h4>${manualFormatNames[toFormat.value] || toFormat.value}</h4>
-                <div class="result-text" data-path="${escapeHtmlAttribute(manualResult)}">${escapeHtml(manualResult)}</div>
-            `;
+            const title = document.createElement('h4');
+            title.textContent = manualFormatNames[toFormat.value] || toFormat.value;
+            resultDiv.appendChild(title);
+
+            const resultText = document.createElement('div');
+            resultText.className = 'result-text';
+            resultText.dataset.path = manualResult;
+            resultText.textContent = manualResult;
+            resultDiv.appendChild(resultText);
             resultsContainer.appendChild(resultDiv);
         } else {
             // 自動変換の結果表示
             if (results && results.error) {
-                statusBar.innerHTML = `<span class="error">エラー: ${results.error}</span>`;
+                setStatus(`エラー: ${results.error}`, 'error');
                 return;
             }
 
@@ -319,17 +333,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 'unknown': '不明な形式'
             };
 
-            statusBar.innerHTML = `<span class="success">検出形式: ${formatNames[results.detected] || results.detected} → 全形式に変換完了</span>`;
+            setStatus(`検出形式: ${formatNames[results.detected] || results.detected} → 全形式に変換完了`, 'success');
 
             Object.entries(results.conversions).forEach(([format, path]) => {
                 const resultDiv = document.createElement('div');
                 resultDiv.className = 'result-item';
                 
                 const isOriginal = format === results.detected;
-                resultDiv.innerHTML = `
-                    <h4>${formatNames[format]} ${isOriginal ? '<small>(元の形式)</small>' : ''}</h4>
-                    <div class="result-text ${isOriginal ? 'original' : ''}" data-path="${escapeHtmlAttribute(path)}">${escapeHtml(path)}</div>
-                `;
+                const title = document.createElement('h4');
+                title.textContent = formatNames[format];
+                if (isOriginal) {
+                    const originalTag = document.createElement('small');
+                    originalTag.textContent = '(元の形式)';
+                    title.appendChild(document.createTextNode(' '));
+                    title.appendChild(originalTag);
+                }
+                resultDiv.appendChild(title);
+
+                const resultText = document.createElement('div');
+                resultText.className = `result-text ${isOriginal ? 'original' : ''}`.trim();
+                resultText.dataset.path = path;
+                resultText.textContent = path;
+                resultDiv.appendChild(resultText);
                 resultsContainer.appendChild(resultDiv);
             });
         }
@@ -397,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
     convertBtn.addEventListener('click', function() {
         const path = inputPath.value.trim();
         if (!path) {
-            statusBar.innerHTML = '<span class="error">パスを入力してください</span>';
+            setStatus('パスを入力してください', 'error');
             return;
         }
 
@@ -412,14 +437,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 displayResults(results);
             }
         } catch (error) {
-            statusBar.innerHTML = `<span class="error">変換エラー: ${error.message}</span>`;
+            setStatus(`変換エラー: ${error.message}`, 'error');
         }
     });
 
     clearBtn.addEventListener('click', function() {
         inputPath.value = '';
-        resultsContainer.innerHTML = '';
-        statusBar.innerHTML = '';
+        resultsContainer.textContent = '';
+        statusBar.textContent = '';
     });
 
     sampleBtn.addEventListener('click', function() {

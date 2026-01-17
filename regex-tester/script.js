@@ -120,31 +120,30 @@ URL: https://www.example.com, http://test.com/path
         if (matchCount === 0) {
             this.resultsSummary.textContent = 'マッチする文字列が見つかりませんでした';
             this.highlightedText.textContent = text;
-            this.matchesList.innerHTML = '<h4>マッチ一覧</h4><p>マッチなし</p>';
+            this.renderMatchesListEmpty('マッチなし');
             return;
         }
         
-        this.resultsSummary.innerHTML = `
-            <strong>${matchCount}個のマッチが見つかりました</strong>
-            ${this.getMatchStatistics(matches)}
-        `;
+        this.renderResultsSummary(matchCount, matches);
         
         this.highlightMatches(text, matches);
         this.displayMatchesList(matches);
     }
     
-    getMatchStatistics(matches) {
+    renderResultsSummary(matchCount, matches) {
         const uniqueMatches = [...new Set(matches.map(m => m[0]))];
         const avgLength = matches.reduce((sum, m) => sum + m[0].length, 0) / matches.length;
-        
-        return `
-            <br>
-            <small>
-                ユニークなマッチ: ${uniqueMatches.length}個 |
-                平均長: ${avgLength.toFixed(1)}文字 |
-                総文字数: ${matches.reduce((sum, m) => sum + m[0].length, 0)}文字
-            </small>
-        `;
+        const totalLength = matches.reduce((sum, m) => sum + m[0].length, 0);
+
+        this.resultsSummary.textContent = '';
+        const strong = document.createElement('strong');
+        strong.textContent = `${matchCount}個のマッチが見つかりました`;
+        this.resultsSummary.appendChild(strong);
+        this.resultsSummary.appendChild(document.createElement('br'));
+
+        const small = document.createElement('small');
+        small.textContent = `ユニークなマッチ: ${uniqueMatches.length}個 | 平均長: ${avgLength.toFixed(1)}文字 | 総文字数: ${totalLength}文字`;
+        this.resultsSummary.appendChild(small);
     }
     
     highlightMatches(text, matches) {
@@ -153,41 +152,60 @@ URL: https://www.example.com, http://test.com/path
             return;
         }
         
-        let highlightedText = '';
         let lastIndex = 0;
+        this.highlightedText.textContent = '';
         
         matches.forEach((match, index) => {
             const startIndex = match.index;
             const endIndex = startIndex + match[0].length;
             
-            highlightedText += this.escapeHtml(text.substring(lastIndex, startIndex));
-            highlightedText += `<span class="match-highlight" title="マッチ ${index + 1}">${this.escapeHtml(match[0])}</span>`;
+            if (startIndex > lastIndex) {
+                this.highlightedText.appendChild(document.createTextNode(text.substring(lastIndex, startIndex)));
+            }
+
+            const span = document.createElement('span');
+            span.className = 'match-highlight';
+            span.title = `マッチ ${index + 1}`;
+            span.textContent = match[0];
+            this.highlightedText.appendChild(span);
             lastIndex = endIndex;
         });
         
-        highlightedText += this.escapeHtml(text.substring(lastIndex));
-        this.highlightedText.innerHTML = highlightedText;
+        if (lastIndex < text.length) {
+            this.highlightedText.appendChild(document.createTextNode(text.substring(lastIndex)));
+        }
     }
     
     displayMatchesList(matches) {
-        let listHtml = '<h4>マッチ一覧</h4>';
+        this.matchesList.textContent = '';
+        const title = document.createElement('h4');
+        title.textContent = 'マッチ一覧';
+        this.matchesList.appendChild(title);
         
         matches.forEach((match, index) => {
             const groups = match.slice(1);
             const hasGroups = groups.some(group => group !== undefined);
             
-            listHtml += `
-                <div class="match-item">
-                    <div class="match-text">"${this.escapeHtml(match[0])}"</div>
-                    <div class="match-info">
-                        位置: ${match.index}-${match.index + match[0].length - 1} (${match[0].length}文字)
-                        ${hasGroups ? `<br>グループ: [${groups.map(g => g ? `"${this.escapeHtml(g)}"` : 'null').join(', ')}]` : ''}
-                    </div>
-                </div>
-            `;
+            const item = document.createElement('div');
+            item.className = 'match-item';
+
+            const matchText = document.createElement('div');
+            matchText.className = 'match-text';
+            matchText.textContent = `"${match[0]}"`;
+            item.appendChild(matchText);
+
+            const info = document.createElement('div');
+            info.className = 'match-info';
+            info.textContent = `位置: ${match.index}-${match.index + match[0].length - 1} (${match[0].length}文字)`;
+            if (hasGroups) {
+                info.appendChild(document.createElement('br'));
+                const groupsText = groups.map(g => g ? `"${g}"` : 'null').join(', ');
+                info.appendChild(document.createTextNode(`グループ: [${groupsText}]`));
+            }
+            item.appendChild(info);
+
+            this.matchesList.appendChild(item);
         });
-        
-        this.matchesList.innerHTML = listHtml;
     }
     
     runReplace() {
@@ -203,18 +221,21 @@ URL: https://www.example.com, http://test.com/path
             const result = text.replace(this.currentRegex, replacement);
             const replacementCount = this.currentMatches.length;
             
-            this.replaceResult.innerHTML = `
-                <div style="margin-bottom: 1rem; font-weight: bold; color: #2e7d32;">
-                    ${replacementCount}箇所を置換しました
-                </div>
-                ${this.escapeHtml(result)}
-            `;
+            this.replaceResult.textContent = '';
+            const message = document.createElement('div');
+            message.style.marginBottom = '1rem';
+            message.style.fontWeight = 'bold';
+            message.style.color = '#2e7d32';
+            message.textContent = `${replacementCount}箇所を置換しました`;
+            this.replaceResult.appendChild(message);
+            this.replaceResult.appendChild(document.createTextNode(result));
         } catch (error) {
-            this.replaceResult.innerHTML = `
-                <div style="color: #c62828; font-weight: bold;">
-                    置換エラー: ${error.message}
-                </div>
-            `;
+            this.replaceResult.textContent = '';
+            const message = document.createElement('div');
+            message.style.color = '#c62828';
+            message.style.fontWeight = 'bold';
+            message.textContent = `置換エラー: ${error.message}`;
+            this.replaceResult.appendChild(message);
         }
     }
     
@@ -238,13 +259,23 @@ URL: https://www.example.com, http://test.com/path
     clearResults() {
         this.resultsSummary.textContent = '';
         this.highlightedText.textContent = '';
-        this.matchesList.innerHTML = '<h4>マッチ一覧</h4><p>結果はここに表示されます</p>';
+        this.renderMatchesListEmpty('結果はここに表示されます');
     }
     
     escapeHtml(text) {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    renderMatchesListEmpty(message) {
+        this.matchesList.textContent = '';
+        const title = document.createElement('h4');
+        title.textContent = 'マッチ一覧';
+        const body = document.createElement('p');
+        body.textContent = message;
+        this.matchesList.appendChild(title);
+        this.matchesList.appendChild(body);
     }
     
     exportResults() {

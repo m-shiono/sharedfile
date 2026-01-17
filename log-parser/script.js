@@ -257,39 +257,62 @@ class LogParser {
         const parsedLines = this.parsedLogs.filter(log => !log.parseError).length;
         const errorLines = totalLines - parsedLines;
 
-        this.resultsSummary.innerHTML = `
-            <strong>解析結果</strong><br>
-            総行数: ${totalLines}行 | 
-            解析成功: ${parsedLines}行 | 
-            解析エラー: ${errorLines}行
-        `;
+        this.resultsSummary.textContent = '';
+        const title = document.createElement('strong');
+        title.textContent = '解析結果';
+        this.resultsSummary.appendChild(title);
+        this.resultsSummary.appendChild(document.createElement('br'));
+        this.resultsSummary.appendChild(document.createTextNode(
+            `総行数: ${totalLines}行 | 解析成功: ${parsedLines}行 | 解析エラー: ${errorLines}行`
+        ));
 
         this.displayParsedLogs();
     }
 
     displayParsedLogs() {
-        let html = '';
+        const parsedLogsContainer = document.getElementById('parsedLogs');
+        parsedLogsContainer.textContent = '';
 
         this.parsedLogs.forEach(log => {
             const cssClass = this.getLogCssClass(log);
-            html += `<div class="log-entry ${cssClass}">`;
-            html += `<div style="font-weight: bold; margin-bottom: 0.5rem;">行 ${log.lineNumber}</div>`;
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${cssClass}`.trim();
+
+            const lineInfo = document.createElement('div');
+            lineInfo.style.fontWeight = 'bold';
+            lineInfo.style.marginBottom = '0.5rem';
+            lineInfo.textContent = `行 ${log.lineNumber}`;
+            entry.appendChild(lineInfo);
 
             if (log.parseError) {
-                html += `<div style="color: #d32f2f; margin-bottom: 0.5rem;">解析エラー</div>`;
-                html += `<div>${this.escapeHtml(log.raw)}</div>`;
+                const errorLabel = document.createElement('div');
+                errorLabel.style.color = '#d32f2f';
+                errorLabel.style.marginBottom = '0.5rem';
+                errorLabel.textContent = '解析エラー';
+                entry.appendChild(errorLabel);
+
+                const raw = document.createElement('div');
+                raw.textContent = log.raw;
+                entry.appendChild(raw);
             } else {
                 Object.entries(log.fields).forEach(([field, value]) => {
                     if (value && value !== '-') {
-                        html += `<span class="log-field">${this.getFieldDisplayName(field)}: ${this.escapeHtml(value)}</span>`;
+                        const fieldSpan = document.createElement('span');
+                        fieldSpan.className = 'log-field';
+                        fieldSpan.textContent = `${this.getFieldDisplayName(field)}: ${value}`;
+                        entry.appendChild(fieldSpan);
                     }
                 });
             }
 
-            html += '</div>';
+            parsedLogsContainer.appendChild(entry);
         });
 
-        this.parsedLogs.innerHTML = html || '<p>解析されたログがありません</p>';
+        if (this.parsedLogs.length === 0) {
+            const emptyMessage = document.createElement('p');
+            emptyMessage.textContent = '解析されたログがありません';
+            parsedLogsContainer.appendChild(emptyMessage);
+        }
     }
 
     getLogCssClass(log) {
@@ -312,6 +335,7 @@ class LogParser {
     }
 
     generateStats() {
+        const statsContainer = document.getElementById('statsContainer');
         const stats = {
             総行数: this.logData.length,
             解析成功: this.parsedLogs.filter(log => !log.parseError).length,
@@ -349,61 +373,49 @@ class LogParser {
             }
         });
 
-        let html = '';
+        statsContainer.textContent = '';
 
-        // 基本統計
-        html += '<div class="stat-card"><h3>基本統計</h3>';
-        Object.entries(stats).forEach(([key, value]) => {
-            html += `<div class="stat-item"><span>${this.escapeHtml(key)}</span><span class="stat-value">${this.escapeHtml(String(value))}</span></div>`;
-        });
-        html += '</div>';
+        const appendStatCard = (title, entries) => {
+            if (!entries.length) return;
+            const card = document.createElement('div');
+            card.className = 'stat-card';
+            const heading = document.createElement('h3');
+            heading.textContent = title;
+            card.appendChild(heading);
 
-        // IP統計
-        if (Object.keys(ipCounts).length > 0) {
-            html += '<div class="stat-card"><h3>IPアドレス統計</h3>';
-            Object.entries(ipCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 10)
-                .forEach(([ip, count]) => {
-                    html += `<div class="stat-item"><span>${this.escapeHtml(ip)}</span><span class="stat-value">${this.escapeHtml(String(count))}</span></div>`;
-                });
-            html += '</div>';
-        }
+            entries.forEach(([label, value]) => {
+                const item = document.createElement('div');
+                item.className = 'stat-item';
 
-        // ステータスコード統計
-        if (Object.keys(statusCounts).length > 0) {
-            html += '<div class="stat-card"><h3>ステータスコード統計</h3>';
-            Object.entries(statusCounts)
-                .sort((a, b) => b[1] - a[1])
-                .forEach(([status, count]) => {
-                    html += `<div class="stat-item"><span>${this.escapeHtml(status)}</span><span class="stat-value">${this.escapeHtml(String(count))}</span></div>`;
-                });
-            html += '</div>';
-        }
+                const labelSpan = document.createElement('span');
+                labelSpan.textContent = label;
+                const valueSpan = document.createElement('span');
+                valueSpan.className = 'stat-value';
+                valueSpan.textContent = String(value);
 
-        // メソッド統計
-        if (Object.keys(methodCounts).length > 0) {
-            html += '<div class="stat-card"><h3>HTTPメソッド統計</h3>';
-            Object.entries(methodCounts)
-                .sort((a, b) => b[1] - a[1])
-                .forEach(([method, count]) => {
-                    html += `<div class="stat-item"><span>${this.escapeHtml(method)}</span><span class="stat-value">${this.escapeHtml(String(count))}</span></div>`;
-                });
-            html += '</div>';
-        }
+                item.appendChild(labelSpan);
+                item.appendChild(valueSpan);
+                card.appendChild(item);
+            });
 
-        // エラーレベル統計
-        if (Object.keys(levelCounts).length > 0) {
-            html += '<div class="stat-card"><h3>エラーレベル統計</h3>';
-            Object.entries(levelCounts)
-                .sort((a, b) => b[1] - a[1])
-                .forEach(([level, count]) => {
-                    html += `<div class="stat-item"><span>${this.escapeHtml(level)}</span><span class="stat-value">${this.escapeHtml(String(count))}</span></div>`;
-                });
-            html += '</div>';
-        }
+            statsContainer.appendChild(card);
+        };
 
-        this.statsContainer.innerHTML = html;
+        appendStatCard('基本統計', Object.entries(stats));
+
+        const ipEntries = Object.entries(ipCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+        appendStatCard('IPアドレス統計', ipEntries);
+
+        const statusEntries = Object.entries(statusCounts).sort((a, b) => b[1] - a[1]);
+        appendStatCard('ステータスコード統計', statusEntries);
+
+        const methodEntries = Object.entries(methodCounts).sort((a, b) => b[1] - a[1]);
+        appendStatCard('HTTPメソッド統計', methodEntries);
+
+        const levelEntries = Object.entries(levelCounts).sort((a, b) => b[1] - a[1]);
+        appendStatCard('エラーレベル統計', levelEntries);
     }
 
     validateRegex() {
@@ -505,23 +517,37 @@ class LogParser {
     }
 
     displayFilteredLogs() {
-        let html = '';
+        const filteredLogsContainer = document.getElementById('filteredLogs');
+        filteredLogsContainer.textContent = '';
 
         this.filteredLogs.forEach(log => {
             const cssClass = this.getLogCssClass(log);
-            html += `<div class="log-entry ${cssClass}">`;
-            html += `<div style="font-weight: bold; margin-bottom: 0.5rem;">行 ${log.lineNumber}</div>`;
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${cssClass}`.trim();
+
+            const lineInfo = document.createElement('div');
+            lineInfo.style.fontWeight = 'bold';
+            lineInfo.style.marginBottom = '0.5rem';
+            lineInfo.textContent = `行 ${log.lineNumber}`;
+            entry.appendChild(lineInfo);
 
             Object.entries(log.fields).forEach(([field, value]) => {
                 if (value && value !== '-') {
-                    html += `<span class="log-field">${this.getFieldDisplayName(field)}: ${this.escapeHtml(value)}</span>`;
+                    const fieldSpan = document.createElement('span');
+                    fieldSpan.className = 'log-field';
+                    fieldSpan.textContent = `${this.getFieldDisplayName(field)}: ${value}`;
+                    entry.appendChild(fieldSpan);
                 }
             });
 
-            html += '</div>';
+            filteredLogsContainer.appendChild(entry);
         });
 
-        this.filteredLogs.innerHTML = html || '<p>フィルタ条件に一致するログがありません</p>';
+        if (this.filteredLogs.length === 0) {
+            const emptyMessage = document.createElement('p');
+            emptyMessage.textContent = 'フィルタ条件に一致するログがありません';
+            filteredLogsContainer.appendChild(emptyMessage);
+        }
     }
 
     switchTab(tabName) {
@@ -632,10 +658,10 @@ class LogParser {
         this.filteredLogs = [];
         this.currentRegex = null;
 
-        this.resultsSummary.innerHTML = '';
-        this.parsedLogs.innerHTML = '';
-        this.statsContainer.innerHTML = '';
-        this.filteredLogs.innerHTML = '';
+        this.resultsSummary.textContent = '';
+        document.getElementById('parsedLogs').textContent = '';
+        document.getElementById('statsContainer').textContent = '';
+        document.getElementById('filteredLogs').textContent = '';
 
         document.querySelectorAll('.flag-label input[type="checkbox"]').forEach(checkbox => {
             checkbox.checked = false;
@@ -648,11 +674,21 @@ class LogParser {
     }
 
     showError(message) {
-        this.resultsSummary.innerHTML = `<div style="color: #d32f2f; font-weight: bold;">${message}</div>`;
+        this.resultsSummary.textContent = '';
+        const errorDiv = document.createElement('div');
+        errorDiv.style.color = '#d32f2f';
+        errorDiv.style.fontWeight = 'bold';
+        errorDiv.textContent = message;
+        this.resultsSummary.appendChild(errorDiv);
     }
 
     showSuccess(message) {
-        this.resultsSummary.innerHTML = `<div style="color: #4caf50; font-weight: bold;">${message}</div>`;
+        this.resultsSummary.textContent = '';
+        const successDiv = document.createElement('div');
+        successDiv.style.color = '#4caf50';
+        successDiv.style.fontWeight = 'bold';
+        successDiv.textContent = message;
+        this.resultsSummary.appendChild(successDiv);
     }
 
     escapeHtml(text) {

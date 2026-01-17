@@ -166,18 +166,26 @@ class EnvManager {
 
     displayValidationResults(issues) {
         if (issues.length === 0) {
-            this.validationResults.innerHTML = '<div class="validation-item">✓ 検証に合格しました</div>';
+            this.validationResults.textContent = '';
+            const item = document.createElement('div');
+            item.className = 'validation-item';
+            item.textContent = '✓ 検証に合格しました';
+            this.validationResults.appendChild(item);
             return;
         }
 
-        let html = '';
+        this.validationResults.textContent = '';
         issues.forEach(issue => {
-            html += `<div class="validation-item ${issue.type}">
-                <strong>行 ${issue.line}:</strong> ${issue.message}
-            </div>`;
-        });
+            const item = document.createElement('div');
+            item.className = `validation-item ${issue.type}`;
 
-        this.validationResults.innerHTML = html;
+            const lineStrong = document.createElement('strong');
+            lineStrong.textContent = `行 ${issue.line}:`;
+            item.appendChild(lineStrong);
+            item.appendChild(document.createTextNode(` ${issue.message}`));
+
+            this.validationResults.appendChild(item);
+        });
     }
 
     generate() {
@@ -265,7 +273,7 @@ class EnvManager {
         this.envInput.value = '';
         this.outputText.value = '';
         this.envData = {};
-        this.validationResults.innerHTML = '';
+        this.validationResults.textContent = '';
         this.clearForm();
         this.showStatus('クリア完了', 'success');
     }
@@ -304,14 +312,7 @@ class EnvManager {
     }
 
     addEnvRow() {
-        const row = document.createElement('div');
-        row.className = 'env-row';
-        row.innerHTML = `
-            <input type="text" placeholder="変数名" class="env-key">
-            <input type="text" placeholder="値" class="env-value">
-            <button class="remove-btn">削除</button>
-        `;
-        this.envForm.appendChild(row);
+        this.envForm.appendChild(this.createEnvRow());
     }
 
     removeEnvRow(row) {
@@ -320,13 +321,8 @@ class EnvManager {
     }
 
     clearForm() {
-        this.envForm.innerHTML = `
-            <div class="env-row">
-                <input type="text" placeholder="変数名" class="env-key">
-                <input type="text" placeholder="値" class="env-value">
-                <button class="remove-btn">削除</button>
-            </div>
-        `;
+        this.envForm.textContent = '';
+        this.envForm.appendChild(this.createEnvRow());
     }
 
     updateFromForm() {
@@ -347,7 +343,7 @@ class EnvManager {
 
     syncEditorToForm() {
         const lines = this.envInput.value.split('\n');
-        this.envForm.innerHTML = '';
+        this.envForm.textContent = '';
 
         lines.forEach(line => {
             line = line.trim();
@@ -360,20 +356,41 @@ class EnvManager {
             const value = line.substring(equalIndex + 1).trim();
 
             if (key) {
-                const row = document.createElement('div');
-                row.className = 'env-row';
-                row.innerHTML = `
-                    <input type="text" placeholder="変数名" class="env-key" value="${key}">
-                    <input type="text" placeholder="値" class="env-value" value="${value}">
-                    <button class="remove-btn">削除</button>
-                `;
-                this.envForm.appendChild(row);
+                this.envForm.appendChild(this.createEnvRow(key, value));
             }
         });
 
         if (this.envForm.children.length === 0) {
             this.addEnvRow();
         }
+    }
+
+    createEnvRow(key = '', value = '') {
+        const row = document.createElement('div');
+        row.className = 'env-row';
+
+        const keyInput = document.createElement('input');
+        keyInput.type = 'text';
+        keyInput.placeholder = '変数名';
+        keyInput.className = 'env-key';
+        keyInput.value = key;
+
+        const valueInput = document.createElement('input');
+        valueInput.type = 'text';
+        valueInput.placeholder = '値';
+        valueInput.className = 'env-value';
+        valueInput.value = value;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'remove-btn';
+        removeBtn.textContent = '削除';
+
+        row.appendChild(keyInput);
+        row.appendChild(valueInput);
+        row.appendChild(removeBtn);
+
+        return row;
     }
 
     syncFormToEditor() {

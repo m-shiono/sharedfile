@@ -313,7 +313,7 @@ function analyzeUserAgent(ua) {
     const analysis = analyzer.analysis;
 
     // ブラウザ情報を表示
-    browserInfo.innerHTML = createInfoItems([
+    renderInfoItems(browserInfo, [
         { label: 'ブラウザ', value: analysis.browser.name },
         { label: 'バージョン', value: analysis.browser.version },
         { label: 'タイプ', value: analysis.browser.type }
@@ -331,32 +331,44 @@ function analyzeUserAgent(ua) {
     if (analysis.os.device) {
         osItems.push({ label: 'デバイス', value: analysis.os.device });
     }
-    osInfo.innerHTML = createInfoItems(osItems);
+    renderInfoItems(osInfo, osItems);
 
     // デバイス情報を表示
-    deviceInfo.innerHTML = createInfoItems([
+    renderInfoItems(deviceInfo, [
         { label: 'タイプ', value: analysis.device.type },
         { label: 'ブランド', value: analysis.device.brand },
         { label: 'モデル', value: analysis.device.model }
     ]);
 
     // エンジン情報を表示
-    engineInfo.innerHTML = createInfoItems([
+    renderInfoItems(engineInfo, [
         { label: 'エンジン', value: analysis.engine.name },
         { label: 'バージョン', value: analysis.engine.version },
         { label: 'ファミリー', value: analysis.engine.family }
     ]);
 
     // 詳細解析情報
-    detailedInfo.innerHTML = `
-        <strong>判定されたユーザー環境:</strong><br>
-        ${escapeHtml(analysis.browser.name)} ${escapeHtml(analysis.browser.version)} on ${escapeHtml(analysis.os.name)} (${escapeHtml(analysis.device.type)})<br><br>
-        
-        <strong>技術的詳細:</strong><br>
-        エンジン: ${escapeHtml(analysis.engine.name)} ${escapeHtml(analysis.engine.version)}<br>
-        プラットフォーム: ${escapeHtml(analysis.os.platform)}<br>
-        ${analysis.os.architecture ? `アーキテクチャ: ${escapeHtml(analysis.os.architecture)}<br>` : ''}
-    `;
+    detailedInfo.textContent = '';
+    const summaryTitle = document.createElement('strong');
+    summaryTitle.textContent = '判定されたユーザー環境:';
+    detailedInfo.appendChild(summaryTitle);
+    detailedInfo.appendChild(document.createElement('br'));
+    detailedInfo.appendChild(document.createTextNode(`${analysis.browser.name} ${analysis.browser.version} on ${analysis.os.name} (${analysis.device.type})`));
+    detailedInfo.appendChild(document.createElement('br'));
+    detailedInfo.appendChild(document.createElement('br'));
+
+    const detailsTitle = document.createElement('strong');
+    detailsTitle.textContent = '技術的詳細:';
+    detailedInfo.appendChild(detailsTitle);
+    detailedInfo.appendChild(document.createElement('br'));
+    detailedInfo.appendChild(document.createTextNode(`エンジン: ${analysis.engine.name} ${analysis.engine.version}`));
+    detailedInfo.appendChild(document.createElement('br'));
+    detailedInfo.appendChild(document.createTextNode(`プラットフォーム: ${analysis.os.platform}`));
+    detailedInfo.appendChild(document.createElement('br'));
+    if (analysis.os.architecture) {
+        detailedInfo.appendChild(document.createTextNode(`アーキテクチャ: ${analysis.os.architecture}`));
+        detailedInfo.appendChild(document.createElement('br'));
+    }
 
     // User-Agent構成要素
     const fragment = document.createDocumentFragment();
@@ -402,21 +414,34 @@ function analyzeUserAgent(ua) {
         });
     }
 
-    uaComponents.innerHTML = '';
+    uaComponents.textContent = '';
     uaComponents.appendChild(fragment);
 
     // 結果セクションを表示
     resultsSection.style.display = 'block';
 }
 
-// 情報アイテムのHTML作成
-function createInfoItems(items) {
-    return items.map(item => `
-        <div class="info-item">
-            <span class="info-label">${escapeHtml(item.label)}:</span>
-            <span class="info-value">${escapeHtml(item.value)}</span>
-        </div>
-    `).join('');
+// 情報アイテムの描画
+function renderInfoItems(container, items) {
+    container.textContent = '';
+    const fragment = document.createDocumentFragment();
+    items.forEach(item => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'info-item';
+
+        const label = document.createElement('span');
+        label.className = 'info-label';
+        label.textContent = `${item.label}:`;
+        wrapper.appendChild(label);
+
+        const value = document.createElement('span');
+        value.className = 'info-value';
+        value.textContent = item.value;
+        wrapper.appendChild(value);
+
+        fragment.appendChild(wrapper);
+    });
+    container.appendChild(fragment);
 }
 
 function escapeHtml(text) {

@@ -140,12 +140,16 @@ APIキー
         this.currentFile = file;
         this.updateInputSize(file.size);
         
-        this.fileInfo.innerHTML = `
-            <strong>選択されたファイル:</strong><br>
-            ファイル名: ${file.name}<br>
-            サイズ: ${this.formatFileSize(file.size)}<br>
-            タイプ: ${file.type || '不明'}
-        `;
+        this.fileInfo.textContent = '';
+        const title = document.createElement('strong');
+        title.textContent = '選択されたファイル:';
+        this.fileInfo.appendChild(title);
+        this.fileInfo.appendChild(document.createElement('br'));
+        this.fileInfo.appendChild(document.createTextNode(`ファイル名: ${file.name}`));
+        this.fileInfo.appendChild(document.createElement('br'));
+        this.fileInfo.appendChild(document.createTextNode(`サイズ: ${this.formatFileSize(file.size)}`));
+        this.fileInfo.appendChild(document.createElement('br'));
+        this.fileInfo.appendChild(document.createTextNode(`タイプ: ${file.type || '不明'}`));
         this.fileInfo.style.display = 'block';
         
         this.clearOutputs();
@@ -392,11 +396,14 @@ APIキー
         const mode = document.querySelector('input[name="inputMode"]:checked').value;
         const source = mode === 'text' ? 'テキスト' : `ファイル: ${this.currentFile.name}`;
         
-        this.hashSummary.innerHTML = `
-            <strong>ハッシュ生成完了</strong><br>
-            ソース: ${source}<br>
-            サイズ: ${this.inputSize.textContent}
-        `;
+        this.hashSummary.textContent = '';
+        const title = document.createElement('strong');
+        title.textContent = 'ハッシュ生成完了';
+        this.hashSummary.appendChild(title);
+        this.hashSummary.appendChild(document.createElement('br'));
+        this.hashSummary.appendChild(document.createTextNode(`ソース: ${source}`));
+        this.hashSummary.appendChild(document.createElement('br'));
+        this.hashSummary.appendChild(document.createTextNode(`サイズ: ${this.inputSize.textContent}`));
     }
     
     populateHashSelector() {
