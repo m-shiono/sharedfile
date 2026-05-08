@@ -13,6 +13,10 @@ let scene, camera, renderer, controls;
 let maze = [];
 let walls = [];
 let fragments = [];
+let enemies = [];
+let sword;
+let isAttacking = false;
+let playerHP = 100;
 let score = 0;
 let startTime;
 let timerInterval;
@@ -23,6 +27,8 @@ const container = document.getElementById('canvas-wrapper');
 const timerElement = document.getElementById('timer');
 const scoreElement = document.getElementById('score');
 const totalScoreElement = document.getElementById('total-score');
+const hpElement = document.getElementById('hp');
+const hpBar = document.getElementById('hp-bar');
 const instructions = document.getElementById('instructions');
 const loading = document.getElementById('loading');
 const gameOver = document.getElementById('game-over');
@@ -130,6 +136,9 @@ function init() {
     const playerLight = new THREE.PointLight(0xffaa44, 2, 60);
     playerLight.position.set(0, 0, 0);
     camera.add(playerLight);
+    
+    // 剣の作成
+    createSword();
     scene.add(camera);
 
     // 迷路生成開始
@@ -138,9 +147,85 @@ function init() {
 
     // イベントリスナー
     window.addEventListener('resize', onWindowResize);
+    window.addEventListener('mousedown', (e) => {
+        if (controls.isLocked && isGameActive && e.button === 0) {
+            attack();
+        }
+    });
     restartButton.addEventListener('click', resetGame);
 
     animate();
+}
+
+function createSword() {
+    sword = new THREE.Group();
+    
+    // 刀身
+    const bladeGeo = new THREE.BoxGeometry(0.2, 3, 0.5);
+    const bladeMat = new THREE.MeshStandardMaterial({ color: 0xcccccc, metalness: 0.9, roughness: 0.1 });
+    const blade = new THREE.Mesh(bladeGeo, bladeMat);
+    blade.position.y = 1.5;
+    sword.add(blade);
+
+    // 柄
+    const handleGeo = new THREE.CylinderGeometry(0.1, 0.1, 1, 8);
+    const handleMat = new THREE.MeshStandardMaterial({ color: 0x5d2e0a });
+    const handle = new THREE.Mesh(handleGeo, handleMat);
+    handle.position.y = -0.5;
+    sword.add(handle);
+
+    // つば
+    const guardGeo = new THREE.BoxGeometry(0.8, 0.1, 0.8);
+    const guardMat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.8 });
+    const guard = new THREE.Mesh(guardGeo, guardMat);
+    sword.add(guard);
+
+    sword.position.set(1.5, -1.5, -2);
+    sword.rotation.set(-0.2, 0, 0.2);
+    camera.add(sword);
+}
+
+function attack() {
+    if (isAttacking) return;
+    isAttacking = true;
+
+    // 攻撃アニメーション (簡易)
+    const startRot = sword.rotation.clone();
+    const startPos = sword.position.clone();
+
+    let step = 0;
+    const animateAttack = () => {
+        step += 0.15;
+        if (step < 1) {
+            sword.rotation.x = startRot.x - Math.sin(step * Math.PI) * 1.5;
+            sword.position.z = startPos.z - Math.sin(step * Math.PI) * 1;
+            requestAnimationFrame(animateAttack);
+        } else {
+            sword.rotation.copy(startRot);
+            sword.position.copy(startPos);
+            isAttacking = false;
+        }
+    };
+    animateAttack();
+
+    // 当たり判定
+    checkSwordHit();
+}
+
+function checkSwordHit() {
+    enemies.forEach((enemy, index) => {
+        const dist = camera.position.distanceTo(enemy.mesh.position);
+        if (dist < 8) {
+            // 視界の方向にあるかチェック
+            const toEnemy = enemy.mesh.position.clone().sub(camera.position).normalize();
+            const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+            const dot = toEnemy.dot(forward);
+            
+            if (dot > 0.5) { // 前方約60度以内
+                damageEnemy(enemy, index);
+            }
+        }
+    });
 }
 
 // --- 迷路生成 (穴掘り法) ---
@@ -208,6 +293,10 @@ function createMazeObjects() {
                 if (Math.random() > 0.93 && !(x === 1 && y === 1)) {
                     createFragment(x, y);
                 }
+                // 通路に敵を配置
+                if (Math.random() > 0.95 && !(x === 1 && y === 1)) {
+                    createEnemy(x, y);
+                }
             }
         }
     }
@@ -219,17 +308,161 @@ function createMazeObjects() {
     loading.style.display = 'none';
 }
 
-function createFragment(x, y) {
-    const geo = new THREE.IcosahedronGeometry(1, 0);
-    const mat = new THREE.MeshStandardMaterial({ color: 0xffdd44, emissive: 0xffaa00, emissiveIntensity: 0.5 });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(x * CELL_SIZE, 3, y * CELL_SIZE);
-    scene.add(mesh);
-    fragments.push({ mesh, x, y });
+function createEnemy(x, y) {
+    const isSkeleton = Math.random() > 0.5;
+    const enemyGroup = new THREE.Group();
+    let hp = isSkeleton ? 2 : 1;
+
+    if (isSkeleton) {
+        // ガイコツ (簡易)
+        const bodyGeo = new THREE.BoxGeometry(1.5, 3, 1);
+        const skullGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+        const mat = new THREE.MeshStandardMaterial({ color: 0xeeeeee });
+        
+        const body = new THREE.Mesh(bodyGeo, mat);
+        body.position.y = 1.5;
+        enemyGroup.add(body);
+        
+        const skull = new THREE.Mesh(skullGeo, mat);
+        skull.position.y = 3.5;
+        enemyGroup.add(skull);
+    } else {
+        // スライム
+        const slimeGeo = new THREE.SphereGeometry(1.5, 16, 16);
+        const slimeMat = new THREE.MeshStandardMaterial({ 
+            color: 0x00ff00, 
+            transparent: true, 
+            opacity: 0.8 
+        });
+        const slime = new THREE.Mesh(slimeGeo, slimeMat);
+        slime.position.y = 1.5;
+        enemyGroup.add(slime);
+    }
+
+    enemyGroup.position.set(x * CELL_SIZE, 0, y * CELL_SIZE);
+    scene.add(enemyGroup);
+    enemies.push({ mesh: enemyGroup, hp, type: isSkeleton ? 'skeleton' : 'slime', lastAttack: 0 });
+}
+
+function updateEnemies() {
+    const now = Date.now();
+    enemies.forEach((enemy, index) => {
+        const dist = camera.position.distanceTo(enemy.mesh.position);
+
+        // 追跡AI (一定距離内なら追ってくる)
+        if (dist < 40 && dist > 3) {
+            const dir = camera.position.clone().sub(enemy.mesh.position).normalize();
+            const speed = enemy.type === 'skeleton' ? 0.15 : 0.1;
+            
+            const nextX = enemy.mesh.position.x + dir.x * speed;
+            const nextZ = enemy.mesh.position.z + dir.z * speed;
+
+            // 壁との衝突判定
+            if (!checkCollision(nextX, enemy.mesh.position.z)) {
+                enemy.mesh.position.x = nextX;
+            }
+            if (!checkCollision(enemy.mesh.position.x, nextZ)) {
+                enemy.mesh.position.z = nextZ;
+            }
+            
+            enemy.mesh.lookAt(camera.position.x, 0, camera.position.z);
+        }
+
+        // 攻撃AI
+        if (dist < 5 && now - enemy.lastAttack > 1500) {
+            damagePlayer(10);
+            enemy.lastAttack = now;
+            
+            // 攻撃時の演出
+            enemy.mesh.position.y += 1;
+            setTimeout(() => { enemy.mesh.position.y -= 1; }, 200);
+        }
+
+        // スライムのバウンドアニメーション
+        if (enemy.type === 'slime') {
+            enemy.mesh.scale.y = 1 + Math.sin(now * 0.005) * 0.2;
+            enemy.mesh.position.y = (1 + Math.sin(now * 0.005) * 0.2) * 1.5;
+        }
+    });
+}
+
+function damageEnemy(enemy, index) {
+    enemy.hp -= 1;
     
-    const light = new THREE.PointLight(0xffaa00, 1, 15);
-    light.position.set(x * CELL_SIZE, 3, y * CELL_SIZE);
+    // ヒット時の演出 (赤く光らせる)
+    enemy.mesh.traverse(child => {
+        if (child.isMesh) {
+            const originalColor = child.material.color.getHex();
+            child.material.color.setHex(0xff0000);
+            setTimeout(() => { child.material.color.setHex(originalColor); }, 100);
+        }
+    });
+
+    if (enemy.hp <= 0) {
+        scene.remove(enemy.mesh);
+        enemies.splice(index, 1);
+    }
+}
+
+function damagePlayer(amount) {
+    if (!isGameActive) return;
+    playerHP -= amount;
+    if (playerHP < 0) playerHP = 0;
+    
+    hpElement.textContent = playerHP;
+    hpBar.style.width = `${playerHP}%`;
+
+    // 被ダメージ演出 (画面を一瞬赤くするなどはCSSかオーバーレイが必要だが、簡易的に)
+    renderer.domElement.style.filter = 'sepia(1) saturate(5) hue-rotate(-50deg)';
+    setTimeout(() => { renderer.domElement.style.filter = ''; }, 100);
+
+    if (playerHP <= 0) {
+        endGame(false);
+    }
+}
+
+function createFragment(x, y) {
+    // 宝箱をグループとして作成
+    const chestGroup = new THREE.Group();
+
+    // 宝箱の本体（木箱）
+    const baseGeo = new THREE.BoxGeometry(2.5, 1.5, 1.5);
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x5d2e0a, roughness: 0.8 });
+    const base = new THREE.Mesh(baseGeo, baseMat);
+    base.position.y = 0.75;
+    chestGroup.add(base);
+
+    // 宝箱の蓋
+    const lidGeo = new THREE.BoxGeometry(2.6, 0.6, 1.6);
+    const lidMat = new THREE.MeshStandardMaterial({ color: 0x3d1e05, roughness: 0.8 });
+    const lid = new THREE.Mesh(lidGeo, lidMat);
+    lid.position.y = 1.6;
+    // 蓋を少し開ける
+    lid.rotation.x = -Math.PI * 0.1;
+    chestGroup.add(lid);
+
+    // 宝箱の金具（金）
+    const metalGeo = new THREE.BoxGeometry(0.4, 0.6, 0.2);
+    const metalMat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.8, roughness: 0.2 });
+    const lock = new THREE.Mesh(metalGeo, metalMat);
+    lock.position.set(0, 1.2, 0.8);
+    chestGroup.add(lock);
+
+    // 枠線の装飾
+    const frameGeo = new THREE.BoxGeometry(2.7, 0.1, 0.1);
+    const frame1 = new THREE.Mesh(frameGeo, metalMat);
+    frame1.position.set(0, 1.5, 0.8);
+    chestGroup.add(frame1);
+
+    chestGroup.position.set(x * CELL_SIZE, 0, y * CELL_SIZE);
+    scene.add(chestGroup);
+    
+    // 中から漏れる光
+    const light = new THREE.PointLight(0xffaa00, 2, 8);
+    light.position.set(x * CELL_SIZE, 1.5, y * CELL_SIZE);
     scene.add(light);
+
+    fragments.push({ mesh: chestGroup, x, y });
 }
 
 function createCore(x, y) {
@@ -277,14 +510,18 @@ function animate() {
     if (controls.isLocked && isGameActive) {
         updateMovement();
         updateCollisions();
+        updateEnemies();
     }
 
     // アニメーション演出
     fragments.forEach(f => {
-        f.mesh.rotation.y += 0.02;
-        f.mesh.rotation.z += 0.01;
         if (f.isCore) {
+            f.mesh.rotation.y += 0.02;
+            f.mesh.rotation.z += 0.01;
             f.mesh.rotation.x += 0.01;
+        } else {
+            // 宝箱は静止（またはわずかに揺れる程度に）
+            f.mesh.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
         }
     });
 
@@ -371,7 +608,12 @@ function endGame(success) {
     gameOver.style.display = 'flex';
     if (success) {
         document.getElementById('result-title').textContent = 'MISSION COMPLETE!';
-        document.getElementById('result-text').textContent = `タイム: ${timerElement.textContent} | 回収: ${score}`;
+        document.getElementById('result-text').textContent = `タイム: ${timerElement.textContent} | 宝箱回収: ${score}`;
+    } else {
+        document.getElementById('result-title').textContent = 'GAME OVER';
+        document.getElementById('result-title').style.color = '#ff0000';
+        document.getElementById('result-title').style.textShadow = '0 0 15px #ff0000';
+        document.getElementById('result-text').textContent = 'エージェントが力尽きました...';
     }
 }
 
