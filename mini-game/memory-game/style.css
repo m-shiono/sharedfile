@@ -16,14 +16,6 @@ body {
     flex-direction: column;
 }
 
-main {
-    flex: 1;
-    max-width: 1600px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
 /* ヘッダー */
 header {
     background: linear-gradient(to right, #43a047, #66bb6a);
@@ -59,7 +51,7 @@ nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: all 0.3s ease;
     padding: 0.5rem 1rem;
     border-radius: 20px;
 }
@@ -69,6 +61,15 @@ nav ul li a:hover {
     transform: translateY(-2px);
 }
 
+/* メインコンテンツ */
+main {
+    flex: 1;
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
 /* ツールカード */
 .tool-card {
     background: linear-gradient(135deg, #ffffff, #e8f5e9);
@@ -76,12 +77,27 @@ nav ul li a:hover {
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     padding: 2rem;
     margin-bottom: 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .tool-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.tool-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #2e7d32;
+    border-bottom: 2px solid #4caf50;
+    padding-bottom: 0.5rem;
+}
+
+.tool-card h3 {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #388e3c;
 }
 
 /* ボタン */
@@ -95,15 +111,37 @@ button {
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
-    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    transition: all 0.3s ease;
     margin-bottom: 1rem;
-    margin-right: 0.5rem;
 }
 
 button:hover {
     background: linear-gradient(to right, #45a049, #4caf50);
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     transform: translateY(-2px);
+}
+
+/* フォーム要素 */
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 0.5rem;
+    border: 1px solid #81c784;
+    border-radius: 4px;
+    resize: vertical;
+    margin-bottom: 1rem;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 
 /* フッター */
@@ -116,6 +154,19 @@ footer {
     margin-top: auto;
 }
 
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    main {
+        padding: 0 1rem;
+    }
+    .tool-card {
+        padding: 1.5rem;
+    }
+    .radio-group {
+        flex-direction: column;
+    }
+}
+
 /* memory-game specific styles */
 .game-container {
     text-align: center;
@@ -126,21 +177,23 @@ footer {
     justify-content: space-around;
     font-size: 1.2rem;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 #game-board {
     display: grid;
     gap: 10px;
     justify-content: center;
+    margin: 0 auto;
 }
 
 .card {
     width: 100px;
     height: 100px;
-    background-color: #4caf50;
-    border-radius: 8px;
+    position: relative;
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: transform 0.6s;
     transform-style: preserve-3d;
 }
 
@@ -156,14 +209,42 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 2rem;
+    font-size: 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.card .front {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: white;
 }
 
 .card .back {
     transform: rotateY(180deg);
     background-color: #fff;
+    border: 2px solid #4caf50;
 }
 
 .controls {
-    margin-top: 1rem;
+    margin-top: 2rem;
+}
+
+.difficulty-selector {
+    margin-bottom: 1rem;
+}
+
+.difficulty-selector select {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #4caf50;
+}
+
+@media (max-width: 480px) {
+    .card {
+        width: 70px;
+        height: 70px;
+    }
+    .card .front, .card .back {
+        font-size: 1.8rem;
+    }
 }

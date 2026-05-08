@@ -16,14 +16,6 @@ body {
     flex-direction: column;
 }
 
-main {
-    flex: 1;
-    max-width: 1600px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
 /* ヘッダー */
 header {
     background: linear-gradient(to right, #43a047, #66bb6a);
@@ -59,7 +51,7 @@ nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: all 0.3s ease;
     padding: 0.5rem 1rem;
     border-radius: 20px;
 }
@@ -69,6 +61,15 @@ nav ul li a:hover {
     transform: translateY(-2px);
 }
 
+/* メインコンテンツ */
+main {
+    flex: 1;
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
 /* ツールカード */
 .tool-card {
     background: linear-gradient(135deg, #ffffff, #e8f5e9);
@@ -76,7 +77,7 @@ nav ul li a:hover {
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     padding: 2rem;
     margin-bottom: 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .tool-card:hover {
@@ -92,6 +93,57 @@ nav ul li a:hover {
     padding-bottom: 0.5rem;
 }
 
+.tool-card h3 {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #388e3c;
+}
+
+/* ボタン */
+button {
+    background: linear-gradient(to right, #4caf50, #45a049);
+    color: white;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+button:hover {
+    background: linear-gradient(to right, #45a049, #4caf50);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+
+/* フォーム要素 */
+textarea {
+    width: 100%;
+    height: 200px;
+    padding: 0.5rem;
+    border: 1px solid #81c784;
+    border-radius: 4px;
+    resize: vertical;
+    margin-bottom: 1rem;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
 /* フッター */
 footer {
     background: linear-gradient(to right, #43a047, #66bb6a);
@@ -100,4 +152,17 @@ footer {
     padding: 1rem 0;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
     margin-top: auto;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    main {
+        padding: 0 1rem;
+    }
+    .tool-card {
+        padding: 1.5rem;
+    }
+    .radio-group {
+        flex-direction: column;
+    }
 }
