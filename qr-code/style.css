@@ -201,6 +201,8 @@ select {
     /* 印刷用エリアだけを表示する */
     body {
         background: white !important;
+        margin: 0;
+        padding: 0;
     }
 
     .print-only {
@@ -208,30 +210,34 @@ select {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100vh;
+        min-height: 100%;
+        width: 100%;
         text-align: center;
-        padding: 20mm;
+        padding: 10mm;
+        page-break-inside: avoid;
     }
 
     #print-display-title {
-        font-size: 32pt;
-        margin-bottom: 20mm;
+        font-size: 28pt;
+        margin-bottom: 10mm;
         color: #000;
     }
 
     #print-display-qrcode {
-        margin-bottom: 20mm;
+        margin-bottom: 10mm;
     }
 
     #print-display-qrcode img {
-        width: 100mm !important;
-        height: 100mm !important;
+        width: 80mm !important;
+        height: 80mm !important;
+        max-width: 100%;
+        object-fit: contain;
     }
 
     #print-display-message {
-        font-size: 18pt;
-        max-width: 80%;
-        line-height: 1.5;
+        font-size: 16pt;
+        max-width: 90%;
+        line-height: 1.4;
         color: #333;
     }
 }
