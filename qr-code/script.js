@@ -171,8 +171,10 @@ printQrCodeButton.addEventListener("click", () => {
     img.style.width = "300px"; // 印刷時のサイズ調整
     printDisplayQrCode.appendChild(img);
 
-    // 印刷実行
-    window.print();
+    // 印刷実行（DOMの更新を待つためにわずかに遅延させる）
+    setTimeout(() => {
+        window.print();
+    }, 100);
 });
 
 // 各入力フィールドでEnterキーを押したときに生成
