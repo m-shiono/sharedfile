@@ -10,8 +10,8 @@
 
 <body>
     <header>
-        <h1>Markdown表作成ツール</h1>
-        <p>Excel風の入力画面でMarkdown形式の表を簡単作成</p>
+        <h1>Markdown/Backlog表作成ツール</h1>
+        <p>Excel風の入力画面でMarkdownやBacklog形式の表を簡単作成</p>
     </header>
 
     <nav>
@@ -95,16 +95,22 @@
                             <h3>Markdown出力</h3>
                             <textarea id="markdown-output" readonly placeholder="Markdown形式の表がここに生成されます..."></textarea>
 
+                            <h3>Backlog出力</h3>
+                            <textarea id="backlog-output" readonly placeholder="Backlog形式の表がここに生成されます..."></textarea>
+
                             <h3>CSV出力</h3>
                             <textarea id="csv-output" readonly placeholder="CSV形式のデータがここに生成されます..."></textarea>
 
                             <div class="button-group">
-                                <button id="generate-markdown-btn">Markdown生成</button>
-                                <button id="generate-csv-btn">CSV生成</button>
+                                <button id="generate-all-btn">全形式生成</button>
                                 <button id="copy-markdown-btn">Markdownコピー</button>
+                                <button id="copy-backlog-btn">Backlogコピー</button>
                                 <button id="copy-csv-btn">CSVコピー</button>
-                                <button id="download-markdown-btn">Markdownダウンロード</button>
-                                <button id="download-csv-btn">CSVダウンロード</button>
+                            </div>
+                            <div class="button-group">
+                                <button id="download-markdown-btn">Markdown保存</button>
+                                <button id="download-backlog-btn">Backlog保存</button>
+                                <button id="download-csv-btn">CSV保存</button>
                             </div>
                         </div>
                     </section>

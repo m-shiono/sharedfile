@@ -11,6 +11,7 @@ class MarkdownTableTool {
         this.fullHeightToggle = document.getElementById('full-height-toggle');
         this.importDataElement = document.getElementById('import-data');
         this.markdownOutput = document.getElementById('markdown-output');
+        this.backlogOutput = document.getElementById('backlog-output');
         this.csvOutput = document.getElementById('csv-output');
         this.messageContainer = document.getElementById('message-container');
 
@@ -19,7 +20,6 @@ class MarkdownTableTool {
 
         this.initializeEventListeners();
         this.createGrid();
-        // 初期化後に高さを適用
         this.applyHalfHeight();
     }
 
@@ -39,19 +39,22 @@ class MarkdownTableTool {
         document.getElementById('clear-import-btn').addEventListener('click', () => this.clearImport());
 
         // 出力生成
-        document.getElementById('generate-markdown-btn').addEventListener('click', () => this.generateMarkdown());
-        document.getElementById('generate-csv-btn').addEventListener('click', () => this.generateCSV());
+        document.getElementById('generate-all-btn').addEventListener('click', () => this.generateAll());
 
         // コピー機能
         document.getElementById('copy-markdown-btn').addEventListener('click', () => this.copyToClipboard('markdown'));
+        document.getElementById('copy-backlog-btn').addEventListener('click', () => this.copyToClipboard('backlog'));
         document.getElementById('copy-csv-btn').addEventListener('click', () => this.copyToClipboard('csv'));
 
         // ダウンロード機能
         document.getElementById('download-markdown-btn').addEventListener('click', () => this.downloadFile('markdown'));
+        document.getElementById('download-backlog-btn').addEventListener('click', () => this.downloadFile('backlog'));
         document.getElementById('download-csv-btn').addEventListener('click', () => this.downloadFile('csv'));
 
-        // Enterキーでセル内改行
-        this.grid.addEventListener('keydown', (e) => this.handleKeyPress(e));
+        // キーボードナビゲーション
+        this.grid.addEventListener('keydown', (e) => this.handleKeyDown(e));
+        this.grid.addEventListener('focusin', (e) => this.handleFocusIn(e));
+        this.grid.addEventListener('focusout', (e) => this.handleFocusOut(e));
 
         // 入力時に高さ再計算
         this.grid.addEventListener('input', () => this.applyHalfHeight());
@@ -211,11 +214,6 @@ class MarkdownTableTool {
         this.resizeGrid();
     }
 
-    handleKeyPress(e) {
-        // Textareas handle Enter key natively for line breaks
-        // This method is kept for potential future enhancements
-    }
-
     importTableData() {
         const data = this.importDataElement.value.trim();
         if (!data) {
@@ -275,11 +273,6 @@ class MarkdownTableTool {
                     // HTMLの<br />タグを改行コードに変換
                     cellValue = cellValue.replace(/<br\s*\/?>/gi, '\n');
 
-                    // デバッグ用ログ（変換があった場合のみ）
-                    if (originalValue !== cellValue) {
-                        console.log('変換:', originalValue, '→', cellValue);
-                    }
-
                     return cellValue;
                 });
                 result.push(cells);
@@ -300,10 +293,9 @@ class MarkdownTableTool {
 
             if (inQuotes) {
                 if (char === '"') {
-                    // Check if it's an escaped quote
                     if (i + 1 < data.length && data[i + 1] === '"') {
                         current += '"';
-                        i++; // Skip next quote
+                        i++; 
                     } else {
                         inQuotes = false;
                     }
@@ -312,11 +304,7 @@ class MarkdownTableTool {
                 }
             } else {
                 if (char === '"') {
-                    // Check if quote starts a quoted field
                     let prevNonWs = -1;
-                    for (let j = i - 1; j >= 0 && (data[j] === ' ' || data[j] === '\t'); j--) {
-                        // Skip whitespace
-                    }
                     for (let j = i - 1; j >= 0; j--) {
                         if (data[j] !== ' ' && data[j] !== '\t') {
                             prevNonWs = j;
@@ -332,7 +320,6 @@ class MarkdownTableTool {
                     currentRow.push(current.trim());
                     current = '';
                 } else if ((char === '\n' || char === '\r') && !inQuotes) {
-                    // End of row
                     if (current.trim() || currentRow.length > 0) {
                         currentRow.push(current.trim());
                         if (currentRow.some(cell => cell !== '')) {
@@ -341,7 +328,6 @@ class MarkdownTableTool {
                         currentRow = [];
                         current = '';
                     }
-                    // Skip \r\n combination
                     if (char === '\r' && i + 1 < data.length && data[i + 1] === '\n') {
                         i++;
                     }
@@ -351,7 +337,6 @@ class MarkdownTableTool {
             }
         }
 
-        // Handle last field/row
         if (current.trim() || currentRow.length > 0) {
             currentRow.push(current.trim());
             if (currentRow.some(cell => cell !== '')) {
@@ -367,124 +352,267 @@ class MarkdownTableTool {
         this.showMessage('インポートエリアをクリアしました。', 'success');
     }
 
-    generateMarkdown() {
-        const data = this.getGridData();
-        const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
+    handleKeyDown(e) {
+        const target = e.target;
+        if (target.tagName !== 'TEXTAREA') return;
 
+        const row = parseInt(target.dataset.row);
+        const col = parseInt(target.dataset.col);
+
+        switch (e.key) {
+            case 'ArrowUp':
+                if (row > 0) {
+                    this.focusCell(row - 1, col);
+                    e.preventDefault();
+                }
+                break;
+            case 'ArrowDown':
+                if (row < this.currentRows - 1) {
+                    this.focusCell(row + 1, col);
+                    e.preventDefault();
+                } else if (e.altKey) {
+                    this.addRow();
+                    setTimeout(() => this.focusCell(row + 1, col), 0);
+                }
+                break;
+            case 'ArrowLeft':
+                if (col > 0 && target.selectionStart === 0) {
+                    this.focusCell(row, col - 1);
+                    e.preventDefault();
+                }
+                break;
+            case 'ArrowRight':
+                if (col < this.currentCols - 1 && target.selectionStart === target.value.length) {
+                    this.focusCell(row, col + 1);
+                    e.preventDefault();
+                } else if (col === this.currentCols - 1 && target.selectionStart === target.value.length && e.altKey) {
+                    this.addColumn();
+                    setTimeout(() => this.focusCell(row, col + 1), 0);
+                }
+                break;
+            case 'Enter':
+                if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+                    if (row < this.currentRows - 1) {
+                        this.focusCell(row + 1, col);
+                    } else {
+                        this.addRow();
+                        setTimeout(() => this.focusCell(row + 1, col), 0);
+                    }
+                    e.preventDefault();
+                }
+                break;
+            case 'Tab':
+                if (e.shiftKey) {
+                    if (col > 0) {
+                        this.focusCell(row, col - 1);
+                        e.preventDefault();
+                    } else if (row > 0) {
+                        this.focusCell(row - 1, this.currentCols - 1);
+                        e.preventDefault();
+                    }
+                } else {
+                    if (col < this.currentCols - 1) {
+                        this.focusCell(row, col + 1);
+                        e.preventDefault();
+                    } else if (row < this.currentRows - 1) {
+                        this.focusCell(row + 1, 0);
+                        e.preventDefault();
+                    } else {
+                        this.addRow();
+                        setTimeout(() => this.focusCell(row + 1, 0), 0);
+                        e.preventDefault();
+                    }
+                }
+                break;
+        }
+    }
+
+    focusCell(row, col) {
+        const textarea = this.grid.querySelector(`textarea[data-row="${row}"][data-col="${col}"]`);
+        if (textarea) {
+            textarea.focus();
+            // カーソルを末尾に移動
+            textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
+        }
+    }
+
+    handleFocusIn(e) {
+        if (e.target.tagName === 'TEXTAREA') {
+            const col = parseInt(e.target.dataset.col);
+            const headers = this.grid.querySelectorAll('.col-header');
+            if (headers[col]) headers[col].classList.add('active-header');
+        }
+    }
+
+    handleFocusOut(e) {
+        if (e.target.tagName === 'TEXTAREA') {
+            const col = parseInt(e.target.dataset.col);
+            const headers = this.grid.querySelectorAll('.col-header');
+            if (headers[col]) headers[col].classList.remove('active-header');
+        }
+    }
+
+    generateAll() {
+        this.generateMarkdown();
+        this.generateBacklog();
+        this.generateCSV();
+        this.showMessage('全形式のテーブルを生成しました。', 'success');
+    }
+
+    getTrimmedData() {
+        const rawData = this.getGridData();
+        // 行のトリミング（末尾の空行を削除）
+        let lastRow = -1;
+        for (let r = 0; r < rawData.length; r++) {
+            if (rawData[r] && rawData[r].some(cell => cell && cell.trim())) {
+                lastRow = r;
+            }
+        }
+
+        if (lastRow === -1) return [];
+
+        const trimmedData = rawData.slice(0, lastRow + 1);
+
+        // 列のトリミング（末尾の空列を削除）
+        let maxCols = 0;
+        trimmedData.forEach(row => {
+            for (let c = row.length - 1; c >= 0; c--) {
+                if (row[c] && row[c].trim()) {
+                    maxCols = Math.max(maxCols, c + 1);
+                    break;
+                }
+            }
+        });
+
+        return trimmedData.map(row => row.slice(0, maxCols));
+    }
+
+    generateMarkdown() {
+        const data = this.getTrimmedData();
+        if (data.length === 0) {
+            this.markdownOutput.value = '';
+            return;
+        }
+
+        const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
         let markdown = '';
+        const numCols = data[0].length;
 
         for (let row = 0; row < data.length; row++) {
-            const rowData = data[row] || [];
             let line = '|';
-
-            for (let col = 0; col < this.currentCols; col++) {
-                let cellValue = rowData[col] || '';
+            for (let col = 0; col < numCols; col++) {
+                let cellValue = data[row][col] || '';
                 cellValue = this.processLineBreaks(cellValue, lineBreakOption);
                 line += ' ' + cellValue + ' |';
             }
-
             markdown += line + '\n';
 
-            // ヘッダー行の後にセパレーターを追加
             if (row === 0) {
                 let separator = '|';
-                for (let col = 0; col < this.currentCols; col++) {
-                    separator += `${MarkdownTableTool.DEFAULT_SEPARATOR}|`;
+                for (let col = 0; col < numCols; col++) {
+                    separator += ' ------ |';
                 }
                 markdown += separator + '\n';
             }
         }
 
         this.markdownOutput.value = markdown;
-        this.showMessage('Markdownテーブルを生成しました。', 'success');
+    }
+
+    generateBacklog() {
+        const data = this.getTrimmedData();
+        if (data.length === 0) {
+            this.backlogOutput.value = '';
+            return;
+        }
+
+        const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
+        let backlog = '';
+
+        for (let row = 0; row < data.length; row++) {
+            let line = '|';
+            for (let col = 0; col < data[row].length; col++) {
+                let cellValue = data[row][col] || '';
+                cellValue = this.processLineBreaks(cellValue, lineBreakOption);
+                line += cellValue + '|';
+            }
+            if (row === 0) line += 'h';
+            backlog += line + '\n';
+        }
+
+        this.backlogOutput.value = backlog;
     }
 
     generateCSV() {
-        const data = this.getGridData();
-        const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
+        const data = this.getTrimmedData();
+        if (data.length === 0) {
+            this.csvOutput.value = '';
+            return;
+        }
 
+        const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
         let csv = '';
 
         for (let row = 0; row < data.length; row++) {
-            const rowData = data[row] || [];
             const csvRow = [];
-
-            for (let col = 0; col < this.currentCols; col++) {
-                let cellValue = rowData[col] || '';
+            for (let col = 0; col < data[row].length; col++) {
+                let cellValue = data[row][col] || '';
                 cellValue = this.processLineBreaks(cellValue, lineBreakOption);
 
-                // CSVでは改行やカンマを含む場合にダブルクォートで囲む
                 if (cellValue.includes(',') || cellValue.includes('\n') || cellValue.includes('"')) {
                     cellValue = '"' + cellValue.replace(/"/g, '""') + '"';
                 }
-
                 csvRow.push(cellValue);
             }
-
             csv += csvRow.join(',') + '\n';
         }
 
         this.csvOutput.value = csv;
-        this.showMessage('CSVデータを生成しました。', 'success');
-    }
-
-    applyHalfHeight() {
-        if (!this.gridContainer) return;
-        const isFull = this.fullHeightToggle && this.fullHeightToggle.checked;
-        if (isFull) {
-            // 全体表示: スクロール無効、制約解除
-            this.gridContainer.style.maxHeight = 'none';
-            this.gridContainer.style.overflowY = 'visible';
-            return;
-        }
-        // 実高を計測するため一時的に制約解除
-        this.gridContainer.style.maxHeight = 'none';
-        const contentHeight = this.grid.scrollHeight;
-        // 既存の半分(0.5)から1.2倍の0.6へ変更
-        const sixtyPercent = Math.max(40, Math.floor(contentHeight * 0.6));
-        this.gridContainer.style.maxHeight = sixtyPercent + 'px';
-        this.gridContainer.style.overflowY = 'auto';
-    }
-
-    processLineBreaks(text, option) {
-        if (!text) return '';
-
-        switch (option) {
-            case 'br':
-                return text.replace(/\n/g, '<br />');
-            case 'newline':
-                // 実際の改行(\r\n/\n)をリテラルの \n に変換
-                return text.replace(/\r\n/g, '\n').replace(/\n/g, '\\n');
-            case 'none':
-                return text.replace(/\n/g, ' ');
-            default:
-                return text;
-        }
     }
 
     async copyToClipboard(type) {
-        const text = type === 'markdown' ? this.markdownOutput.value : this.csvOutput.value;
+        let text = '';
+        switch (type) {
+            case 'markdown': text = this.markdownOutput.value; break;
+            case 'backlog': text = this.backlogOutput.value; break;
+            case 'csv': text = this.csvOutput.value; break;
+        }
 
         if (!text) {
-            this.showMessage(`${type === 'markdown' ? 'Markdown' : 'CSV'}データが生成されていません。`, 'error');
+            this.showMessage('コピーするデータがありません。まず生成ボタンを押してください。', 'error');
             return;
         }
 
         try {
             await navigator.clipboard.writeText(text);
-            this.showMessage(`${type === 'markdown' ? 'Markdown' : 'CSV'}データをクリップボードにコピーしました。`, 'success');
+            this.showMessage('クリップボードにコピーしました。', 'success');
         } catch (error) {
-            this.showMessage('クリップボードへのコピーに失敗しました。', 'error');
+            this.showMessage('コピーに失敗しました。', 'error');
         }
     }
 
     downloadFile(type) {
-        const text = type === 'markdown' ? this.markdownOutput.value : this.csvOutput.value;
-        const filename = type === 'markdown' ? 'table.md' : 'table.csv';
-        const mimeType = type === 'markdown' ? 'text/markdown' : 'text/csv';
+        let text = '', filename = '', mimeType = '';
+        switch (type) {
+            case 'markdown':
+                text = this.markdownOutput.value;
+                filename = 'table.md';
+                mimeType = 'text/markdown';
+                break;
+            case 'backlog':
+                text = this.backlogOutput.value;
+                filename = 'table_backlog.txt';
+                mimeType = 'text/plain';
+                break;
+            case 'csv':
+                text = this.csvOutput.value;
+                filename = 'table.csv';
+                mimeType = 'text/csv';
+                break;
+        }
 
         if (!text) {
-            this.showMessage(`${type === 'markdown' ? 'Markdown' : 'CSV'}データが生成されていません。`, 'error');
+            this.showMessage('保存するデータがありません。', 'error');
             return;
         }
 
@@ -497,8 +625,37 @@ class MarkdownTableTool {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+        this.showMessage(`${filename}を保存しました。`, 'success');
+    }
 
-        this.showMessage(`${filename}をダウンロードしました。`, 'success');
+    applyHalfHeight() {
+        if (!this.gridContainer) return;
+        const isFull = this.fullHeightToggle && this.fullHeightToggle.checked;
+        if (isFull) {
+            this.gridContainer.style.maxHeight = 'none';
+            this.gridContainer.style.overflowY = 'visible';
+            return;
+        }
+        this.gridContainer.style.maxHeight = 'none';
+        const contentHeight = this.grid.scrollHeight;
+        const sixtyPercent = Math.max(40, Math.floor(contentHeight * 0.6));
+        this.gridContainer.style.maxHeight = sixtyPercent + 'px';
+        this.gridContainer.style.overflowY = 'auto';
+    }
+
+    processLineBreaks(text, option) {
+        if (!text) return '';
+
+        switch (option) {
+            case 'br':
+                return text.replace(/\n/g, '<br />');
+            case 'newline':
+                return text.replace(/\r\n/g, '\n').replace(/\n/g, '\\n');
+            case 'none':
+                return text.replace(/\n/g, ' ');
+            default:
+                return text;
+        }
     }
 
     showMessage(text, type = 'info') {
