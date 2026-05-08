@@ -115,13 +115,125 @@ button:hover {
 }
 
 /* フォーム要素 */
-input[type="text"] {
+input[type="text"],
+select {
     width: 100%;
     padding: 0.8rem;
     border: 1px solid #81c784;
     border-radius: 25px;
     font-size: 1rem;
     margin-bottom: 0.5rem;
+    background-color: white;
+}
+
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234caf50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 2.5rem;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: normal;
+    color: #2c3e50;
+    margin-bottom: 0;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 0.5rem;
+    accent-color: #4caf50;
+    width: 18px;
+    height: 18px;
+}
+
+.type-form {
+    margin-bottom: 1rem;
+}
+
+.note {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: -0.3rem;
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.print-settings {
+    background-color: rgba(76, 175, 80, 0.05);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px dashed #81c784;
+    margin-top: 2rem;
+}
+
+.print-settings h3 {
+    color: #2e7d32;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* 印刷用隠しエリアのデフォルト（画面表示時は非表示） */
+.print-only {
+    display: none;
+}
+
+/* 印刷時のスタイル設定 */
+@media print {
+    /* 画面上の全ての要素を非表示にする */
+    header, nav, main > div.tool-card, footer {
+        display: none !important;
+    }
+
+    /* 印刷用エリアだけを表示する */
+    body {
+        background: white !important;
+    }
+
+    .print-only {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        padding: 20mm;
+    }
+
+    #print-display-title {
+        font-size: 32pt;
+        margin-bottom: 20mm;
+        color: #000;
+    }
+
+    #print-display-qrcode {
+        margin-bottom: 20mm;
+    }
+
+    #print-display-qrcode img {
+        width: 100mm !important;
+        height: 100mm !important;
+    }
+
+    #print-display-message {
+        font-size: 18pt;
+        max-width: 80%;
+        line-height: 1.5;
+        color: #333;
+    }
 }
 
 /* フッター */

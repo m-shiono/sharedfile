@@ -35,9 +35,60 @@
             </div>
             
             <div class="input-group">
-                <label for="text">テキスト / URL</label>
-                <input type="text" id="text" placeholder="テキストまたはURLを入力してください" />
-                <div class="note">※QRコードにしたいテキストを貼り付けてください</div>
+                <label>作成する種類</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="qr-type" value="text" checked> URL / テキスト</label>
+                    <label><input type="radio" name="qr-type" value="wifi"> Wi-Fi設定</label>
+                    <label><input type="radio" name="qr-type" value="contact"> 連絡先 (MeCard)</label>
+                </div>
+            </div>
+
+            <!-- URL / テキスト用入力フォーム -->
+            <div id="text-form" class="type-form">
+                <div class="input-group">
+                    <label for="text">テキスト / URL</label>
+                    <input type="text" id="text" placeholder="テキストまたはURLを入力してください" />
+                    <div class="note">※QRコードにしたいテキストを貼り付けてください</div>
+                </div>
+            </div>
+
+            <!-- Wi-Fi設定用入力フォーム -->
+            <div id="wifi-form" class="type-form" style="display: none;">
+                <div class="input-group">
+                    <label for="wifi-ssid">ネットワーク名 (SSID)</label>
+                    <input type="text" id="wifi-ssid" placeholder="例: MyHomeNetwork" />
+                </div>
+                <div class="input-group">
+                    <label for="wifi-password">パスワード</label>
+                    <input type="text" id="wifi-password" placeholder="Wi-Fiパスワード" />
+                </div>
+                <div class="input-group">
+                    <label for="wifi-encryption">暗号化方式</label>
+                    <select id="wifi-encryption">
+                        <option value="WPA">WPA/WPA2 (推奨)</option>
+                        <option value="WEP">WEP</option>
+                        <option value="nopass">なし</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 連絡先用入力フォーム -->
+            <div id="contact-form" class="type-form" style="display: none;">
+                <div class="input-group">
+                    <label for="contact-name">名前</label>
+                    <input type="text" id="contact-name" placeholder="例: 山田 太郎" />
+                </div>
+                <div class="input-group">
+                    <label for="contact-tel">電話番号</label>
+                    <input type="text" id="contact-tel" placeholder="例: 09012345678" />
+                </div>
+                <div class="input-group">
+                    <label for="contact-email">メールアドレス</label>
+                    <input type="text" id="contact-email" placeholder="例: user@example.com" />
+                </div>
+            </div>
+
+            <div class="input-group">
                 <div id="error"></div>
             </div>
             
@@ -54,11 +105,37 @@
                     <label for="customColor" class="custom-color-label">カスタム</label>
                 </div>
             </div>
+
+            <div class="input-group">
+                <label for="logo-url">ロゴ画像のURL (オプション)</label>
+                <input type="text" id="logo-url" placeholder="https://example.com/logo.png" />
+                <div class="note">
+                    ※中央に配置するロゴのURL。jpg, png, gif, svgに対応。<br>
+                    ※正方形に近い画像（推奨サイズ: 100x100px程度）が最適です。<br>
+                    ※外部サイトの画像はセキュリティ設定(CORS)により表示されない場合があります。
+                </div>
+            </div>
+            
+            <div class="input-group print-settings">
+                <h3>印刷設定 (オプション)</h3>
+                <label for="print-title">印刷用タイトル</label>
+                <input type="text" id="print-title" placeholder="例: フリーWi-Fiあります" />
+                <label for="print-message">印刷用メッセージ</label>
+                <input type="text" id="print-message" placeholder="例: このQRコードをスキャンして接続してください" />
+            </div>
             
             <div class="button-group">
                 <button id="generateQrCode">QRコードを生成</button>
+                <button id="printQrCode">QRコードを印刷する</button>
                 <button id="reset">初期化</button>
             </div>
+        </div>
+
+        <!-- 印刷用隠しエリア -->
+        <div id="print-area" class="print-only">
+            <h1 id="print-display-title"></h1>
+            <div id="print-display-qrcode"></div>
+            <p id="print-display-message"></p>
         </div>
     </main>
     
