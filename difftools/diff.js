@@ -35,44 +35,70 @@ function computeDiff(oldLines, newLines) {
         }
     }
     
-    // Backtrack to find the diff
-    const result = [];
+    // Backtrack to find the diff (Raw changes)
+    const rawChanges = [];
     let i = n, j = m;
     
     while (i > 0 || j > 0) {
         if (i > 0 && j > 0 && oldLines[i - 1] === newLines[j - 1]) {
-            result.unshift({ type: 'equal', old: oldLines[i - 1], new: newLines[j - 1], oldIdx: i, newIdx: j });
+            rawChanges.unshift({ type: 'equal', old: oldLines[i - 1], new: newLines[j - 1], oldIdx: i, newIdx: j });
             i--; j--;
         } else if (j > 0 && (i === 0 || matrix[i][j - 1] >= matrix[i - 1][j])) {
-            result.unshift({ type: 'add', old: null, new: newLines[j - 1], oldIdx: null, newIdx: j });
+            rawChanges.unshift({ type: 'add', old: null, new: newLines[j - 1], oldIdx: null, newIdx: j });
             j--;
         } else {
-            result.unshift({ type: 'remove', old: oldLines[i - 1], new: null, oldIdx: i, newIdx: null });
+            rawChanges.unshift({ type: 'remove', old: oldLines[i - 1], new: null, oldIdx: i, newIdx: null });
             i--;
         }
     }
     
-    // Post-processing: Group consecutive remove+add as 'modified'
-    const groupedResult = [];
-    for (let k = 0; k < result.length; k++) {
-        const current = result[k];
-        const next = result[k + 1];
-        
-        if (current.type === 'remove' && next && next.type === 'add') {
-            groupedResult.push({
-                type: 'modify',
-                old: current.old,
-                new: next.new,
-                oldIdx: current.oldIdx,
-                newIdx: next.newIdx
-            });
-            k++; // skip next
+    // Post-processing: Group consecutive remove+add as 'modify'
+    const finalResult = [];
+    let k = 0;
+    while (k < rawChanges.length) {
+        if (rawChanges[k].type === 'equal') {
+            finalResult.push(rawChanges[k]);
+            k++;
         } else {
-            groupedResult.push(current);
+            // Collect consecutive non-equal blocks
+            const removeBlock = [];
+            const addBlock = [];
+            
+            while (k < rawChanges.length && rawChanges[k].type !== 'equal') {
+                if (rawChanges[k].type === 'remove') {
+                    removeBlock.push(rawChanges[k]);
+                } else if (rawChanges[k].type === 'add') {
+                    addBlock.push(rawChanges[k]);
+                }
+                k++;
+            }
+            
+            // Pair them as 'modify' where possible
+            const minLen = Math.min(removeBlock.length, addBlock.length);
+            for (let b = 0; b < minLen; b++) {
+                finalResult.push({
+                    type: 'modify',
+                    old: removeBlock[b].old,
+                    new: addBlock[b].new,
+                    oldIdx: removeBlock[b].oldIdx,
+                    newIdx: addBlock[b].newIdx
+                });
+            }
+            
+            // Push remaining as pure remove/add
+            if (removeBlock.length > minLen) {
+                for (let b = minLen; b < removeBlock.length; b++) {
+                    finalResult.push(removeBlock[b]);
+                }
+            } else if (addBlock.length > minLen) {
+                for (let b = minLen; b < addBlock.length; b++) {
+                    finalResult.push(addBlock[b]);
+                }
+            }
         }
     }
     
-    return groupedResult;
+    return finalResult;
 }
 
 /**
@@ -148,7 +174,6 @@ function renderDiff(diff) {
  * Character-level diff within a modified line.
  */
 function computeCharDiff(oldStr, newStr) {
-    // Basic character-level diff using same LCS logic
     const n = oldStr.length;
     const m = newStr.length;
     const matrix = Array(n + 1).fill(0).map(() => Array(m + 1).fill(0));
@@ -163,28 +188,33 @@ function computeCharDiff(oldStr, newStr) {
         }
     }
     
-    let oldHtml = '', newHtml = '';
+    const oldParts = [];
+    const newParts = [];
     let i = n, j = m;
     
     while (i > 0 || j > 0) {
         if (i > 0 && j > 0 && oldStr[i - 1] === newStr[j - 1]) {
             const char = escapeHtml(oldStr[i - 1]);
-            oldHtml = char + oldHtml;
-            newHtml = char + newHtml;
+            oldParts.unshift(char);
+            newParts.unshift(char);
             i--; j--;
         } else if (j > 0 && (i === 0 || matrix[i][j - 1] >= matrix[i - 1][j])) {
-            newHtml = `<span class="char-added">${escapeHtml(newStr[j - 1])}</span>` + newHtml;
+            newParts.unshift(`<span class="char-added">${escapeHtml(newStr[j - 1])}</span>`);
             j--;
         } else {
-            oldHtml = `<span class="char-removed">${escapeHtml(oldStr[i - 1])}</span>` + oldHtml;
+            oldParts.unshift(`<span class="char-removed">${escapeHtml(oldStr[i - 1])}</span>`);
             i--;
         }
     }
     
-    return { oldHtml, newHtml };
+    return { 
+        oldHtml: oldParts.join(''), 
+        newHtml: newParts.join('') 
+    };
 }
 
 function escapeHtml(text) {
+    if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
@@ -197,25 +227,22 @@ function setupScrollSync() {
     const leftContent = document.getElementById('left-content');
     const rightContent = document.getElementById('right-content');
     
-    let isSyncingLeftScroll = false;
-    let isSyncingRightScroll = false;
+    let isSyncing = false;
     
     leftContent.onscroll = function() {
-        if (!isSyncingLeftScroll) {
-            isSyncingRightScroll = true;
-            rightContent.scrollTop = this.scrollTop;
-            rightContent.scrollLeft = this.scrollLeft;
-        }
-        isSyncingLeftScroll = false;
+        if (isSyncing) return;
+        isSyncing = true;
+        rightContent.scrollTop = this.scrollTop;
+        rightContent.scrollLeft = this.scrollLeft;
+        setTimeout(() => isSyncing = false, 10);
     };
     
     rightContent.onscroll = function() {
-        if (!isSyncingRightScroll) {
-            isSyncingLeftScroll = true;
-            leftContent.scrollTop = this.scrollTop;
-            leftContent.scrollLeft = this.scrollLeft;
-        }
-        isSyncingRightScroll = false;
+        if (isSyncing) return;
+        isSyncing = true;
+        leftContent.scrollTop = this.scrollTop;
+        leftContent.scrollLeft = this.scrollLeft;
+        setTimeout(() => isSyncing = false, 10);
     };
 }
 
