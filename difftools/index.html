@@ -23,30 +23,45 @@
             <p>このツールはHTMLとJavascriptのみで構成されており、比較した内容がどこかに保存されることはありません。</p>
 
             <h3>使い方</h3>
-            <p>「原本（比較元）の情報」と「設定済み（比較先）の情報」にDiffしたいテキストを貼り付けて、比較ボタンをクリックしてください。
-            テキストが比較され、差分がある行に色がつきどのような差分があるか表示されます。</p>
+            <p>「原本（比較元）の情報」と「設定済み（比較先）の情報」に比較したいテキストを貼り付けて、「比較を実行」ボタンをクリックしてください。
+            左右に並んで差分が表示され、変更箇所がハイライトされます。</p>
 
-            <h3>制限事項</h3>
-            <p>簡易Diffツールのため、同じ内容が別の行に書かれているような行をまたいだ比較はできません。</p>
+            <h3>特徴</h3>
+            <ul>
+                <li><strong>サイド・バイ・サイド表示</strong>: 左右分割で変更前後の状態を確認できます。</li>
+                <li><strong>文字単位のハイライト</strong>: 変更された行の中で、どの文字が変わったかを詳しく表示します。</li>
+                <li><strong>スクロール同期</strong>: 左右のペインが連動してスクロールします。</li>
+            </ul>
 
             <div class="input-container">
                 <div class="input-box">
                     <h3>原本（比較元）の情報</h3>
                     <p>※元となる設定を貼り付けてください</p>
-                    <textarea id="diff_source"></textarea>
+                    <textarea id="diff_source" placeholder="ここに比較元のテキストを入力してください"></textarea>
                 </div>
                 <div class="input-box">
                     <h3>設定済み（比較先）の情報</h3>
                     <p>※設定済みの設定を貼り付けてください</p>
-                    <textarea id="diff_target"></textarea>
+                    <textarea id="diff_target" placeholder="ここに比較先のテキストを入力してください"></textarea>
                 </div>
             </div>
 
-            <button onclick="compareTexts()">比較</button>
-            <button onclick="resetTexts()">初期化</button>
+            <div class="button-group">
+                <button onclick="compareTexts()">比較を実行</button>
+                <button onclick="resetTexts()" class="btn-secondary">初期化</button>
+            </div>
 
-            <h3>比較結果の表示</h3>
-            <pre id="diff-result"></pre>
+            <h3>比較結果</h3>
+            <div id="diff-container" class="diff-container">
+                <div class="diff-pane" id="diff-left">
+                    <div class="pane-header">比較元（原本）</div>
+                    <div class="diff-content" id="left-content"></div>
+                </div>
+                <div class="diff-pane" id="diff-right">
+                    <div class="pane-header">比較先（設定済み）</div>
+                    <div class="diff-content" id="right-content"></div>
+                </div>
+            </div>
         </div>
     </main>
     <footer>

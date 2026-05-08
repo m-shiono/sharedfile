@@ -2,7 +2,7 @@
 .input-container {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     gap: 2rem;
 }
 
@@ -10,28 +10,116 @@
     width: 100%;
 }
 
-#diff-result {
-    white-space: pre-wrap;
-    background-color: #fff;
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #c8e6c9;
-    font-family: 'Fira Code', 'Courier New', monospace;
+.button-group {
+    margin-bottom: 2rem;
 }
 
+.btn-secondary {
+    background: linear-gradient(to right, #78909c, #607d8b);
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(to right, #607d8b, #78909c);
+}
+
+/* Diff Display Area */
+.diff-container {
+    display: flex;
+    border: 1px solid #c8e6c9;
+    border-radius: 8px;
+    background-color: #fff;
+    overflow: hidden;
+    height: 600px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+}
+
+.diff-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevent flex items from overflowing */
+}
+
+#diff-left {
+    border-right: 1px solid #c8e6c9;
+}
+
+.pane-header {
+    background-color: #f1f8e9;
+    padding: 0.5rem;
+    font-weight: bold;
+    color: #2e7d32;
+    border-bottom: 1px solid #c8e6c9;
+    text-align: center;
+}
+
+.diff-content {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    white-space: pre;
+}
+
+.diff-line {
+    display: flex;
+    min-width: fit-content;
+}
+
+.line-number {
+    width: 40px;
+    padding: 0 5px;
+    text-align: right;
+    color: #999;
+    background-color: #f9f9f9;
+    border-right: 1px solid #eee;
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.line-text {
+    padding: 0 10px;
+    flex: 1;
+}
+
+/* Diff Colors */
 .diff-added {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: #e6ffec;
 }
 
 .diff-removed {
-    background-color: #f8d7da;
-    color: #721c24;
+    background-color: #ffeef0;
+}
+
+.diff-modified {
+    background-color: #fff9db;
+}
+
+.char-added {
+    background-color: #acf2bd;
+    font-weight: bold;
+}
+
+.char-removed {
+    background-color: #fdb8c0;
+    font-weight: bold;
     text-decoration: line-through;
+}
+
+.empty-line {
+    background-color: #f3f3f3;
 }
 
 @media (max-width: 768px) {
     .input-container {
         flex-direction: column;
+    }
+    .diff-container {
+        flex-direction: column;
+        height: 800px;
+    }
+    #diff-left {
+        border-right: none;
+        border-bottom: 1px solid #c8e6c9;
     }
 }
