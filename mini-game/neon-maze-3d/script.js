@@ -314,29 +314,99 @@ function createEnemy(x, y) {
     let hp = isSkeleton ? 2 : 1;
 
     if (isSkeleton) {
-        // ガイコツ (簡易)
-        const bodyGeo = new THREE.BoxGeometry(1.5, 3, 1);
-        const skullGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-        const mat = new THREE.MeshStandardMaterial({ color: 0xeeeeee });
+        const boneMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.9 });
         
-        const body = new THREE.Mesh(bodyGeo, mat);
-        body.position.y = 1.5;
-        enemyGroup.add(body);
+        // 頭蓋骨 (詳細)
+        const skullGroup = new THREE.Group();
+        const skullGeo = new THREE.SphereGeometry(0.8, 16, 12);
+        const skull = new THREE.Mesh(skullGeo, boneMat);
+        const jawGeo = new THREE.BoxGeometry(0.6, 0.4, 0.6);
+        const jaw = new THREE.Mesh(jawGeo, boneMat);
+        jaw.position.set(0, -0.6, 0.2);
         
-        const skull = new THREE.Mesh(skullGeo, mat);
-        skull.position.y = 3.5;
-        enemyGroup.add(skull);
+        const eyeGeo = new THREE.SphereGeometry(0.15, 8, 8);
+        const eyeMat = new THREE.MeshBasicMaterial({ color: 0x220000 });
+        const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+        eyeL.position.set(0.3, 0.1, 0.6);
+        const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+        eyeR.position.set(-0.3, 0.1, 0.6);
+        
+        skullGroup.add(skull, jaw, eyeL, eyeR);
+        skullGroup.position.y = 5;
+        enemyGroup.add(skullGroup);
+
+        // 背骨
+        for (let i = 0; i < 5; i++) {
+            const vertGeo = new THREE.SphereGeometry(0.25, 8, 8);
+            const vert = new THREE.Mesh(vertGeo, boneMat);
+            vert.position.y = 2.5 + i * 0.5;
+            enemyGroup.add(vert);
+        }
+
+        // 肋骨 (リングを使用)
+        for (let i = 0; i < 4; i++) {
+            const ribGeo = new THREE.TorusGeometry(0.8, 0.15, 8, 24, Math.PI * 1.5);
+            const rib = new THREE.Mesh(ribGeo, boneMat);
+            rib.position.y = 3 + i * 0.5;
+            rib.rotation.x = Math.PI / 2;
+            rib.rotation.z = Math.PI / 4;
+            enemyGroup.add(rib);
+        }
+
+        // 腕と脚
+        const createBone = (x, y, z, rotZ) => {
+            const bone = new THREE.Group();
+            const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 2, 8), boneMat);
+            const joint = new THREE.Mesh(new THREE.SphereGeometry(0.25, 8, 8), boneMat);
+            cyl.position.y = -1;
+            bone.add(cyl, joint);
+            bone.position.set(x, y, z);
+            bone.rotation.z = rotZ;
+            return bone;
+        };
+
+        enemyGroup.add(createBone(1, 4.5, 0, -Math.PI/6)); // 右腕
+        enemyGroup.add(createBone(-1, 4.5, 0, Math.PI/6)); // 左腕
+        enemyGroup.add(createBone(0.6, 2.5, 0, 0)); // 右脚
+        enemyGroup.add(createBone(-0.6, 2.5, 0, 0)); // 左脚
+
     } else {
-        // スライム
-        const slimeGeo = new THREE.SphereGeometry(1.5, 16, 16);
-        const slimeMat = new THREE.MeshStandardMaterial({ 
+        // 粘液に塗れたスライム (多層構造)
+        const slimeGroup = new THREE.Group();
+        
+        // 核 (不透明)
+        const coreGeo = new THREE.SphereGeometry(0.5, 8, 8);
+        const coreMat = new THREE.MeshStandardMaterial({ color: 0x004400 });
+        const core = new THREE.Mesh(coreGeo, coreMat);
+        core.position.y = 1.5;
+        slimeGroup.add(core);
+
+        // メインボディ (半透明・高光沢)
+        const bodyGeo = new THREE.SphereGeometry(1.8, 32, 24);
+        const bodyMat = new THREE.MeshPhysicalMaterial({ 
             color: 0x00ff00, 
             transparent: true, 
-            opacity: 0.8 
+            opacity: 0.6,
+            roughness: 0,
+            metalness: 0.1,
+            clearcoat: 1.0,
+            clearcoatRoughness: 0
         });
-        const slime = new THREE.Mesh(slimeGeo, slimeMat);
-        slime.position.y = 1.5;
-        enemyGroup.add(slime);
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        body.position.y = 1.8;
+        slimeGroup.add(body);
+
+        // 滴る粘液 (小さな球体をランダムに配置)
+        for (let i = 0; i < 6; i++) {
+            const dripGeo = new THREE.SphereGeometry(0.4, 8, 8);
+            const drip = new THREE.Mesh(dripGeo, bodyMat);
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 1.2 + Math.random() * 0.4;
+            drip.position.set(Math.cos(angle) * dist, 0.5 + Math.random() * 1.5, Math.sin(angle) * dist);
+            slimeGroup.add(drip);
+        }
+
+        enemyGroup.add(slimeGroup);
     }
 
     enemyGroup.position.set(x * CELL_SIZE, 0, y * CELL_SIZE);
@@ -422,44 +492,58 @@ function damagePlayer(amount) {
 }
 
 function createFragment(x, y) {
-    // 宝箱をグループとして作成
     const chestGroup = new THREE.Group();
+    const goldMat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.9, roughness: 0.1 });
+    const woodMat = new THREE.MeshStandardMaterial({ color: 0x8b4513, roughness: 0.8 });
 
-    // 宝箱の本体（木箱）
-    const baseGeo = new THREE.BoxGeometry(2.5, 1.5, 1.5);
-    const baseMat = new THREE.MeshStandardMaterial({ color: 0x5d2e0a, roughness: 0.8 });
-    const base = new THREE.Mesh(baseGeo, baseMat);
-    base.position.y = 0.75;
+    // 宝箱の本体 (サイズアップ)
+    const baseGeo = new THREE.BoxGeometry(4, 2, 2.5);
+    const base = new THREE.Mesh(baseGeo, woodMat);
+    base.position.y = 1;
     chestGroup.add(base);
 
-    // 宝箱の蓋
-    const lidGeo = new THREE.BoxGeometry(2.6, 0.6, 1.6);
-    const lidMat = new THREE.MeshStandardMaterial({ color: 0x3d1e05, roughness: 0.8 });
-    const lid = new THREE.Mesh(lidGeo, lidMat);
-    lid.position.y = 1.6;
-    // 蓋を少し開ける
-    lid.rotation.x = -Math.PI * 0.1;
-    chestGroup.add(lid);
+    // かまぼこ型の蓋
+    const lidGroup = new THREE.Group();
+    const lidGeo = new THREE.CylinderGeometry(1.3, 1.3, 4.1, 12, 1, false, 0, Math.PI);
+    const lid = new THREE.Mesh(lidGeo, woodMat);
+    lid.rotation.z = Math.PI / 2;
+    lidGroup.add(lid);
 
-    // 宝箱の金具（金）
-    const metalGeo = new THREE.BoxGeometry(0.4, 0.6, 0.2);
-    const metalMat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.8, roughness: 0.2 });
-    const lock = new THREE.Mesh(metalGeo, metalMat);
-    lock.position.set(0, 1.2, 0.8);
-    chestGroup.add(lock);
+    // 蓋の装飾（金のバンド）
+    const bandGeo = new THREE.TorusGeometry(1.35, 0.1, 8, 24, Math.PI);
+    const band1 = new THREE.Mesh(bandGeo, goldMat);
+    band1.position.y = 1;
+    const band2 = new THREE.Mesh(bandGeo, goldMat);
+    band2.position.y = -1;
+    lidGroup.add(band1, band2);
 
-    // 枠線の装飾
-    const frameGeo = new THREE.BoxGeometry(2.7, 0.1, 0.1);
-    const frame1 = new THREE.Mesh(frameGeo, metalMat);
-    frame1.position.set(0, 1.5, 0.8);
-    chestGroup.add(frame1);
+    lidGroup.position.y = 2;
+    lidGroup.rotation.x = -Math.PI * 0.15; // 少し開ける
+    chestGroup.add(lidGroup);
+
+    // 本体の装飾
+    const horizBandGeo = new THREE.BoxGeometry(4.2, 0.2, 2.7);
+    const hBand = new THREE.Mesh(horizBandGeo, goldMat);
+    hBand.position.y = 1.8;
+    chestGroup.add(hBand);
+
+    // 豪華な錠前
+    const lockGroup = new THREE.Group();
+    const lockBaseGeo = new THREE.BoxGeometry(0.6, 0.8, 0.3);
+    const lockBase = new THREE.Mesh(lockBaseGeo, goldMat);
+    const holeGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.4, 8);
+    const hole = new THREE.Mesh(holeGeo, new THREE.MeshBasicMaterial({ color: 0x000000 }));
+    hole.rotation.x = Math.PI / 2;
+    lockGroup.add(lockBase, hole);
+    lockGroup.position.set(0, 1.5, 1.3);
+    chestGroup.add(lockGroup);
 
     chestGroup.position.set(x * CELL_SIZE, 0, y * CELL_SIZE);
     scene.add(chestGroup);
     
-    // 中から漏れる光
-    const light = new THREE.PointLight(0xffaa00, 2, 8);
-    light.position.set(x * CELL_SIZE, 1.5, y * CELL_SIZE);
+    // 中から溢れる黄金の光
+    const light = new THREE.PointLight(0xffaa00, 3, 12);
+    light.position.set(x * CELL_SIZE, 2.5, y * CELL_SIZE);
     scene.add(light);
 
     fragments.push({ mesh: chestGroup, x, y });
@@ -507,6 +591,8 @@ document.addEventListener('keyup', (e) => {
 function animate() {
     requestAnimationFrame(animate);
 
+    const now = Date.now();
+
     if (controls.isLocked && isGameActive) {
         updateMovement();
         updateCollisions();
@@ -520,9 +606,18 @@ function animate() {
             f.mesh.rotation.z += 0.01;
             f.mesh.rotation.x += 0.01;
         } else {
-            // 宝箱は静止（またはわずかに揺れる程度に）
-            f.mesh.rotation.y = Math.sin(Date.now() * 0.001) * 0.1;
+            // 宝箱はゆっくり浮遊
+            f.mesh.position.y = Math.sin(now * 0.002) * 0.2;
+            f.mesh.rotation.y = Math.sin(now * 0.001) * 0.05;
         }
+    });
+
+    // 敵のボビングアニメーション
+    enemies.forEach(enemy => {
+        if (enemy.type === 'skeleton') {
+            enemy.mesh.position.y = Math.sin(now * 0.003) * 0.1;
+        }
+        // スライムのアニメーションはupdateEnemies内で処理済み
     });
 
     renderer.render(scene, camera);
