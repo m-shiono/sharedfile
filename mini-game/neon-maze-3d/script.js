@@ -28,12 +28,71 @@ const loading = document.getElementById('loading');
 const gameOver = document.getElementById('game-over');
 const restartButton = document.getElementById('restart-button');
 
+// --- テクスチャ生成関数 ---
+function createBrickTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+
+    // ベースカラー
+    ctx.fillStyle = '#8b4513';
+    ctx.fillRect(0, 0, 256, 256);
+
+    // レンガの模様
+    ctx.strokeStyle = '#5d2e0a';
+    ctx.lineWidth = 4;
+    const brickW = 64;
+    const brickH = 32;
+
+    for (let y = 0; y < 256; y += brickH) {
+        const offset = (y / brickH) % 2 === 0 ? 0 : brickW / 2;
+        for (let x = -offset; x < 256; x += brickW) {
+            ctx.strokeRect(x, y, brickW, brickH);
+            // 質感のためのノイズ
+            ctx.fillStyle = `rgba(0,0,0,${Math.random() * 0.2})`;
+            ctx.fillRect(x + 2, y + 2, brickW - 4, brickH - 4);
+        }
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(1, 1);
+    return texture;
+}
+
+function createDirtTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+
+    // 土のベースカラー
+    ctx.fillStyle = '#553311';
+    ctx.fillRect(0, 0, 256, 256);
+
+    // 土の質感（ランダムな点と色ムラ）
+    for (let i = 0; i < 5000; i++) {
+        const x = Math.random() * 256;
+        const y = Math.random() * 256;
+        const size = Math.random() * 2;
+        const colorValue = 50 + Math.random() * 50;
+        ctx.fillStyle = `rgb(${colorValue}, ${colorValue * 0.7}, ${colorValue * 0.4})`;
+        ctx.fillRect(x, y, size, size);
+    }
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(MAZE_SIZE, MAZE_SIZE);
+    return texture;
+}
+
 // --- 初期化 ---
 function init() {
     // シーン設定
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000505);
-    scene.fog = new THREE.FogExp2(0x000505, 0.015);
+    scene.background = new THREE.Color(0x1a1005);
+    scene.fog = new THREE.FogExp2(0x1a1005, 0.02);
 
     // カメラ設定
     camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -64,11 +123,11 @@ function init() {
     });
 
     // ライト設定
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
     scene.add(ambientLight);
 
-    // プレイヤーの持ちライト
-    const playerLight = new THREE.PointLight(0x00ffff, 2, 50);
+    // プレイヤーの持ちライト（松明風の暖かい光）
+    const playerLight = new THREE.PointLight(0xffaa44, 2, 60);
     playerLight.position.set(0, 0, 0);
     camera.add(playerLight);
     scene.add(camera);
@@ -110,12 +169,15 @@ function generateMaze() {
 
 // --- 3Dオブジェクト作成 ---
 function createMazeObjects() {
+    const dirtTexture = createDirtTexture();
+    const brickTexture = createBrickTexture();
+
     // 床
     const floorGeo = new THREE.PlaneGeometry(MAZE_SIZE * CELL_SIZE, MAZE_SIZE * CELL_SIZE);
     const floorMat = new THREE.MeshStandardMaterial({ 
-        color: 0x111111, 
-        roughness: 0.2, 
-        metalness: 0.8 
+        map: dirtTexture,
+        roughness: 0.9, 
+        metalness: 0.1 
     });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;
@@ -123,21 +185,13 @@ function createMazeObjects() {
     floor.receiveShadow = true;
     scene.add(floor);
 
-    // グリッドヘルパー（ネオン風）
-    const grid = new THREE.GridHelper(MAZE_SIZE * CELL_SIZE, MAZE_SIZE, 0x00ffff, 0x002222);
-    grid.position.set((MAZE_SIZE * CELL_SIZE) / 2 - CELL_SIZE / 2, 0.05, (MAZE_SIZE * CELL_SIZE) / 2 - CELL_SIZE / 2);
-    scene.add(grid);
-
     // 壁のジオメトリとマテリアル
     const wallGeo = new THREE.BoxGeometry(CELL_SIZE, WALL_HEIGHT, CELL_SIZE);
     
-    // リッチな見た目のための複数マテリアル
     const wallMat = new THREE.MeshStandardMaterial({ 
-        color: 0x222222,
-        roughness: 0.1,
-        metalness: 0.9,
-        emissive: 0x00ffff,
-        emissiveIntensity: 0.05
+        map: brickTexture,
+        roughness: 0.8,
+        metalness: 0.1
     });
 
     for (let y = 0; y < MAZE_SIZE; y++) {
@@ -149,15 +203,6 @@ function createMazeObjects() {
                 wall.receiveShadow = true;
                 scene.add(wall);
                 walls.push(wall);
-
-                // 壁にネオンラインを追加（ディテール）
-                if (Math.random() > 0.7) {
-                    const neonGeo = new THREE.BoxGeometry(CELL_SIZE + 0.1, 0.5, 0.5);
-                    const neonMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-                    const neon = new THREE.Mesh(neonGeo, neonMat);
-                    neon.position.set(x * CELL_SIZE, Math.random() * WALL_HEIGHT, y * CELL_SIZE + (Math.random() > 0.5 ? CELL_SIZE/2 : -CELL_SIZE/2));
-                    scene.add(neon);
-                }
             } else {
                 // 通路にアイテムを配置
                 if (Math.random() > 0.93 && !(x === 1 && y === 1)) {
@@ -176,13 +221,13 @@ function createMazeObjects() {
 
 function createFragment(x, y) {
     const geo = new THREE.IcosahedronGeometry(1, 0);
-    const mat = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
+    const mat = new THREE.MeshStandardMaterial({ color: 0xffdd44, emissive: 0xffaa00, emissiveIntensity: 0.5 });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(x * CELL_SIZE, 3, y * CELL_SIZE);
     scene.add(mesh);
     fragments.push({ mesh, x, y });
     
-    const light = new THREE.PointLight(0x00ffff, 1, 10);
+    const light = new THREE.PointLight(0xffaa00, 1, 15);
     light.position.set(x * CELL_SIZE, 3, y * CELL_SIZE);
     scene.add(light);
 }
@@ -190,19 +235,18 @@ function createFragment(x, y) {
 function createCore(x, y) {
     const geo = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
     const mat = new THREE.MeshStandardMaterial({ 
-        color: 0xff00ff, 
-        emissive: 0xff00ff, 
-        emissiveIntensity: 2 
+        color: 0xffffff, 
+        emissive: 0x00ffff, 
+        emissiveIntensity: 1 
     });
     const core = new THREE.Mesh(geo, mat);
     core.position.set(x * CELL_SIZE, 5, y * CELL_SIZE);
     scene.add(core);
     
-    const light = new THREE.PointLight(0xff00ff, 5, 30);
+    const light = new THREE.PointLight(0x00ffff, 5, 40);
     light.position.set(x * CELL_SIZE, 5, y * CELL_SIZE);
     scene.add(light);
 
-    // コアの回転用
     fragments.push({ mesh: core, x, y, isCore: true });
 }
 
