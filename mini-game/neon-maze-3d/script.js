@@ -1,0 +1,345 @@
+import * as THREE from 'three';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
+// --- 定数 ---
+const MAZE_SIZE = 21; // 奇数である必要があります
+const CELL_SIZE = 10;
+const WALL_HEIGHT = 12;
+const PLAYER_HEIGHT = 5;
+const PLAYER_SPEED = 0.5;
+
+// --- グローバル変数 ---
+let scene, camera, renderer, controls;
+let maze = [];
+let walls = [];
+let fragments = [];
+let score = 0;
+let startTime;
+let timerInterval;
+let isGameActive = false;
+
+// --- DOM要素 ---
+const container = document.getElementById('canvas-wrapper');
+const timerElement = document.getElementById('timer');
+const scoreElement = document.getElementById('score');
+const totalScoreElement = document.getElementById('total-score');
+const instructions = document.getElementById('instructions');
+const loading = document.getElementById('loading');
+const gameOver = document.getElementById('game-over');
+const restartButton = document.getElementById('restart-button');
+
+// --- 初期化 ---
+function init() {
+    // シーン設定
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000505);
+    scene.fog = new THREE.FogExp2(0x000505, 0.015);
+
+    // カメラ設定
+    camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    
+    // レンダラー設定
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+
+    // コントロール設定
+    controls = new PointerLockControls(camera, document.body);
+
+    instructions.addEventListener('click', () => {
+        controls.lock();
+    });
+
+    controls.addEventListener('lock', () => {
+        instructions.style.display = 'none';
+        if (!isGameActive) startGame();
+    });
+
+    controls.addEventListener('unlock', () => {
+        if (isGameActive) {
+            instructions.style.display = 'flex';
+        }
+    });
+
+    // ライト設定
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    scene.add(ambientLight);
+
+    // プレイヤーの持ちライト
+    const playerLight = new THREE.PointLight(0x00ffff, 2, 50);
+    playerLight.position.set(0, 0, 0);
+    camera.add(playerLight);
+    scene.add(camera);
+
+    // 迷路生成開始
+    generateMaze();
+    createMazeObjects();
+
+    // イベントリスナー
+    window.addEventListener('resize', onWindowResize);
+    restartButton.addEventListener('click', resetGame);
+
+    animate();
+}
+
+// --- 迷路生成 (穴掘り法) ---
+function generateMaze() {
+    maze = Array(MAZE_SIZE).fill().map(() => Array(MAZE_SIZE).fill(1));
+
+    function walk(x, y) {
+        maze[y][x] = 0;
+        const dirs = [[0, 2], [0, -2], [2, 0], [-2, 0]].sort(() => Math.random() - 0.5);
+        
+        for (let [dx, dy] of dirs) {
+            const nx = x + dx;
+            const ny = y + dy;
+            if (nx > 0 && nx < MAZE_SIZE - 1 && ny > 0 && ny < MAZE_SIZE - 1 && maze[ny][nx] === 1) {
+                maze[y + dy / 2][x + dx / 2] = 0;
+                walk(nx, ny);
+            }
+        }
+    }
+
+    walk(1, 1);
+    
+    // 出口を作成
+    maze[MAZE_SIZE - 2][MAZE_SIZE - 2] = 0;
+}
+
+// --- 3Dオブジェクト作成 ---
+function createMazeObjects() {
+    // 床
+    const floorGeo = new THREE.PlaneGeometry(MAZE_SIZE * CELL_SIZE, MAZE_SIZE * CELL_SIZE);
+    const floorMat = new THREE.MeshStandardMaterial({ 
+        color: 0x111111, 
+        roughness: 0.2, 
+        metalness: 0.8 
+    });
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.set((MAZE_SIZE * CELL_SIZE) / 2 - CELL_SIZE / 2, 0, (MAZE_SIZE * CELL_SIZE) / 2 - CELL_SIZE / 2);
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    // グリッドヘルパー（ネオン風）
+    const grid = new THREE.GridHelper(MAZE_SIZE * CELL_SIZE, MAZE_SIZE, 0x00ffff, 0x002222);
+    grid.position.set((MAZE_SIZE * CELL_SIZE) / 2 - CELL_SIZE / 2, 0.05, (MAZE_SIZE * CELL_SIZE) / 2 - CELL_SIZE / 2);
+    scene.add(grid);
+
+    // 壁のジオメトリとマテリアル
+    const wallGeo = new THREE.BoxGeometry(CELL_SIZE, WALL_HEIGHT, CELL_SIZE);
+    
+    // リッチな見た目のための複数マテリアル
+    const wallMat = new THREE.MeshStandardMaterial({ 
+        color: 0x222222,
+        roughness: 0.1,
+        metalness: 0.9,
+        emissive: 0x00ffff,
+        emissiveIntensity: 0.05
+    });
+
+    for (let y = 0; y < MAZE_SIZE; y++) {
+        for (let x = 0; x < MAZE_SIZE; x++) {
+            if (maze[y][x] === 1) {
+                const wall = new THREE.Mesh(wallGeo, wallMat);
+                wall.position.set(x * CELL_SIZE, WALL_HEIGHT / 2, y * CELL_SIZE);
+                wall.castShadow = true;
+                wall.receiveShadow = true;
+                scene.add(wall);
+                walls.push(wall);
+
+                // 壁にネオンラインを追加（ディテール）
+                if (Math.random() > 0.7) {
+                    const neonGeo = new THREE.BoxGeometry(CELL_SIZE + 0.1, 0.5, 0.5);
+                    const neonMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+                    const neon = new THREE.Mesh(neonGeo, neonMat);
+                    neon.position.set(x * CELL_SIZE, Math.random() * WALL_HEIGHT, y * CELL_SIZE + (Math.random() > 0.5 ? CELL_SIZE/2 : -CELL_SIZE/2));
+                    scene.add(neon);
+                }
+            } else {
+                // 通路にアイテムを配置
+                if (Math.random() > 0.93 && !(x === 1 && y === 1)) {
+                    createFragment(x, y);
+                }
+            }
+        }
+    }
+
+    // 出口（コア）の配置
+    createCore(MAZE_SIZE - 2, MAZE_SIZE - 2);
+
+    totalScoreElement.textContent = fragments.length;
+    loading.style.display = 'none';
+}
+
+function createFragment(x, y) {
+    const geo = new THREE.IcosahedronGeometry(1, 0);
+    const mat = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(x * CELL_SIZE, 3, y * CELL_SIZE);
+    scene.add(mesh);
+    fragments.push({ mesh, x, y });
+    
+    const light = new THREE.PointLight(0x00ffff, 1, 10);
+    light.position.set(x * CELL_SIZE, 3, y * CELL_SIZE);
+    scene.add(light);
+}
+
+function createCore(x, y) {
+    const geo = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
+    const mat = new THREE.MeshStandardMaterial({ 
+        color: 0xff00ff, 
+        emissive: 0xff00ff, 
+        emissiveIntensity: 2 
+    });
+    const core = new THREE.Mesh(geo, mat);
+    core.position.set(x * CELL_SIZE, 5, y * CELL_SIZE);
+    scene.add(core);
+    
+    const light = new THREE.PointLight(0xff00ff, 5, 30);
+    light.position.set(x * CELL_SIZE, 5, y * CELL_SIZE);
+    scene.add(light);
+
+    // コアの回転用
+    fragments.push({ mesh: core, x, y, isCore: true });
+}
+
+// --- ゲームループ ---
+const moveState = { forward: false, backward: false, left: false, right: false };
+
+document.addEventListener('keydown', (e) => {
+    switch (e.code) {
+        case 'KeyW': moveState.forward = true; break;
+        case 'KeyS': moveState.backward = true; break;
+        case 'KeyA': moveState.left = true; break;
+        case 'KeyD': moveState.right = true; break;
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    switch (e.code) {
+        case 'KeyW': moveState.forward = false; break;
+        case 'KeyS': moveState.backward = false; break;
+        case 'KeyA': moveState.left = false; break;
+        case 'KeyD': moveState.right = false; break;
+    }
+});
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    if (controls.isLocked && isGameActive) {
+        updateMovement();
+        updateCollisions();
+    }
+
+    // アニメーション演出
+    fragments.forEach(f => {
+        f.mesh.rotation.y += 0.02;
+        f.mesh.rotation.z += 0.01;
+        if (f.isCore) {
+            f.mesh.rotation.x += 0.01;
+        }
+    });
+
+    renderer.render(scene, camera);
+}
+
+function updateMovement() {
+    const direction = new THREE.Vector3();
+    const frontVector = new THREE.Vector3(0, 0, Number(moveState.backward) - Number(moveState.forward));
+    const sideVector = new THREE.Vector3(Number(moveState.left) - Number(moveState.right), 0, 0);
+
+    direction.subVectors(frontVector, sideVector).normalize().multiplyScalar(PLAYER_SPEED).applyQuaternion(camera.quaternion);
+    
+    // Y方向の移動を制限しつつ、XとZの移動を個別にチェック（壁ずり移動を可能にする）
+    const nextX = camera.position.x + direction.x;
+    const nextZ = camera.position.z + direction.z;
+
+    if (!checkCollision(nextX, camera.position.z)) {
+        camera.position.x = nextX;
+    }
+    if (!checkCollision(camera.position.x, nextZ)) {
+        camera.position.z = nextZ;
+    }
+    
+    camera.position.y = PLAYER_HEIGHT;
+}
+
+function checkCollision(x, z) {
+    const margin = 2.5; // 衝突判定のマージン
+    const checkPoints = [
+        { x: x + margin, z: z + margin },
+        { x: x - margin, z: z + margin },
+        { x: x + margin, z: z - margin },
+        { x: x - margin, z: z - margin }
+    ];
+
+    for (const p of checkPoints) {
+        const gx = Math.round(p.x / CELL_SIZE);
+        const gz = Math.round(p.z / CELL_SIZE);
+        if (maze[gz] && maze[gz][gx] === 1) return true;
+    }
+    return false;
+}
+
+function updateCollisions() {
+    // アイテム回収
+    fragments.forEach((f, index) => {
+        const dx = camera.position.x - f.mesh.position.x;
+        const dz = camera.position.z - f.mesh.position.z;
+        const dist = Math.sqrt(dx*dx + dz*dz);
+
+        if (dist < 4) {
+            if (f.isCore) {
+                endGame(true);
+            } else {
+                scene.remove(f.mesh);
+                fragments.splice(index, 1);
+                score++;
+                scoreElement.textContent = score;
+            }
+        }
+    });
+}
+
+function startGame() {
+    isGameActive = true;
+    startTime = Date.now();
+    camera.position.set(CELL_SIZE, PLAYER_HEIGHT, CELL_SIZE);
+    camera.lookAt(CELL_SIZE * 2, PLAYER_HEIGHT, CELL_SIZE);
+    
+    timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+        const secs = String(elapsed % 60).padStart(2, '0');
+        timerElement.textContent = `${mins}:${secs}`;
+    }, 1000);
+}
+
+function endGame(success) {
+    isGameActive = false;
+    clearInterval(timerInterval);
+    controls.unlock();
+    
+    gameOver.style.display = 'flex';
+    if (success) {
+        document.getElementById('result-title').textContent = 'MISSION COMPLETE!';
+        document.getElementById('result-text').textContent = `タイム: ${timerElement.textContent} | 回収: ${score}`;
+    }
+}
+
+function resetGame() {
+    location.reload(); // 簡易的にリロードでリセット
+}
+
+function onWindowResize() {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+}
+
+// 実行
+init();

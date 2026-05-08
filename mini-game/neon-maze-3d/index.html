@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Maze 3D - Web開発者向けユーティリティ</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Neon Maze 3D</h1>
+        <p>ネオン輝く3D迷路を駆け抜けろ！</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="../index.html">ミニゲームコレクションに戻る</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="tool-card">
+            <div id="game-container">
+                <div id="ui-overlay">
+                    <div id="stats">
+                        <div>TIME: <span id="timer">00:00</span></div>
+                        <div>FRAGMENTS: <span id="score">0</span> / <span id="total-score">0</span></div>
+                    </div>
+                    <div id="instructions">
+                        <div class="instructions-content">
+                            <h2>Neon Maze 3D</h2>
+                            <p>マウスをクリックして開始</p>
+                            <p>(W,A,S,D: 移動 | MOUSE: 視点変更 | ESC: 解除)</p>
+                        </div>
+                    </div>
+                    <div id="loading">
+                        <p>迷路を生成中...</p>
+                    </div>
+                    <div id="game-over" style="display: none;">
+                        <div class="game-over-content">
+                            <h2 id="result-title">MISSION COMPLETE!</h2>
+                            <p id="result-text">全てのデータを回収しました。</p>
+                            <button id="restart-button">もう一度プレイ</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="canvas-wrapper"></div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2024 m-shiono personal project</p>
+    </footer>
+    
+    <script type="module" src="script.js"></script>
+</body>
+</html>
