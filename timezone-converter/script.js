@@ -1,26 +1,98 @@
-// タイムゾーン情報
-const timezones = [
-    { value: 'UTC', name: 'UTC', display: '協定世界時 (UTC)' },
-    { value: 'Asia/Tokyo', name: 'JST', display: '日本標準時 (JST)' },
-    { value: 'America/New_York', name: 'EST/EDT', display: '東部標準時 (EST/EDT)' },
-    { value: 'America/Los_Angeles', name: 'PST/PDT', display: '太平洋標準時 (PST/PDT)' },
-    { value: 'Europe/London', name: 'GMT/BST', display: 'グリニッジ標準時 (GMT/BST)' },
-    { value: 'Europe/Paris', name: 'CET/CEST', display: '中央ヨーロッパ時間 (CET/CEST)' },
-    { value: 'Asia/Shanghai', name: 'CST', display: '中国標準時 (CST)' },
-    { value: 'Asia/Seoul', name: 'KST', display: '韓国標準時 (KST)' },
-    { value: 'Australia/Sydney', name: 'AEST/AEDT', display: 'オーストラリア東部時間 (AEST/AEDT)' }
+// 主要なタイムゾーン（一覧表示用）
+const MAJOR_TIMEZONES = [
+    { value: 'Asia/Tokyo', display: '日本標準時 (JST)' },
+    { value: 'UTC', display: '協定世界時 (UTC)' },
+    { value: 'America/New_York', display: 'ニューヨーク (EST/EDT)' },
+    { value: 'America/Los_Angeles', display: 'ロサンゼルス (PST/PDT)' },
+    { value: 'Europe/London', display: 'ロンドン (GMT/BST)' },
+    { value: 'Europe/Paris', display: 'パリ (CET/CEST)' },
+    { value: 'Asia/Shanghai', display: '上海 (CST)' },
+    { value: 'Asia/Seoul', display: 'ソウル (KST)' },
+    { value: 'Australia/Sydney', display: 'シドニー (AEST/AEDT)' },
+    { value: 'Asia/Singapore', display: 'シンガポール (SGT)' },
+    { value: 'Asia/Dubai', display: 'ドバイ (GST)' },
+    { value: 'Europe/Berlin', display: 'ベルリン (CET/CEST)' }
 ];
 
 // DOM要素
 const currentTimeElement = document.getElementById('current-time');
 const inputDatetime = document.getElementById('input-datetime');
 const inputTimezone = document.getElementById('input-timezone');
-const convertBtn = document.getElementById('convert-btn');
+const targetTimezone = document.getElementById('target-timezone');
+const swapBtn = document.getElementById('swap-btn');
 const currentTimeBtn = document.getElementById('current-time-btn');
-const resultsContainer = document.getElementById('conversion-results');
+const copyBtn = document.getElementById('copy-btn');
+const specificResult = document.getElementById('specific-result');
+const resultsGrid = document.getElementById('conversion-results');
 
-// 現在時刻を更新
-function updateCurrentTime() {
+// タイムゾーンリストの初期化
+function initTimezoneSelects() {
+    const allTimezones = Intl.supportedValuesOf('timeZone');
+    
+    // ソート: Asia/Tokyo と UTC を最優先、あとはアルファベット順
+    const sortedTimezones = allTimezones.sort((a, b) => {
+        if (a === 'Asia/Tokyo') return -1;
+        if (b === 'Asia/Tokyo') return 1;
+        if (a === 'UTC') return -1;
+        if (b === 'UTC') return 1;
+        return a.localeCompare(b);
+    });
+
+    const now = new Date();
+    
+    const fragmentInput = document.createDocumentFragment();
+    const fragmentTarget = document.createDocumentFragment();
+
+    sortedTimezones.forEach(tz => {
+        const offset = getOffsetString(tz, now);
+        const label = `(${offset}) ${tz}`;
+        
+        const opt1 = document.createElement('option');
+        opt1.value = tz;
+        opt1.textContent = label;
+        if (tz === 'UTC') opt1.selected = true;
+        fragmentInput.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = tz;
+        opt2.textContent = label;
+        if (tz === 'Asia/Tokyo') opt2.selected = true;
+        fragmentTarget.appendChild(opt2);
+    });
+
+    inputTimezone.appendChild(fragmentInput);
+    targetTimezone.appendChild(fragmentTarget);
+}
+
+// タイムゾーンのオフセット文字列を取得 (例: +09:00)
+function getOffsetString(timezone, date) {
+    try {
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: timezone,
+            timeZoneName: 'longOffset'
+        }).formatToParts(date);
+        const offsetPart = parts.find(p => p.type === 'timeZoneName').value;
+        if (offsetPart === 'GMT') return '+00:00';
+        return offsetPart.replace('GMT', '');
+    } catch (e) {
+        return '+00:00';
+    }
+}
+
+// タイムゾーンのオフセットを分単位で取得
+function getOffsetMinutes(timezone, date) {
+    try {
+        const offsetStr = getOffsetString(timezone, date); // "+09:00" or "-05:00"
+        const sign = offsetStr.startsWith('+') ? 1 : -1;
+        const [hours, minutes] = offsetStr.substring(1).split(':').map(Number);
+        return sign * (hours * 60 + minutes);
+    } catch (e) {
+        return 0;
+    }
+}
+
+// 現在時刻を更新 (ヘッダー表示用)
+function updateCurrentTimeDisplay() {
     const now = new Date();
     const options = {
         year: 'numeric',
@@ -32,173 +104,118 @@ function updateCurrentTime() {
         timeZone: 'Asia/Tokyo',
         timeZoneName: 'short'
     };
-    
     currentTimeElement.textContent = `現在時刻 (JST): ${now.toLocaleString('ja-JP', options)}`;
 }
 
-// 現在時刻を設定
+// 入力欄に現在時刻を設定
 function setCurrentTime() {
     const now = new Date();
-    const localISOTime = new Date(now.getTime() - (now.getTimezoneOffset() * 60000))
-        .toISOString()
-        .slice(0, 16);
-    inputDatetime.value = localISOTime;
+    // datetime-local形式 (YYYY-MM-DDThh:mm)
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    
+    inputDatetime.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+    
+    // システムのタイムゾーンをデフォルト選択（初期化時のみ）
+    if (!inputTimezone.dataset.initialized) {
+        const systemTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if ([...inputTimezone.options].some(opt => opt.value === systemTz)) {
+            inputTimezone.value = systemTz;
+        }
+        inputTimezone.dataset.initialized = "true";
+    }
+    
+    convert();
 }
 
-// タイムゾーン変換を実行
-function convertTimezone() {
+// 変換処理
+function convert() {
     const inputValue = inputDatetime.value;
-    if (!inputValue) {
-        alert('日時を入力してください。');
-        return;
-    }
+    if (!inputValue) return;
 
-    const inputDate = new Date(inputValue);
-    const sourceTimezone = inputTimezone.value;
+    const sourceTz = inputTimezone.value;
+    const targetTz = targetTimezone.value;
 
-    // 入力された日時を指定されたタイムゾーンとして解釈
-    const sourceDate = new Date(inputValue + ':00');
-    
-    // 結果をクリア
-    resultsContainer.textContent = '';
+    // 入力時刻を解析
+    // 1. 入力された日時を、一旦UTCとして扱う
+    const baseDate = new Date(inputValue + ':00Z');
+    // 2. 変換元タイムゾーンのオフセット分だけ逆にずらして、本当のUTC時刻を求める
+    const sourceOffset = getOffsetMinutes(sourceTz, baseDate);
+    const utcDate = new Date(baseDate.getTime() - sourceOffset * 60000);
 
-    // 各タイムゾーンに変換
-    timezones.forEach(timezone => {
+    // --- 詳細変換の結果表示 ---
+    const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: targetTz
+    };
+    specificResult.textContent = utcDate.toLocaleString('ja-JP', options);
+
+    // --- 主要都市の一覧更新 ---
+    resultsGrid.innerHTML = '';
+    MAJOR_TIMEZONES.forEach(tz => {
         const resultDiv = document.createElement('div');
         resultDiv.className = 'timezone-result';
 
-        try {
-            // タイムゾーンの変換
-            let convertedTime;
-            
-            if (sourceTimezone === timezone.value) {
-                // 同じタイムゾーンの場合
-                convertedTime = sourceDate;
-            } else {
-                // 異なるタイムゾーンの場合
-                // 入力された時刻をUTCとして扱い、各タイムゾーンに変換
-                const utcTime = new Date(sourceDate.getTime() - getTimezoneOffset(sourceTimezone) * 60000);
-                convertedTime = new Date(utcTime.getTime() + getTimezoneOffset(timezone.value) * 60000);
-            }
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'timezone-name';
+        nameDiv.textContent = tz.display;
 
-            const options = {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                timeZone: timezone.value
-            };
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'timezone-time';
+        const gridOptions = { ...options, timeZone: tz.value };
+        timeDiv.textContent = utcDate.toLocaleString('ja-JP', gridOptions);
 
-            const formattedTime = convertedTime.toLocaleString('ja-JP', options);
-
-            resultDiv.appendChild(createTimezoneName(timezone.display));
-            resultDiv.appendChild(createTimezoneTime(formattedTime));
-        } catch (error) {
-            resultDiv.appendChild(createTimezoneName(timezone.display));
-            resultDiv.appendChild(createTimezoneTime('変換エラー'));
-        }
-
-        resultsContainer.appendChild(resultDiv);
+        resultDiv.appendChild(nameDiv);
+        resultDiv.appendChild(timeDiv);
+        resultsGrid.appendChild(resultDiv);
     });
 }
 
-// タイムゾーンオフセットを取得（分単位）
-function getTimezoneOffset(timezone) {
-    const now = new Date();
-    const utc = new Date(now.getTime() + (now.getTimezoneOffset() * 60000));
-    const target = new Date(utc.toLocaleString('en-US', { timeZone: timezone }));
-    return (target.getTime() - utc.getTime()) / (1000 * 60);
+// タイムゾーンの入れ替え
+function swapTimezones() {
+    const temp = inputTimezone.value;
+    inputTimezone.value = targetTimezone.value;
+    targetTimezone.value = temp;
+    convert();
 }
 
-// より正確なタイムゾーン変換
-function convertTimezoneAccurate() {
-    const inputValue = inputDatetime.value;
-    if (!inputValue) {
-        alert('日時を入力してください。');
-        return;
-    }
-
-    const sourceTimezone = inputTimezone.value;
+// 結果のコピー
+async function copyResult() {
+    const text = specificResult.textContent;
+    if (text === '---') return;
     
-    // 結果をクリア
-    resultsContainer.textContent = '';
-
-    // 各タイムゾーンに変換
-    timezones.forEach(timezone => {
-        const resultDiv = document.createElement('div');
-        resultDiv.className = 'timezone-result';
-
-        try {
-            // 入力された日時を元のタイムゾーンで解釈
-            const inputDate = new Date(inputValue);
-            
-            // 現在のタイムゾーンでの時刻として解釈し、指定されたタイムゾーンに変換
-            let displayTime;
-            
-            if (sourceTimezone === 'UTC') {
-                // UTC入力の場合
-                displayTime = new Date(inputDate.getTime());
-            } else {
-                // 特定のタイムゾーン入力の場合、そのタイムゾーンでの時刻として扱う
-                displayTime = new Date(inputDate.getTime());
-            }
-
-            const options = {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: timezone.value
-            };
-
-            // より正確な変換のため、Intl.DateTimeFormatを使用
-            const formatter = new Intl.DateTimeFormat('ja-JP', options);
-            const formattedTime = formatter.format(displayTime);
-
-            resultDiv.appendChild(createTimezoneName(timezone.display));
-            resultDiv.appendChild(createTimezoneTime(formattedTime));
-        } catch (error) {
-            resultDiv.appendChild(createTimezoneName(timezone.display));
-            resultDiv.appendChild(createTimezoneTime('変換エラー'));
-        }
-
-        resultsContainer.appendChild(resultDiv);
-    });
+    try {
+        await navigator.clipboard.writeText(text);
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = 'コピーしました！';
+        setTimeout(() => {
+            copyBtn.textContent = originalText;
+        }, 2000);
+    } catch (err) {
+        alert('コピーに失敗しました。');
+    }
 }
 
-function createTimezoneName(text) {
-    const nameDiv = document.createElement('div');
-    nameDiv.className = 'timezone-name';
-    nameDiv.textContent = text;
-    return nameDiv;
-}
-
-function createTimezoneTime(text) {
-    const timeDiv = document.createElement('div');
-    timeDiv.className = 'timezone-time';
-    timeDiv.textContent = text;
-    return timeDiv;
-}
-
-// イベントリスナーの設定
-convertBtn.addEventListener('click', convertTimezoneAccurate);
+// イベントリスナー
+inputDatetime.addEventListener('input', convert);
+inputTimezone.addEventListener('change', convert);
+targetTimezone.addEventListener('change', convert);
+swapBtn.addEventListener('click', swapTimezones);
 currentTimeBtn.addEventListener('click', setCurrentTime);
+copyBtn.addEventListener('click', copyResult);
 
-// ページ読み込み時の初期化
-document.addEventListener('DOMContentLoaded', function() {
-    updateCurrentTime();
+// 初期化
+document.addEventListener('DOMContentLoaded', () => {
+    initTimezoneSelects();
+    updateCurrentTimeDisplay();
     setCurrentTime();
     
-    // 1秒ごとに現在時刻を更新
-    setInterval(updateCurrentTime, 1000);
-});
-
-// Enterキーでの変換実行
-inputDatetime.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        convertTimezoneAccurate();
-    }
+    setInterval(updateCurrentTimeDisplay, 1000);
 });

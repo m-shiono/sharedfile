@@ -23,30 +23,44 @@
             <h2>現在の時刻</h2>
             <div id="current-time" class="current-time"></div>
             
-            <h3>時刻変換</h3>
-            <div class="conversion-section">
-                <div class="input-group">
-                    <label for="input-datetime">変換元の日時：</label>
-                    <input type="datetime-local" id="input-datetime">
-                    <select id="input-timezone">
-                        <option value="UTC">UTC</option>
-                        <option value="Asia/Tokyo" selected>日本標準時 (JST)</option>
-                        <option value="America/New_York">東部標準時 (EST)</option>
-                        <option value="America/Los_Angeles">太平洋標準時 (PST)</option>
-                        <option value="Europe/London">グリニッジ標準時 (GMT)</option>
-                        <option value="Europe/Paris">中央ヨーロッパ時間 (CET)</option>
-                        <option value="Asia/Shanghai">中国標準時 (CST)</option>
-                        <option value="Asia/Seoul">韓国標準時 (KST)</option>
-                        <option value="Australia/Sydney">オーストラリア東部時間 (AEST)</option>
-                    </select>
+            <div class="converter-container">
+                <div class="conversion-group">
+                    <h3>詳細変換</h3>
+                    <div class="input-row">
+                        <div class="field">
+                            <label for="input-datetime">日時指定：</label>
+                            <input type="datetime-local" id="input-datetime">
+                        </div>
+                        <div class="field">
+                            <button id="current-time-btn">現在時刻に設定</button>
+                        </div>
+                    </div>
+
+                    <div class="timezone-selection-row">
+                        <div class="field">
+                            <label for="input-timezone">変換元：</label>
+                            <select id="input-timezone" class="tz-select"></select>
+                        </div>
+                        <div class="swap-action">
+                            <button id="swap-btn" title="入れ替え">⇄</button>
+                        </div>
+                        <div class="field">
+                            <label for="target-timezone">変換先：</label>
+                            <select id="target-timezone" class="tz-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="result-display">
+                        <div id="specific-result" class="result-text">---</div>
+                        <button id="copy-btn">結果をコピー</button>
+                    </div>
                 </div>
-                
-                <button id="convert-btn">変換実行</button>
-                <button id="current-time-btn">現在時刻を設定</button>
+
+                <div class="global-overview">
+                    <h3>主要都市の時刻一覧</h3>
+                    <div id="conversion-results" class="results-grid"></div>
+                </div>
             </div>
-            
-            <h3>変換結果</h3>
-            <div id="conversion-results" class="results-grid"></div>
         </div>
     </main>
     

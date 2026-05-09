@@ -109,15 +109,41 @@ main {
 }
 
 /* 変換セクション */
-.conversion-section {
-    margin: 1.5rem 0;
+.converter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
-.input-group {
-    margin-bottom: 1rem;
+.conversion-group {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #c8e6c9;
 }
 
-.input-group label {
+.input-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.timezone-selection-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.field {
+    flex: 1;
+    min-width: 250px;
+}
+
+.field label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: bold;
@@ -130,41 +156,48 @@ input[type="datetime-local"], select {
     border: 2px solid #81c784;
     border-radius: 8px;
     font-size: 1rem;
-    margin-bottom: 0.5rem;
     transition: border-color 0.3s ease;
 }
 
-input[type="datetime-local"]:focus, select:focus {
-    outline: none;
-    border-color: #4caf50;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+.swap-action {
+    margin-top: 1.5rem;
 }
 
-/* ボタン */
-button {
-    background: linear-gradient(to right, #4caf50, #45a049);
-    color: white;
-    padding: 0.7rem 1.5rem;
-    border: none;
-    border-radius: 25px;
+#swap-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    padding: 0;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.result-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.result-text {
+    font-size: 2rem;
     font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0.5rem 0.5rem 0.5rem 0;
+    color: #2e7d32;
+    text-align: center;
 }
 
-button:hover {
-    background: linear-gradient(to right, #45a049, #4caf50);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transform: translateY(-2px);
+#copy-btn {
+    margin: 0;
 }
 
 /* 結果表示グリッド */
 .results-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin-top: 1rem;
 }
