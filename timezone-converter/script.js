@@ -28,35 +28,47 @@ const resultsGrid = document.getElementById('conversion-results');
 // タイムゾーンリストの初期化
 function initTimezoneSelects() {
     const allTimezones = Intl.supportedValuesOf('timeZone');
-    
-    // ソート: Asia/Tokyo と UTC を最優先、あとはアルファベット順
-    const sortedTimezones = allTimezones.sort((a, b) => {
-        if (a === 'Asia/Tokyo') return -1;
-        if (b === 'Asia/Tokyo') return 1;
-        if (a === 'UTC') return -1;
-        if (b === 'UTC') return 1;
-        return a.localeCompare(b);
+    const now = new Date();
+
+    // タイムゾーンごとのメタデータを作成
+    const tzData = allTimezones.map(tz => {
+        const offsetMinutes = getOffsetMinutes(tz, now);
+        return {
+            value: tz,
+            offsetMinutes: offsetMinutes,
+            label: `(${getOffsetString(tz, now)}) ${tz}`
+        };
     });
 
-    const now = new Date();
-    
+    // ソート処理
+    const sortedTzData = tzData.sort((a, b) => {
+        // 1. Asia/Tokyo と UTC を最優先
+        const priority = { 'Asia/Tokyo': 1, 'UTC': 2 };
+        const aPriority = priority[a.value] || 999;
+        const bPriority = priority[b.value] || 999;
+        if (aPriority !== bPriority) return aPriority - bPriority;
+
+        // 2. オフセット順 (マイナスの大きい順 = 数値の小さい順)
+        if (a.offsetMinutes !== b.offsetMinutes) return a.offsetMinutes - b.offsetMinutes;
+
+        // 3. 同じオフセットならアルファベット順 (Region/Cityの順になる)
+        return a.value.localeCompare(b.value);
+    });
+
     const fragmentInput = document.createDocumentFragment();
     const fragmentTarget = document.createDocumentFragment();
 
-    sortedTimezones.forEach(tz => {
-        const offset = getOffsetString(tz, now);
-        const label = `(${offset}) ${tz}`;
-        
+    sortedTzData.forEach(data => {
         const opt1 = document.createElement('option');
-        opt1.value = tz;
-        opt1.textContent = label;
-        if (tz === 'UTC') opt1.selected = true;
+        opt1.value = data.value;
+        opt1.textContent = data.label;
+        if (data.value === 'UTC') opt1.selected = true;
         fragmentInput.appendChild(opt1);
 
         const opt2 = document.createElement('option');
-        opt2.value = tz;
-        opt2.textContent = label;
-        if (tz === 'Asia/Tokyo') opt2.selected = true;
+        opt2.value = data.value;
+        opt2.textContent = data.label;
+        if (data.value === 'Asia/Tokyo') opt2.selected = true;
         fragmentTarget.appendChild(opt2);
     });
 
