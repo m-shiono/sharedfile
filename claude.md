@@ -58,7 +58,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>[ツール名] - 便利ツール＆ユーティリティ</title>
+    <title>[ツール名] - Web開発者向けユーティリティ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -80,7 +80,7 @@
     </main>
     
     <footer>
-        <p>&copy; [年] personal project for m-shiono</p>
+        <p>&copy; 2026 personal project for m-shiono</p>
     </footer>
     
     <script src="script.js"></script>

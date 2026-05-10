@@ -548,3 +548,56 @@ class ColorTool {
 document.addEventListener('DOMContentLoaded', () => {
     new ColorTool();
 });
+/**
+ * クリップボードにテキストをコピーする
+ * @param {string} text - コピーするテキスト
+ * @param {function(string, string): void} showStatus - ステータスを表示する関数
+ */
+async function copyToClipboard(text, showStatus) {
+    if (!text) {
+        showStatus('コピーするデータがありません', 'error');
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(text);
+        showStatus('クリップボードにコピーしました', 'success');
+    } catch (error) {
+        fallbackCopyTextToClipboard(text, showStatus);
+    }
+}
+
+/**
+ * navigator.clipboardが使えない場合のフォールバック
+ */
+function fallbackCopyTextToClipboard(text, showStatus) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        document.execCommand('copy');
+        showStatus('クリップボードにコピーしました', 'success');
+    } catch (error) {
+        showStatus('コピーに失敗しました', 'error');
+    }
+
+    document.body.removeChild(textArea);
+}
+
+/**
+ * ステータスメッセージを表示する
+ * @param {HTMLElement} statusBarElement - ステータスバーの要素
+ * @param {string} message - 表示するメッセージ
+ * @param {string} type - メッセージの種類 ('info', 'success', 'error')
+ */
+function showStatus(statusBarElement, message, type = 'info') {
+    if (!statusBarElement) return;
+    statusBarElement.textContent = message;
+    statusBarElement.className = `status-bar status-${type}`;
+}
