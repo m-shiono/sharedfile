@@ -108,7 +108,7 @@ class EmailDecoder {
         
         let charset = 'utf-8';
         let encoding = 'none';
-        let decoded = body;
+        let decodedBytes;
         const detectedEncodings = [];
         
         const charsetMatch = contentType.match(/charset=([^;]+)/i);
@@ -119,13 +119,16 @@ class EmailDecoder {
         
         if (transferEncoding.toLowerCase() === 'quoted-printable') {
             encoding = 'quoted-printable';
-            decoded = this.decodeQuotedPrintable(body, true);
+            decodedBytes = this.decodeQuotedPrintable(body, true);
         } else if (transferEncoding.toLowerCase() === 'base64') {
             encoding = 'base64';
-            decoded = this.decodeBase64(body);
+            decodedBytes = this.decodeBase64(body);
+        } else {
+            // エンコーディングなし（プレーンテキスト）
+            decodedBytes = new TextEncoder().encode(body);
         }
         
-        decoded = this.convertFromCharset(decoded, charset);
+        const decoded = this.convertFromCharset(decodedBytes, charset);
         
         return {
             decoded,
@@ -135,27 +138,26 @@ class EmailDecoder {
     }
 
     decodeMimeText(text) {
-        let decodedText = text;
         const encodedWords = [];
         let detectedEncodings = new Set();
 
         const mimePattern = /=\?([^?]+)\?([BQbq])\?([^?]+)\?=/g;
         
-        decodedText = decodedText.replace(mimePattern, (match, charset, encoding, encodedText) => {
+        const decodedText = text.replace(mimePattern, (match, charset, encoding, encodedText) => {
             encodedWords.push({ charset, encoding, encodedText, original: match });
             detectedEncodings.add(charset.toUpperCase());
             
             try {
-                let decoded;
+                let decodedBytes;
                 if (encoding.toUpperCase() === 'B') {
-                    decoded = this.decodeBase64(encodedText);
+                    decodedBytes = this.decodeBase64(encodedText);
                 } else if (encoding.toUpperCase() === 'Q') {
-                    decoded = this.decodeQuotedPrintable(encodedText, false);
+                    decodedBytes = this.decodeQuotedPrintable(encodedText, false);
                 } else {
                     throw new Error(`未サポートのエンコーディング: ${encoding}`);
                 }
                 
-                return this.convertFromCharset(decoded, charset);
+                return this.convertFromCharset(decodedBytes, charset);
             } catch (error) {
                 return `[デコードエラー: ${error.message}]`;
             }
@@ -170,45 +172,58 @@ class EmailDecoder {
 
     decodeBase64(encodedText) {
         try {
-            return atob(encodedText.replace(/[\r\n\s]/g, ''));
+            const binaryString = atob(encodedText.replace(/[\r\n\s]/g, ''));
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
         } catch (error) {
             throw new Error('Base64デコードに失敗しました');
         }
     }
 
     decodeQuotedPrintable(text, isBody) {
-        let decoded = text;
-        if (!isBody) {
-            // ヘッダーの場合、アンダースコアはスペースに
-            decoded = decoded.replace(/_/g, ' ');
-        }
+        let processedText = text;
         if (isBody) {
-            // 本文の場合、ソフトラインブレークを除去
-            decoded = decoded.replace(/=\r?\n/g, '');
+            // 本文の場合、ソフトラインブレーク（= + 改行）を除去
+            processedText = processedText.replace(/=\r?\n/g, '');
         }
-        
-        // =XX 形式の16進数をデコード
-        return decoded.replace(/=([0-9A-Fa-f]{2})/g, (match, hex) => {
-            return String.fromCharCode(parseInt(hex, 16));
-        });
+
+        const bytes = [];
+        for (let i = 0; i < processedText.length; i++) {
+            const char = processedText[i];
+            if (char === '=' && i + 2 < processedText.length) {
+                const hex = processedText.substring(i + 1, i + 3);
+                if (/^[0-9A-Fa-f]{2}$/.test(hex)) {
+                    bytes.push(parseInt(hex, 16));
+                    i += 2;
+                    continue;
+                }
+            }
+            
+            if (!isBody && char === '_') {
+                // ヘッダー（encoded-word）の場合、アンダースコアはスペース(0x20)
+                bytes.push(0x20);
+            } else {
+                bytes.push(char.charCodeAt(0) & 0xFF);
+            }
+        }
+        return new Uint8Array(bytes);
     }
 
-    stringToUint8Array(str) {
-        const bytes = new Uint8Array(str.length);
-        for (let i = 0; i < str.length; i++) {
-            bytes[i] = str.charCodeAt(i) & 0xFF;
-        }
-        return bytes;
-    }
-
-    convertFromCharset(text, charset) {
+    convertFromCharset(bytes, charset) {
         try {
-            const bytes = this.stringToUint8Array(text);
-            const decoder = new TextDecoder(charset.toLowerCase());
+            const decoder = new TextDecoder(charset.toLowerCase() || 'utf-8');
             return decoder.decode(bytes);
         } catch (error) {
             console.error(`Charset conversion failed for ${charset}:`, error);
-            return text;
+            // フォールバック: UTF-8としてデコード試行、ダメならそのまま
+            try {
+                return new TextDecoder('utf-8').decode(bytes);
+            } catch (e) {
+                return new TextDecoder('ascii').decode(bytes);
+            }
         }
     }
 
@@ -283,12 +298,6 @@ class EmailDecoder {
         errorDiv.textContent = message;
         this.output.appendChild(errorDiv);
         this.encodingInfo.textContent = '';
-    }
-
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 
     clearAll() {
