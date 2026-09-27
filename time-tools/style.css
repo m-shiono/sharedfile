@@ -263,7 +263,7 @@
 }
 
 #panel-timezone .timezone-selection-row {
-    align-items: center;
+    align-items: flex-start;
 }
 
 #panel-timezone .field {
@@ -288,7 +288,7 @@
 }
 
 #panel-timezone .swap-action {
-    margin-top: 1.5rem;
+    margin-top: 2.4rem;
 }
 
 #panel-timezone #swap-btn {
@@ -346,6 +346,63 @@
 #panel-timezone .timezone-time {
     font-size: 1.1rem;
     color: #388e3c;
+}
+
+#panel-timezone .major-city-radios {
+    margin-top: 0.85rem;
+    padding: 0.75rem;
+    border: 1px solid #c8e6c9;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.65);
+}
+
+#panel-timezone .major-city-radios legend {
+    padding: 0 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #2e7d32;
+}
+
+#panel-timezone .major-city-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+#panel-timezone .major-city-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 0.35rem 0.55rem;
+    border: 1px solid #a5d6a7;
+    border-radius: 999px;
+    background: #f1f8e9;
+    color: #2e7d32;
+    font-size: 0.8rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+#panel-timezone .major-city-option:hover {
+    background: #e8f5e9;
+    border-color: #66bb6a;
+}
+
+#panel-timezone .major-city-option:has(input:checked) {
+    background: linear-gradient(to right, #43a047, #66bb6a);
+    border-color: #2e7d32;
+    color: #fff;
+    font-weight: 700;
+}
+
+#panel-timezone .major-city-option input {
+    margin: 0;
+    accent-color: #2e7d32;
+}
+
+#panel-timezone .major-city-option.other-option {
+    border-style: dashed;
 }
 
 /* ===== duration ===== */
