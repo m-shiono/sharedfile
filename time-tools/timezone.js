@@ -66,6 +66,26 @@ document.addEventListener('DOMContentLoaded', () => {
         container.appendChild(fragment);
     }
 
+    /** セレクトに指定タイムゾーンが無ければ追加する */
+    function ensureTimezoneOption(selectEl, tzValue, label) {
+        if ([...selectEl.options].some((opt) => opt.value === tzValue)) {
+            return;
+        }
+        const opt = document.createElement('option');
+        opt.value = tzValue;
+        opt.textContent = label;
+        selectEl.insertBefore(opt, selectEl.firstChild);
+    }
+
+    /** 主要都市がセレクトに必ず存在するようにする（UTC など supportedValuesOf に無いもの対策） */
+    function ensureMajorTimezoneOptions(selectEl) {
+        const now = new Date();
+        MAJOR_TIMEZONES.forEach((tz) => {
+            const label = `(${getOffsetString(tz.value, now)}) ${tz.value}`;
+            ensureTimezoneOption(selectEl, tz.value, label);
+        });
+    }
+
     /** セレクトの値に合わせてラジオを同期 */
     function syncMajorCityRadio(selectEl, groupName) {
         const value = selectEl.value;
@@ -85,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!radioValue || radioValue === '__other__') {
             return;
         }
+        ensureMajorTimezoneOptions(selectEl);
         if ([...selectEl.options].some((opt) => opt.value === radioValue)) {
             selectEl.value = radioValue;
             convert();
@@ -96,7 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const allTimezones = Intl.supportedValuesOf('timeZone');
         const now = new Date();
 
-        const tzData = allTimezones.map((tz) => {
+        // supportedValuesOf に含まれない UTC などを補完
+        const tzSet = new Set(allTimezones);
+        MAJOR_TIMEZONES.forEach((tz) => tzSet.add(tz.value));
+
+        const tzData = [...tzSet].map((tz) => {
             const offsetMinutes = getOffsetMinutes(tz, now);
             return {
                 value: tz,
