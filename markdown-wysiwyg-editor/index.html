@@ -24,7 +24,7 @@
     <main>
         <div class="tool-card">
             <h2>編集</h2>
-            <p class="hint">装飾ボタンはもう一度押すと解除できます。下段は Backlog 向け機能です（標準 Markdown では色・サイズ・下線などは制限があります）。</p>
+            <p class="hint">装飾ボタンはもう一度押すと解除できます。下段は Backlog 向け機能です。出力形式を切り替えると、見出しなどの<strong>編集画面の見た目</strong>も Markdown / Backlog 寄せに変わります。</p>
 
             <div class="custom-toolbar" aria-label="編集ツールバー">
                 <div class="toolbar-row">
@@ -113,11 +113,12 @@
                 </div>
             </div>
 
-            <div id="editor"></div>
+            <div id="editor" class="display-style-markdown"></div>
+            <p class="display-style-indicator" id="display-style-indicator" aria-live="polite">表示スタイル: Markdown</p>
 
             <div class="controls">
-                <div class="radio-group" role="radiogroup" aria-label="出力形式">
-                    <span class="control-label">出力形式:</span>
+                <div class="radio-group" role="radiogroup" aria-label="出力・表示形式">
+                    <span class="control-label">出力・表示形式:</span>
                     <label>
                         <input type="radio" name="output-format" value="markdown" checked>
                         Markdown
@@ -165,6 +166,7 @@
             <h2>対応記法（概要）</h2>
             <ul class="feature-list">
                 <li>汎用: 見出しH1〜H6・太字・斜体・打消し・引用・リスト・表・リンク・コード・改行・Undo/Redo・書式クリア</li>
+                <li>見出し表示: 出力形式に連動。Backlog / Markdown とも下線は H1・H2 のみ（H1が太く、H2は細い）。H3以降は下線なし</li>
                 <li>Backlog専用: 下線（<code>___文字___</code>）・文字色・文字サイズ（<code>&amp;size(n) { }</code>）</li>
                 <li>Backlog専用マクロ: 目次（<code>#contents</code>）・Wikiリンク（<code>[[ページ名]]</code>）・include・rev</li>
                 <li>画像・添付ファイル系は対象外です</li>

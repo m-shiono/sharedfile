@@ -74,7 +74,8 @@ nav ul li a:hover {
     margin-bottom: 2rem;
 }
 
-.tool-card h2 {
+/* ページ見出しのみ（エディタ内の h1〜h6 には適用しない） */
+.tool-card > h2 {
     font-size: 1.8rem;
     margin-bottom: 1rem;
     color: #2e7d32;
@@ -82,7 +83,7 @@ nav ul li a:hover {
     padding-bottom: 0.5rem;
 }
 
-.tool-card h3 {
+.tool-card .tab-panel > h3 {
     font-size: 1.4rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
@@ -98,16 +99,144 @@ nav ul li a:hover {
 #editor {
     margin-bottom: 1.25rem;
     border-radius: 0 0 8px 8px;
-    overflow: hidden;
+    /* 表のコンテキストメニューが切れないよう visible に */
+    overflow: visible;
+    position: relative;
+    z-index: 1;
 }
 
 .toastui-editor-defaultUI {
     border-color: #81c784 !important;
+    overflow: visible !important;
+}
+
+#editor .toastui-editor-main,
+#editor .toastui-editor-main-container,
+#editor .toastui-editor-ww-container,
+#editor .toastui-editor-md-container {
+    overflow: visible !important;
+}
+
+/* 本文のスクロールは内側に限定し、メニューは外側へ出せるようにする */
+#editor .toastui-editor-ww-container .toastui-editor {
+    overflow: auto !important;
+}
+
+/* 表操作メニュー: 下端で隠れないよう最前面＋必要ならスクロール */
+#editor .toastui-editor-context-menu,
+.toastui-editor-context-menu {
+    z-index: 2000 !important;
+    max-height: min(70vh, 420px);
+    overflow-y: auto;
 }
 
 /* 標準ツールバーを隠す（カスタム2段を使う） */
 #editor .toastui-editor-toolbar {
     display: none !important;
+}
+
+/*
+ * エディタ内見出し（共通）
+ * 色は H1〜H6 で統一。下線の有無・太さは表示スタイルで切り替え。
+ */
+#editor .toastui-editor-contents h1,
+#editor .toastui-editor-contents h2,
+#editor .toastui-editor-contents h3,
+#editor .toastui-editor-contents h4,
+#editor .toastui-editor-contents h5,
+#editor .toastui-editor-contents h6,
+#editor .ProseMirror h1,
+#editor .ProseMirror h2,
+#editor .ProseMirror h3,
+#editor .ProseMirror h4,
+#editor .ProseMirror h5,
+#editor .ProseMirror h6 {
+    color: #2e7d32 !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    margin: 0.85em 0 0.45em !important;
+    padding-bottom: 0.2em !important;
+    border-bottom: none !important;
+}
+
+#editor .toastui-editor-contents h1,
+#editor .ProseMirror h1 { font-size: 2rem !important; }
+
+#editor .toastui-editor-contents h2,
+#editor .ProseMirror h2 { font-size: 1.6rem !important; }
+
+#editor .toastui-editor-contents h3,
+#editor .ProseMirror h3 { font-size: 1.35rem !important; }
+
+#editor .toastui-editor-contents h4,
+#editor .ProseMirror h4 { font-size: 1.15rem !important; }
+
+#editor .toastui-editor-contents h5,
+#editor .ProseMirror h5 { font-size: 1.05rem !important; }
+
+#editor .toastui-editor-contents h6,
+#editor .ProseMirror h6 { font-size: 0.95rem !important; }
+
+/* Markdown 表示: GFM寄り。下線は H1・H2 のみ（H1が太く、H2は細く） */
+#editor.display-style-markdown .toastui-editor-contents h1,
+#editor.display-style-markdown .ProseMirror h1 {
+    border-bottom: 2px solid #2e7d32 !important;
+}
+
+#editor.display-style-markdown .toastui-editor-contents h2,
+#editor.display-style-markdown .ProseMirror h2 {
+    border-bottom: 1px solid #81c784 !important;
+}
+
+/* Backlog 表示: Wiki寄り。下線は H1・H2 のみ（H1が特に太く、H2は細く） */
+#editor.display-style-backlog .toastui-editor-contents h1,
+#editor.display-style-backlog .ProseMirror h1 {
+    border-bottom: 3px solid #2e7d32 !important;
+    padding-bottom: 0.3em !important;
+}
+
+#editor.display-style-backlog .toastui-editor-contents h2,
+#editor.display-style-backlog .ProseMirror h2 {
+    border-bottom: 1px solid #2e7d32 !important;
+}
+
+#editor.display-style-backlog .toastui-editor-contents h3,
+#editor.display-style-backlog .toastui-editor-contents h4,
+#editor.display-style-backlog .toastui-editor-contents h5,
+#editor.display-style-backlog .toastui-editor-contents h6,
+#editor.display-style-backlog .ProseMirror h3,
+#editor.display-style-backlog .ProseMirror h4,
+#editor.display-style-backlog .ProseMirror h5,
+#editor.display-style-backlog .ProseMirror h6 {
+    border-bottom: none !important;
+    font-weight: 600 !important;
+}
+
+.display-style-indicator {
+    margin: 0.35rem 0 0;
+    font-size: 0.85rem;
+    color: #558b2f;
+    font-weight: 600;
+}
+
+#editor.display-style-backlog + .display-style-indicator {
+    color: #e65100;
+}
+
+/* 太字を明確に区別 */
+#editor .toastui-editor-contents strong,
+#editor .toastui-editor-contents b,
+#editor .ProseMirror strong,
+#editor .ProseMirror b {
+    font-weight: 800 !important;
+    color: #1a1a1a !important;
+}
+
+/* リンクの見た目 */
+#editor .toastui-editor-contents a,
+#editor .ProseMirror a {
+    color: #1565c0 !important;
+    text-decoration: underline !important;
 }
 
 .custom-toolbar {
@@ -200,6 +329,11 @@ nav ul li a:hover {
 .tb-btn-wide {
     padding-left: 0.7rem;
     padding-right: 0.7rem;
+}
+
+.tb-btn b {
+    font-weight: 800;
+    font-size: 1.05em;
 }
 
 .tb-hint {
