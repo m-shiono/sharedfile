@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Data to Table - Web開発者向けユーティリティ</title>
+    <link rel="stylesheet" href="../common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>JSON Data to Table</h1>
+        <p>New Relic Dashboard JSON などから title / id / query を表形式で抽出します。</p>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+    <main>
+        <div class="tool-card">
+            <h2>JSONテーブル変換</h2>
+            <textarea id="jsonInput" rows="10" cols="50" placeholder="JSONデータを入力してください..."></textarea>
+            <button type="button" id="createTableBtn">テーブル作成</button>
+            <table id="jsonTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>ID</th>
+                        <th>Query</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 personal project for m-shiono</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -152,19 +152,24 @@ async function loadCommonComponents() {
  * @returns {string} - ベースパス (e.g., './' or '../')
  */
 function getBasePath() {
-    const path = window.location.pathname;
-    // '/sharedfile/' が見つからない場合は、ルートとみなす
-    const repoRootIndex = path.indexOf('/sharedfile/');
-    if (repoRootIndex === -1) {
-        return './';
+    const path = window.location.pathname.replace(/\\/g, '/');
+    const segments = path.split('/').filter(Boolean);
+    // 末尾がファイル名なら除外
+    if (segments.length > 0 && segments[segments.length - 1].includes('.')) {
+        segments.pop();
     }
-    // '/sharedfile/' より後のパス部分を取得
-    const repoRelativePath = path.substring(repoRootIndex + '/sharedfile/'.length);
-    // スラッシュの数を数えて階層を判断
-    const depth = (repoRelativePath.match(/\//g) || []).length;
-    
-    if (depth > 0) {
-        return '../'.repeat(depth);
+    // リポジトリ直下からの深さ（tools は1、ネストは2以上）
+    // file:// や preview では pathname が環境依存のため、相対的に ../ を推定
+    const scriptEl = document.querySelector('script[src*="common.js"]');
+    if (scriptEl) {
+        const src = scriptEl.getAttribute('src') || '';
+        if (src.startsWith('../')) {
+            const ups = (src.match(/\.\.\//g) || []).length;
+            return '../'.repeat(ups);
+        }
+        if (src === 'common.js' || src.startsWith('./')) {
+            return './';
+        }
     }
-    return './';
+    return segments.length <= 1 ? './' : '../'.repeat(Math.max(segments.length - 1, 1));
 }

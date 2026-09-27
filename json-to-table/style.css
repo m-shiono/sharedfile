@@ -1,0 +1,28 @@
+/* JSON Data to Table 固有スタイル */
+textarea {
+    height: 200px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: #fff;
+}
+
+th, td {
+    border: 1px solid #81c784;
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    vertical-align: top;
+    word-break: break-word;
+}
+
+th {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+tbody tr:nth-child(even) {
+    background: #f9fbe7;
+}

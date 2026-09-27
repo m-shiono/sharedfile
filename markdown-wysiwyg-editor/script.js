@@ -165,9 +165,13 @@ document.addEventListener('DOMContentLoaded', () => {
             editorEl.classList.add('display-style-' + mode);
         }
         if (indicator) {
-            indicator.textContent = mode === 'backlog'
-                ? '表示スタイル: Backlog（下線は H1・H2 のみ / H1が太く H2は細い）'
-                : '表示スタイル: Markdown（下線は H1・H2 のみ / H1が太く H2は細い）';
+            if (format === 'html') {
+                indicator.textContent = '表示スタイル: Markdown（HTML出力時も編集画面は同じ見た目です）';
+            } else if (mode === 'backlog') {
+                indicator.textContent = '表示スタイル: Backlog（下線は H1・H2 のみ / H1が太く H2は細い）';
+            } else {
+                indicator.textContent = '表示スタイル: Markdown（下線は H1・H2 のみ / H1が太く H2は細い）';
+            }
         }
     }
 
@@ -846,20 +850,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const format = getSelectedFormat();
         let text;
+        let statusMessage;
         if (format === 'backlog') {
             text = converter.markdownToBacklog(markdown);
+            statusMessage = 'Backlog形式で出力しました。';
+        } else if (format === 'html') {
+            text = editor.getHTML();
+            statusMessage = 'HTML形式で出力しました。';
         } else {
             text = converter.normalizeMarkdownExtras(markdown);
+            statusMessage = 'Markdown形式で出力しました。';
         }
 
         outputText.value = text;
         switchTab('output');
-        showStatus(
-            format === 'backlog'
-                ? 'Backlog形式で出力しました。'
-                : 'Markdown形式で出力しました。',
-            'success'
-        );
+        showStatus(statusMessage, 'success');
     }
 
     function loadIntoEditor() {
@@ -870,17 +875,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const format = getSelectedFormat();
-        const markdown = format === 'backlog'
-            ? converter.backlogToMarkdown(raw)
-            : raw;
-
-        editor.setMarkdown(markdown);
-        showStatus(
-            format === 'backlog'
-                ? 'Backlog形式を読み込み、編集画面に反映しました。'
-                : 'Markdown形式を読み込み、編集画面に反映しました。',
-            'success'
-        );
+        if (format === 'backlog') {
+            editor.setMarkdown(converter.backlogToMarkdown(raw));
+            showStatus('Backlog形式を読み込み、編集画面に反映しました。', 'success');
+        } else if (format === 'html') {
+            if (typeof editor.setHTML === 'function') {
+                editor.setHTML(raw);
+            } else {
+                editor.setMarkdown(raw);
+            }
+            showStatus('HTMLを読み込み、編集画面に反映しました。', 'success');
+        } else {
+            editor.setMarkdown(raw);
+            showStatus('Markdown形式を読み込み、編集画面に反映しました。', 'success');
+        }
     }
 
     async function copyOutput() {

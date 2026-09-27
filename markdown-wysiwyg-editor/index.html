@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown WYSIWYG Editor - 便利ツール＆ユーティリティ</title>
+    <title>Markdown WYSIWYG Editor - Web開発者向けユーティリティ</title>
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
     <link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css">
     <link rel="stylesheet" href="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css">
+    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <h1>Markdown WYSIWYG Editor</h1>
-        <p>WYSIWYGでMarkdownを編集し、Markdown / Backlog形式で出力・インポートできます。</p>
+        <p>WYSIWYGで編集し、Markdown / HTML / Backlog 形式で出力・インポートできます。</p>
     </header>
 
     <nav>
@@ -124,6 +125,10 @@
                         Markdown
                     </label>
                     <label>
+                        <input type="radio" name="output-format" value="html">
+                        HTML
+                    </label>
+                    <label>
                         <input type="radio" name="output-format" value="backlog">
                         Backlog
                     </label>
@@ -145,7 +150,7 @@
 
             <div class="tab-panel active" id="panel-output" role="tabpanel" aria-labelledby="tab-output">
                 <h3>出力テキスト</h3>
-                <p class="hint">「反映」で選択中の形式のテキストがここに出力されます。Markdown出力時、色・サイズ・下線などは HTML タグとして残る場合があります。</p>
+                <p class="hint">「反映」で選択中の形式のテキストがここに出力されます。Markdown出力時、色・サイズ・下線などは HTML タグとして残る場合があります。HTML形式は従来の Markdown to HTML 変換の代替です。</p>
                 <textarea id="output-text" readonly placeholder="反映ボタンを押すと、ここに出力されます..."></textarea>
                 <div class="button-group">
                     <button type="button" id="copy-btn">コピー</button>
@@ -154,8 +159,8 @@
 
             <div class="tab-panel" id="panel-import" role="tabpanel" aria-labelledby="tab-import" hidden>
                 <h3>既存文面のインポート</h3>
-                <p class="hint">テキストを貼り付け、上で選択中の形式として解釈し、編集画面へ読み込みます。</p>
-                <textarea id="import-text" placeholder="Markdown または Backlog 形式のテキストを貼り付けてください..."></textarea>
+                <p class="hint">テキストを貼り付け、上で選択中の形式として解釈し、編集画面へ読み込みます。HTML形式選択時は Markdown として読み込みます。</p>
+                <textarea id="import-text" placeholder="Markdown / HTML / Backlog 形式のテキストを貼り付けてください..."></textarea>
                 <div class="button-group">
                     <button type="button" id="load-btn">編集画面へ読み込む</button>
                 </div>
@@ -175,7 +180,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 m-shiono personal project</p>
+        <p>&copy; 2026 personal project for m-shiono</p>
     </footer>
 
     <script src="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.js"></script>

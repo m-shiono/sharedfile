@@ -23,7 +23,12 @@
 - **データ保存禁止**: ユーザーデータをサーバーに保存しない
 
 ### 技術的制約
-- **HTML/CSS/JavaScript のみ**: フレームワークやライブラリの使用禁止
+- **HTML/CSS/JavaScript のみ**: アプリ本体はフレームワーク不使用
+- **CDNライブラリの例外**: 以下は許可（ページ固有の高度な機能のため）
+  - Mermaid（図描画）
+  - marked / DOMPurify（Markdown処理・サニタイズ）
+  - QRコード生成ライブラリ
+  - Toast UI Editor（Markdown WYSIWYG）
 - **クライアントサイド処理**: サーバーサイド処理は行わない
 - **ブラウザ互換性**: モダンブラウザでの動作を保証
 
@@ -87,12 +92,21 @@
 ```
 /
 ├── index.html              # メインページ
-├── style.css              # 共通スタイル
+├── style.css              # トップページ用スタイル
+├── common.css             # 全ツール共通のベーススタイル（必須）
+├── common.js              # 共通ユーティリティ（テーマ等）
+├── common_header.html     # 任意: プレースホルダ読込用ヘッダー断片
+├── common_footer.html     # 任意: プレースホルダ読込用フッター断片
 ├── [tool-name]/           # 各ツールのディレクトリ
-│   ├── index.html         # ツールのメインページ
+│   ├── index.html         # ツールのメインページ（../common.css を先に読込）
 │   ├── script.js          # ツールのロジック
-│   └── style.css          # ツール固有のスタイル
+│   └── style.css          # ツール固有のスタイル（上書き・追加）
 ```
+
+### スタイル・フッタの統一
+- 各ツールの `index.html` は必ず `../common.css` を `style.css` より先に読み込む
+- `style.css` にはツール固有のスタイルを置く（共通見た目は `common.css` に寄せる）
+- フッター文言は統一: `© 2026 personal project for m-shiono`
 ### カテゴリシステム
 - `data-conversion`: データ変換ツール
 - `dev-tools`: 開発者向けツール
@@ -118,6 +132,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>[ツール名] - Web開発者向けユーティリティ</title>
+    <link rel="stylesheet" href="../common.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -153,7 +168,7 @@
 - タイトルは「[ツール名] - Web開発者向けユーティリティ」形式
 - ホームへのリンクは相対パス`../index.html`を使用
 - カードデザイン・配色・フォント・パディング等は全ツールで統一
-- 各ツールの`style.css`には共通スタイル（header, nav, .tool-card, button, textarea, .radio-group, footer, レスポンシブ等）を必ず含める
+- 共通見た目は `../common.css` で読み込み、各ツールの `style.css` は固有スタイルのみ追加する
 
 #### 基本カラーパレット
 - **メインカラー**: `#43a047`, `#66bb6a`, `#4caf50`
@@ -388,41 +403,30 @@ touch index.html script.js style.css
 ```
 
 #### 2. 基本ファイルの実装
-- `index.html`: 基本構造とナビゲーション
+- `index.html`: 基本構造とナビゲーション。`../common.css` を `style.css` より先に読み込む
 - `script.js`: ツールのロジック
-- `style.css`: ツール固有のスタイル（必須要素を含む）
+- `style.css`: ツール固有のスタイルのみ（共通見た目は `common.css`）
 
-##### style.cssの必須要素
-各ツールの`style.css`ファイルには、以下の基本スタイルを必ず含めてください。
-さらに、前述の「具体的なスタイル指定」セクションで定義されている**すべてのスタイル**（`header`, `nav`, `.tool-card`, `button`, `textarea`, `.radio-group`, `footer`, レスポンシブデザインなど）も追加する必要があります。
+##### style.css の方針
+共通の見た目（`header`, `nav`, `.tool-card`, `button`, `textarea`, `.radio-group`, `footer`, レスポンシブ等）はルートの `common.css` に集約する。
+各ツールの `style.css` には、そのツールだけのレイアウトや部品スタイルを書く。
 
-**`style.css` 基本テンプレート:**
+**`index.html` の CSS 読込順:**
+```html
+<link rel="stylesheet" href="../common.css">
+<link rel="stylesheet" href="style.css">
+```
+
+**`style.css` テンプレート（固有分のみ）:**
 ```css
-/* 基本リセット */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* body要素の統一スタイル */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    color: #2c3e50;
-    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    min-height: 100vh;
-}
-
-/*
- * ここに「具体的なスタイル指定」セクションの
- * CSSルール（header, nav, .tool-cardなど）をすべてコピーしてください。
- */
+/* このツール固有のスタイル */
+.input-section { /* ... */ }
 ```
 
 ##### 注意事項
-- **必須**: 全ての統一スタイルを各ツールのstyle.cssに含める
-- **禁止**: 共通CSSファイルへの依存（各ツールは独立して動作すること）
+- **必須**: `../common.css` を先に読み込む
+- **推奨**: 共通ルールの重複定義を避け、固有スタイルだけを `style.css` に置く
+- **フッター**: `© 2026 personal project for m-shiono` に統一
 - **推奨**: デザインの一貫性を保つため、色、フォント、レイアウトの数値は統一すること
 
 #### 3. メインページの更新

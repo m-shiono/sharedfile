@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web開発者向けユーティリティ</title>
-    <link rel="stylesheet" href="style.css"> <!-- CSSファイルへのリンクを追加 -->
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <header>
@@ -47,850 +47,374 @@
         </div>
     </nav>
     <main>
+        <!-- データ変換 -->
         <div class="tool-card" data-category="data-conversion">
             <h2>Excel Table Style Converter</h2>
-            <p>
-              Excelの表データを HTML、Markdown、Backlog 形式に変換するツールです。<br />
-              シンプルな表データの変換に適しており、複雑な書式設定やセル結合には対応していません。
-            </p>
-            <p>特徴：</p>
+            <p>Excelからコピーした表を、そのまま貼り付けて HTML / Markdown / Backlog に変換します（高頻度の簡易変換向け）。</p>
             <ul>
-                <li>シンプルで使いやすいインターフェース</li>
-                <li>クライアントサイドでの変換（データは保存されません）</li>
+                <li>タブ区切りデータの一括変換</li>
+                <li>HTML・Markdown・Backlog 対応</li>
+                <li>クライアントサイド処理</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>Excelから必要な表データをコピー</li>
-                <li>テキストエリアにデータを貼り付け</li>
-                <li>出力形式を選択し、「変換」ボタンをクリック</li>
-                <li>変換結果を確認し、必要に応じてコピー</li>
-            </ol>
             <a href="./excel-tab-to-html/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>Markdown/Backlog表作成ツール</h2>
-            <p>
-                Excel風の入力画面でMarkdownやBacklog形式の表を簡単に作成できるツールです。<br />
-                入力に応じて自動で行が増え、必要な範囲だけをスマートに出力します。
-            </p>
-            <p>特徴：</p>
+            <p>Excel風グリッドで表を編集し、Markdown / Backlog / CSV を生成します。貼り付け変換ではなく表の作成・再編集向けです。</p>
             <ul>
-                <li>Excel風のグリッドインターフェース</li>
-                <li>矢印キーやTabキーによるスムーズな操作</li>
-                <li>Markdown / Backlog / CSV 形式に対応</li>
-                <li>セル内改行の出力形式選択可能</li>
-                <li>既存データのインポート・編集機能</li>
+                <li>グリッド入力・キーボード操作</li>
+                <li>Markdown / Backlog / CSV 出力</li>
+                <li>既存表のインポート編集</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>セルにデータを直接入力（矢印キーやTabで移動）</li>
-                <li>最後のセルでTab/Enterを押すと自動で行が追加</li>
-                <li>「全形式生成」ボタンで各形式に一括変換</li>
-                <li>出力エリアからコピーまたはダウンロード</li>
-            </ol>
             <a href="./markdown-table-tool/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
-            <h2>Markdown to HTML Converter</h2>
-            <p>
-              Markdown形式のテキストをHTMLに変換するツールです。<br />
-              入力したMarkdownのプレビューを確認しながら、対応するHTMLコードを生成します。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>リアルタイムプレビュー機能</li>
-                <li>シンプルで使いやすいインターフェース</li>
-                <li>クライアントサイドでの変換（データは保存されません）</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>Markdown入力欄にMarkdown形式のテキストを貼り付け</li>
-                <li>「変換」ボタンをクリック</li>
-                <li>変換結果を確認し、必要に応じてコピー</li>
-            </ol>
-            <a href="./markdown-to-html/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="data-conversion">
             <h2>Markdown WYSIWYG Editor</h2>
-            <p>
-              WYSIWYGでMarkdownを編集し、Markdown / Backlog形式で出力・インポートできるツールです。<br />
-              見た目を確認しながら文章を整え、投稿用テキストへ反映できます。
-            </p>
-            <p>特徴：</p>
+            <p>見た目を確認しながら文書を編集し、Markdown / HTML / Backlog で出力します（旧 Markdown to HTML の機能を包含）。</p>
             <ul>
-                <li>WYSIWYG編集（見出し・リスト・表・コードなど）</li>
-                <li>Markdown / Backlog 形式への反映出力</li>
-                <li>既存文面のインポートと再編集</li>
-                <li>クライアントサイド処理（データは保存されません）</li>
+                <li>WYSIWYG編集（見出し・表・コードなど）</li>
+                <li>Markdown / HTML / Backlog 出力</li>
+                <li>既存文面のインポート</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>上の編集画面で文章を作成・編集</li>
-                <li>出力形式（Markdown / Backlog）を選択</li>
-                <li>「反映」ボタンで下部の出力欄にテキストを生成</li>
-                <li>既存文面は「インポート」タブから読み込み可能</li>
-            </ol>
             <a href="./markdown-wysiwyg-editor/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>テキスト差分比較ツール</h2>
-            <p>
-              2つのテキストの差分を簡単に比較できるツールです。<br />
-              行ごとの比較を行い、差分がある箇所を視覚的に表示します。
-            </p>
-            <p>特徴：</p>
+            <p>2つのテキストの差分を行単位・文字単位で可視化します。</p>
             <ul>
-                <li>シンプルで使いやすいインターフェース</li>
-                <li>クライアントサイドでの変換（データは保存されません）</li>
+                <li>サイドバイサイド比較</li>
+                <li>変更箇所のハイライト</li>
+                <li>クライアントサイド処理</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>「比較元」と「比較先」のテキストエリアにそれぞれテキストを入力</li>
-                <li>「比較」ボタンをクリック</li>
-                <li>差分がある行が強調表示され、変更内容を確認可能</li>
-            </ol>
-            <p>注意：このツールは簡易的な比較を行うため、行をまたいだ複雑な差分の検出には適していません。</p>
             <a href="./difftools/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>Mermaid図変換ツール</h2>
-            <p>
-              Mermaidテキストから美しい図を生成するツールです。<br />
-              フローチャート、シーケンス図、クラス図などを簡単に作成し、SVG・PNG形式でダウンロードできます。
-            </p>
-            <p>特徴：</p>
+            <p>Mermaid記法から図を生成し、SVG / PNG で保存します。</p>
             <ul>
-                <li>多様な図形式対応（フローチャート、シーケンス図、クラス図、ER図、ガントチャート）</li>
-                <li>SVG・PNG形式でのダウンロード機能</li>
-                <li>テンプレート機能で簡単作成</li>
+                <li>フロー・シーケンス・クラス・ER・ガント</li>
                 <li>リアルタイムプレビュー</li>
-                <li>クライアントサイドでの変換（データは保存されません）</li>
+                <li>テンプレート付き</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>Mermaidの記法でテキストを入力またはテンプレートを選択</li>
-                <li>「図を生成」ボタンをクリック</li>
-                <li>生成された図を確認</li>
-                <li>「SVGダウンロード」または「PNGダウンロード」でファイル保存</li>
-            </ol>
             <a href="./mermaid-converter/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="security-network">
-            <h2>パスワード生成ツール</h2>
-            <p>
-                安全で強固なパスワードを簡単に生成できます。
-            </p>
-            <a href="./passwd-generation/index.html">パスワード生成ツール</a>
-        </div>
-        <div class="tool-card" data-category="design-others">
-            <h2>QRコード作成ツール</h2>
-            <p>
-                URLを貼り付けると簡単にQRコードを生成できます。
-            </p>
-            <a href="./qr-code/index.html">QRコード作成ツール</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>JSONフォーマッター・バリデーター</h2>
-            <p>
-                JSONデータの整形・検証を行うツールです。<br />
-                JSON形式のデータを美しく整形し、構文エラーをチェックできます。
-            </p>
-            <p>特徴：</p>
+            <p>JSONの整形・検証・圧縮を行います。</p>
             <ul>
-                <li>JSONフォーマット（整形）機能</li>
-                <li>JSON構文バリデーション</li>
-                <li>JSON圧縮（ミニファイ）機能</li>
+                <li>フォーマット / バリデーション / ミニファイ</li>
                 <li>リアルタイム構文チェック</li>
-                <li>クリップボードコピー機能</li>
+                <li>コピー機能</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>JSONデータを入力エリアに貼り付け</li>
-                <li>「フォーマット」ボタンで整形、「バリデート」ボタンで検証</li>
-                <li>「圧縮」ボタンで不要な空白を削除</li>
-                <li>結果をクリップボードにコピー</li>
-            </ol>
             <a href="./json-formatter/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>Base64 エンコーダー・デコーダー</h2>
-            <p>
-                テキストとBase64の相互変換を行うツールです。<br />
-                バイナリデータをテキスト形式で安全に扱うことができます。
-            </p>
-            <p>特徴：</p>
+            <p>テキストと Base64 を相互変換します。</p>
             <ul>
-                <li>テキスト → Base64 エンコード機能</li>
-                <li>Base64 → テキスト デコード機能</li>
-                <li>日本語テキストの正確な変換</li>
-                <li>入出力の入れ替え機能</li>
-                <li>リアルタイム変換</li>
-                <li>Base64形式の検証</li>
+                <li>エンコード / デコード</li>
+                <li>日本語対応</li>
+                <li>入出力の入れ替え</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>エンコード・デコードのモードを選択</li>
-                <li>入力エリアにテキストまたはBase64データを入力</li>
-                <li>「変換」ボタンで変換実行</li>
-                <li>結果をクリップボードにコピー</li>
-            </ol>
             <a href="./base64-tool/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>URL エンコーダー・デコーダー</h2>
-            <p>
-                URLの安全な文字列変換を行うツールです。<br />
-                URLに含まれる特殊文字を適切にエンコード・デコードします。
-            </p>
-            <p>特徴：</p>
+            <p>URL用の文字列エンコード・デコードを行います。</p>
             <ul>
-                <li>テキスト → URL エンコード機能</li>
-                <li>URL → テキスト デコード機能</li>
-                <li>スペース変換オプション（%20 または +）</li>
-                <li>予約文字エンコードオプション</li>
+                <li>エンコード / デコード</li>
+                <li>スペース変換オプション</li>
                 <li>日本語URL対応</li>
-                <li>入出力の入れ替え機能</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>エンコード・デコードのモードを選択</li>
-                <li>必要に応じてオプションを設定</li>
-                <li>入力エリアにテキストまたはURLを入力</li>
-                <li>「変換」ボタンで変換実行</li>
-            </ol>
             <a href="./url-tool/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="design-others">
-            <h2>カラーパレット・カラーコード変換ツール</h2>
-            <p>
-                カラーコードの変換とカラーパレットの生成を行うツールです。<br />
-                デザイン作業に役立つ包括的なカラーツールです。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>HEX・RGB・HSL・HSV間の相互変換</li>
-                <li>カラーピッカーによる直感的な色選択</li>
-                <li>補色・トライアド・類似色パレット生成</li>
-                <li>コントラスト比チェッカー（WCAG準拠）</li>
-                <li>パレットの保存・読み込み機能</li>
-                <li>アクセシビリティ対応チェック</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>カラーピッカーまたは直接入力で色を選択</li>
-                <li>各カラーコード形式で確認・編集</li>
-                <li>パレット生成ボタンで色彩調和を作成</li>
-                <li>コントラストチェッカーでアクセシビリティ確認</li>
-            </ol>
-            <a href="./color-tool/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>正規表現テスター</h2>
-            <p>
-                正規表現のパターンマッチングをテストするツールです。<br />
-                パターンの動作確認と置換のテストが行えます。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>リアルタイム正規表現テスト</li>
-                <li>マッチした部分のハイライト表示</li>
-                <li>フラグ設定（g, i, m, s, u）</li>
-                <li>置換機能のテスト</li>
-                <li>クイックパターン集</li>
-                <li>詳細なマッチ情報表示</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>正規表現パターンを入力</li>
-                <li>必要に応じてフラグを設定</li>
-                <li>テストテキストを入力</li>
-                <li>マッチ結果と置換結果を確認</li>
-            </ol>
-            <a href="./regex-tester/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>ログパーサー・フィルタリングツール</h2>
-            <p>
-                アクセスログやエラーログの解析と正規表現によるフィルタリングを行うツールです。<br />
-                Apache、Nginxログに対応し、既存の正規表現テスターと連携します。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>Apache・Nginxアクセスログ・エラーログの解析</li>
-                <li>正規表現による高度なフィルタリング</li>
-                <li>IPアドレス、ステータスコード、URLの統計情報生成</li>
-                <li>クイックフィルタ（エラー、成功、疑わしい活動）</li>
-                <li>正規表現テスターとの連携機能</li>
-                <li>JSON・CSV・テキスト形式でのエクスポート</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>ログデータを入力またはファイルから読み込み</li>
-                <li>適切なログフォーマットを選択</li>
-                <li>「ログを解析」ボタンで解析実行</li>
-                <li>正規表現フィルタで特定のパターンを抽出</li>
-                <li>統計情報を確認し、必要に応じてエクスポート</li>
-            </ol>
-            <a href="./log-parser/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>テキストケース変換ツール</h2>
-            <p>
-                プログラミングで使用する変数名・関数名の命名規則変換ツールです。<br />
-                複数の命名規則に一度に変換できます。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>13種類のケース変換（camelCase、snake_case等）</li>
-                <li>プログラミング言語別の命名規則対応</li>
-                <li>複数行テキストの一括変換</li>
-                <li>クイック例文で動作確認</li>
-                <li>各ケースの使用場面説明</li>
-                <li>コピー機能で効率的な作業</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>変換したいテキストを入力</li>
-                <li>自動的に全ケースに変換</li>
-                <li>必要なケースをコピーして使用</li>
-                <li>クイック例文で動作確認も可能</li>
-            </ol>
-            <a href="./case-converter/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>Path加工ツール</h2>
-            <p>
-                Windows・Unix・アプリケーション形式のパス文字列を相互変換するツールです。<br />
-                プログラミングや設定ファイル作成時に便利なパス形式変換機能を提供します。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>Windows・Unix・エスケープ済み・URL形式の相互変換</li>
-                <li>自動判定モード＆手動選択モード</li>
-                <li>UNC・POSIX形式対応</li>
-                <li>サンプルパス機能</li>
-                <li>クリックでコピー機能</li>
-                <li>リアルタイム変換・検証</li>
-            </ul>
-            <br />
-            <p>使用方法：</p>
-            <ol>
-                <li>パス文字列を入力（自動判定または手動選択）</li>
-                <li>「変換」ボタンで全形式に変換</li>
-                <li>必要な形式をクリックしてコピー</li>
-                <li>サンプル機能で各種パターンを確認</li>
-            </ol>
-            <br />
-            <a href="./path-converter/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="security-network">
-            <h2>ハッシュ生成ツール</h2>
-            <p>
-                テキストやファイルから様々なハッシュ値を生成するツールです。<br />
-                セキュリティやデータ整合性チェックに活用できます。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>5種類のハッシュアルゴリズム（MD5、SHA-1、SHA-256、SHA-384、SHA-512）</li>
-                <li>テキスト・ファイル両対応</li>
-                <li>ドラッグ＆ドロップファイル入力</li>
-                <li>ハッシュ値の比較・検証機能</li>
-                <li>ランダム文字列生成機能</li>
-                <li>詳細な処理情報表示</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>テキスト入力またはファイル選択</li>
-                <li>「ハッシュ生成」ボタンで一括生成</li>
-                <li>必要なハッシュ値をコピー</li>
-                <li>比較機能でデータ整合性を確認</li>
-            </ol>
-            <a href="./hash-generator/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="time-date">
-            <h2>Unixタイムスタンプ変換ツール</h2>
-            <p>
-                Unix時刻と人間が読める日時の相互変換を行うツールです。<br />
-                システム開発やログ解析に便利な時刻変換機能を提供します。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>リアルタイム現在時刻表示</li>
-                <li>双方向変換（タイムスタンプ ⇔ 日時）</li>
-                <li>複数形式対応（ローカル時間、UTC、ISO 8601、RFC 2822）</li>
-                <li>一括変換機能</li>
-                <li>クイックタイムスタンプ生成</li>
-                <li>カスタム日時フォーマット</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>現在時刻を確認またはタイムスタンプを入力</li>
-                <li>「変換」ボタンで各形式に変換</li>
-                <li>日時からタイムスタンプへの逆変換も可能</li>
-                <li>一括変換で複数データを効率的に処理</li>
-            </ol>
-            <a href="./timestamp-converter/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="time-date">
-            <h2>sysUpTime変換ツール</h2>
-            <p>
-                SNMP sysUpTime値を起動経過時間に変換するツールです。<br />
-                ネットワーク機器の稼働時間を確認するために使用されるTimeTicks値を分かりやすい日数表示に変換します。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>TimeTicks（1/100秒単位）を日・時・分・秒に変換</li>
-                <li>SNMP OID 1.3.6.1.2.1.1.3 対応</li>
-                <li>リアルタイム変換・検証機能</li>
-                <li>サンプル値でのクイックテスト</li>
-                <li>最大値チェック（32bit制限対応）</li>
-                <li>詳細な内訳表示</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>SNMPで取得したsysUpTime値を入力欄に貼り付け</li>
-                <li>「変換」ボタンで起動経過時間を計算</li>
-                <li>日数・時間・分・秒の詳細な内訳を確認</li>
-                <li>サンプル値で動作確認も可能</li>
-            </ol>
-            <a href="./sysuptime-converter/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="time-date">
-            <h2>時間差計算ツール</h2>
-            <p>
-                基準時刻と経過時間を相互に計算するツールです。<br />
-                「何時何分」と「何時間何分後」の差分を埋める用途に使えます。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>基準時刻＋経過時間 → 到達時刻の計算</li>
-                <li>基準時刻＋到達時刻 → 経過時間の計算</li>
-                <li>日跨ぎ対応（相対表示「+N日 HH:MM」）</li>
-                <li>現在時刻ワンクリック設定</li>
-                <li>結果のコピー機能</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>左側で基準時刻と日・時・分を入力し到達時刻を確認</li>
-                <li>右側で基準時刻と到達時刻を入力し経過時間を確認</li>
-                <li>必要に応じて結果をコピーして利用</li>
-            </ol>
-            <a href="./time-duration-calculator/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="security-network">
-            <h2>IPアドレス計算ツール</h2>
-            <p>
-                CIDR計算とサブネットマスク変換を行うツールです。<br />
-                ネットワーク設計やIPアドレス管理に便利な機能を提供します。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>CIDR記法からサブネット情報を自動計算</li>
-                <li>ネットワーク・ブロードキャストアドレス表示</li>
-                <li>利用可能IPアドレス範囲の表示</li>
-                <li>サブネット分割計算機能</li>
-                <li>IPアドレスクラス・プライベートアドレス判定</li>
-                <li>リアルタイム計算・検証機能</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>IPアドレス/CIDR（例：192.168.1.0/24）を入力</li>
-                <li>「計算実行」ボタンで詳細情報を表示</li>
-                <li>サブネット分割が必要な場合は下部で計算</li>
-                <li>結果を参照してネットワーク設計に活用</li>
-            </ol>
-            <a href="./ip-calculator/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>Cron式生成・検証ツール</h2>
-            <p>
-                Cronのスケジュール式を簡単に作成・検証するツールです。<br />
-                分・時・日・月・曜日を指定してCron式を生成できます。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>ドロップダウン選択による簡単なCron式生成</li>
-                <li>基本的な形式チェック機能</li>
-                <li>ワンクリックコピー</li>
-            </ul>
-            <a href="./cron-generator/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>YAML/JSON設定ファイル変換ツール</h2>
-            <p>
-                Kubernetes、Docker Compose等の設定ファイル相互変換ツールです。<br />
-                インフラ設定ファイルの形式変換とテンプレート生成に対応しています。
-            </p>
-            <p>特徴：</p>
+            <p>YAML と JSON の設定データを相互変換します。</p>
             <ul>
-                <li>YAML ⇔ JSON の双方向変換</li>
-                <li>リアルタイム変換・プレビュー機能</li>
-                <li>Kubernetes、Docker Compose等のテンプレート</li>
-                <li>GitHub Actions、Ansibleテンプレート対応</li>
-                <li>構文エラーチェック・フォーマット機能</li>
-                <li>クリップボードコピー機能</li>
+                <li>双方向変換</li>
+                <li>構文チェック</li>
+                <li>コピー機能</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>変換方向（YAML→JSON または JSON→YAML）を選択</li>
-                <li>入力エリアに設定ファイルを貼り付け</li>
-                <li>「変換」ボタンで変換実行</li>
-                <li>テンプレートから既存の設定例を選択可能</li>
-            </ol>
             <a href="./yaml-json-converter/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>環境変数管理ツール</h2>
-            <p>
-                .env形式の環境変数ファイル生成・検証・管理ツールです。<br />
-                アプリケーション設定の管理と複数形式での出力に対応しています。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>エディタ・フォーム両方の入力モード対応</li>
-                <li>環境変数の構文検証・重複チェック</li>
-                <li>ENV、JSON、YAML、Docker、Shell形式出力</li>
-                <li>Node.js、AWS、データベース等のテンプレート</li>
-                <li>変数名の命名規則チェック</li>
-                <li>ファイルダウンロード機能</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>エディタまたはフォームモードで環境変数を入力</li>
-                <li>「検証」ボタンで構文・命名規則をチェック</li>
-                <li>出力タブで必要な形式を選択</li>
-                <li>テンプレートから一般的な設定例を選択可能</li>
-            </ol>
-            <a href="./env-manager/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>JWT デコーダー・バリデーター</h2>
-            <p>
-                JSON Web Token（JWT）のデコード・検証を行うツールです。<br />
-                JWTトークンの構造解析と有効性確認が行えます。
-            </p>
-            <p>特徴：</p>
+            <p>JWT のヘッダー・ペイロードをデコードして確認します。</p>
             <ul>
-                <li>Header、Payload、Signatureの分離表示</li>
-                <li>標準クレーム（iss、sub、aud、exp等）の詳細表示</li>
-                <li>有効期限チェック・警告機能</li>
-                <li>カスタムクレームの識別</li>
-                <li>JWTトークン構造の検証</li>
-                <li>クリップボードコピー機能</li>
+                <li>Header / Payload 表示</li>
+                <li>有効期限の確認</li>
+                <li>クライアントサイド処理</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>JWTトークンを入力エリアに貼り付け</li>
-                <li>「デコード」ボタンでトークンを解析</li>
-                <li>「バリデート」ボタンで有効性を確認</li>
-                <li>各部分をクリップボードにコピー可能</li>
-            </ol>
             <a href="./jwt-decoder/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>SSH Config ジェネレーター</h2>
-            <p>
-                SSH接続の設定ファイルを簡単に生成するツールです。<br />
-                複数のサーバーへの接続情報を効率的に管理できます。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>ホスト名、IP、ユーザー、ポート、秘密鍵パスの入力</li>
-                <li>設定ファイルの自動生成</li>
-                <li>生成された設定のクリップボードコピー機能</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>SSH接続情報をフォームに入力</li>
-                <li>「生成」ボタンをクリック</li>
-                <li>生成された設定を確認し、「コピー」ボタンでクリップボードに保存</li>
-                <li>~/.ssh/configファイルに貼り付けて使用</li>
-            </ol>
-            <a href="./ssh-config-generator/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>Docker コマンドビルダー</h2>
-            <p>
-                Docker runコマンドとDocker Composeファイルを簡単に生成するツールです。<br />
-                コンテナ設定を視覚的に構成し、適切なコマンドを自動生成します。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>視覚的なDockerコマンド構成</li>
-                <li>Docker run & Docker Compose生成</li>
-                <li>コマンドの詳細解説機能</li>
-                <li>一般的なコンテナテンプレート（Nginx、MySQL、Node.js等）</li>
-                <li>ポート、ボリューム、環境変数の設定</li>
-                <li>リアルタイムコマンド生成</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>イメージ名とコンテナ設定を入力</li>
-                <li>ポート、ボリューム、環境変数を設定</li>
-                <li>テンプレートから一般的な設定を選択可能</li>
-                <li>生成されたコマンドをクリップボードにコピー</li>
-            </ol>
-            <a href="./docker-builder/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="security-network">
-            <h2>HTTPステータスコード・ヘッダーチェッカー</h2>
-            <p>
-                HTTPレスポンスの分析とセキュリティヘッダーの検証を行うツールです。<br />
-                API開発やWebサーバー設定のトラブルシューティングに活用できます。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>HTTPステータスコードの詳細説明表示</li>
-                <li>セキュリティヘッダー（HSTS、CSP、X-Frame-Options等）の検証</li>
-                <li>レスポンスヘッダーの詳細表示</li>
-                <li>リダイレクト追跡機能</li>
-                <li>API開発・デバッグ支援</li>
-                <li>Webサーバー設定確認</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>チェックしたいURLを入力</li>
-                <li>必要に応じてオプションを設定</li>
-                <li>「チェック実行」ボタンでHTTPリクエストを送信</li>
-                <li>ステータスコード、セキュリティヘッダー、レスポンスヘッダーを確認</li>
-            </ol>
-            <a href="./http-checker/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="security-network">
-            <h2>ポート・プロトコル参照ツール</h2>
-            <p>
-                一般的なポート番号とプロトコルの対応表、セキュリティ情報、ファイアウォール設定の参考資料を提供します。<br />
-                ネットワーク管理やセキュリティ設定の際に便利な包括的なリファレンスツールです。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>80以上のポート・プロトコル情報を収録</li>
-                <li>ポート番号・サービス名・プロトコルでの検索機能</li>
-                <li>カテゴリ別フィルタリング（Web、Email、Database等）</li>
-                <li>セキュリティリスクレベルの表示</li>
-                <li>プロトコル（TCP、UDP、ICMP）の詳細説明</li>
-                <li>ファイアウォール設定のベストプラクティス</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>検索欄にポート番号またはサービス名を入力</li>
-                <li>カテゴリボタンでフィルタリング</li>
-                <li>各ポートのセキュリティ情報を確認</li>
-                <li>ファイアウォール設定のヒントを参考に設定</li>
-            </ol>
-            <a href="./port-protocol-reference/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>Kubernetes Resource Generator</h2>
-            <p>
-                Deployment、Service、ConfigMap等のKubernetesリソースを簡単に生成するツールです。<br />
-                YAML形式で出力され、既存の変換ツールと組み合わせて使用できます。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>Deployment、Service、ConfigMapの生成</li>
-                <li>直感的なフォーム入力</li>
-                <li>リアルタイムYAMLプレビュー</li>
-                <li>クリップボードコピー機能</li>
-                <li>YAMLファイルダウンロード</li>
-                <li>セキュリティベストプラクティス適用</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>リソースタイプ（Deployment、Service、ConfigMap）を選択</li>
-                <li>必要な設定項目をフォームに入力</li>
-                <li>「Generate YAML」ボタンでマニフェストを生成</li>
-                <li>生成されたYAMLをコピーまたはダウンロード</li>
-            </ol>
-            <a href="./kubernetes-generator/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="dev-tools">
-            <h2>New Relic NPM設定作成ツール</h2>
-            <p>
-                New RelicのKtranslateの設定ファイルを作成できます。
-            </p>
-            <a href="https://m-shiono.github.io/ktranslate/">New Relic NPM設定作成ツール</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>メールデコーダー</h2>
-            <p>
-                MIMEエンコードされたメールを日本語で読めるようにデコードするツールです。<br />
-                メールのエンコード種類を自動判定し、適切にデコードします。
-            </p>
-            <p>特徴：</p>
+            <p>MIME エンコードされた件名・本文をデコードします。</p>
             <ul>
-                <li>MIME encoded-word の自動デコード</li>
-                <li>Base64 及び Quoted-Printable エンコーディング対応</li>
-                <li>日本語文字コード（ISO-2022-JP、Shift_JIS、EUC-JP）対応</li>
-                <li>エンコード情報の詳細表示</li>
-                <li>リアルタイム処理</li>
+                <li>Base64 / Quoted-Printable</li>
+                <li>文字コード自動判定</li>
+                <li>検出情報の表示</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>MIMEエンコードされたメールテキストを入力エリアに貼り付け</li>
-                <li>「デコード」ボタンをクリック</li>
-                <li>デコード結果と検出されたエンコード情報を確認</li>
-            </ol>
             <a href="./email-decoder/index.html">ツールを使用する</a>
-        </div>
-        <div class="tool-card" data-category="time-date">
-            <h2>タイムゾーン変換ツール</h2>
-            <p>
-                全世界のタイムゾーン（IANA標準）に対応した高機能な時刻変換ツールです。<br />
-                特定の都市間の詳細な変換と、世界の主要都市の時刻一覧を同時に確認できます。
-            </p>
-            <p>特徴：</p>
-            <ul>
-                <li>全世界の標準タイムゾーンに対応（数百種類から選択可能）</li>
-                <li>Asia/Tokyo (JST) と UTC を最優先表示</li>
-                <li>サマータイム（DST）を考慮した正確な時刻変換</li>
-                <li>特定の2地点間を素早く変換（スワップ機能付き）</li>
-                <li>主要都市の時刻をグリッド形式で一括表示</li>
-                <li>変換結果をワンクリックでコピー可能</li>
-            </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>日時を指定し、変換元と変換先のタイムゾーンを選択</li>
-                <li>「詳細変換」エリアに変換結果がリアルタイムで表示されます</li>
-                <li>同時に下部のグリッドで、指定した日時の主要都市時刻を確認できます</li>
-                <li>必要に応じて「結果をコピー」ボタンで結果を取得</li>
-            </ol>
-            <a href="./timezone-converter/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>CSV/TSV変換ツール</h2>
-            <p>
-                CSV、TSV、JSON形式のデータを相互変換するツールです。<br />
-                データの形式変換とプレビュー表示で効率的なデータ処理が可能です。
-            </p>
-            <p>特徴：</p>
+            <p>CSV と TSV、区切り文字付きデータを相互変換します。</p>
             <ul>
-                <li>CSV、TSV、JSON形式の相互変換</li>
-                <li>区切り文字の自動判定・手動設定</li>
-                <li>ヘッダー行の有無に対応</li>
-                <li>データプレビュー機能</li>
-                <li>ダブルクォートエスケープ対応</li>
-                <li>ファイルダウンロード機能</li>
+                <li>区切り文字の切替</li>
+                <li>ヘッダー行オプション</li>
+                <li>コピー / ダウンロード</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>入力・出力形式を選択</li>
-                <li>変換オプションを設定</li>
-                <li>データを入力または貼り付け</li>
-                <li>「変換実行」で変換実行</li>
-                <li>プレビュー確認後、結果をコピーまたはダウンロード</li>
-            </ol>
             <a href="./csv-converter/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="data-conversion">
             <h2>JSON Data to Table</h2>
-            <p>
-                JSONデータから Title、ID、Query を抽出し、テーブル形式で表示するツールです。<br />
-                New Relic Dashboard の JSON など、pages 配下に title / id / query を持つデータ向けです。
-            </p>
-            <p>特徴：</p>
+            <p>New Relic Dashboard JSON など、pages 配下の title / id / query を表に抽出します。</p>
             <ul>
-                <li>pages 配列内の title、id、query を再帰的に抽出</li>
-                <li>抽出結果をテーブルで一覧表示</li>
-                <li>クライアントサイドでの変換（データは保存されません）</li>
+                <li>pages 配列の再帰抽出</li>
+                <li>表形式で一覧表示</li>
+                <li>クライアントサイド処理</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>JSONデータをテキストエリアに貼り付け</li>
-                <li>「テーブル作成」ボタンをクリック</li>
-                <li>Title、ID、Query の一覧を確認</li>
-            </ol>
-            <a href="./misc/json-to-table.html">ツールを使用する</a>
+            <a href="./json-to-table/index.html">ツールを使用する</a>
+        </div>
+
+        <!-- セキュリティ・ネットワーク -->
+        <div class="tool-card" data-category="security-network">
+            <h2>パスワード生成ツール</h2>
+            <p>用途に合わせて安全なパスワードを複数生成します。</p>
+            <ul>
+                <li>文字種・長さ・個数を指定</li>
+                <li>類似文字の除外オプション</li>
+                <li>ワンクリックコピー</li>
+            </ul>
+            <a href="./passwd-generation/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="security-network">
+            <h2>ハッシュ生成ツール</h2>
+            <p>テキストやファイルから各種ハッシュ値を生成・比較します。</p>
+            <ul>
+                <li>MD5 / SHA 系など複数アルゴリズム</li>
+                <li>ファイル入力対応</li>
+                <li>ハッシュ比較</li>
+            </ul>
+            <a href="./hash-generator/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="security-network">
+            <h2>IPアドレス計算ツール</h2>
+            <p>CIDR やサブネット情報を計算します。</p>
+            <ul>
+                <li>ネットワーク / ブロードキャスト表示</li>
+                <li>利用可能IP範囲</li>
+                <li>サブネット分割</li>
+            </ul>
+            <a href="./ip-calculator/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="security-network">
+            <h2>HTTPステータスコード・ヘッダーチェッカー</h2>
+            <p>指定URLのステータスとレスポンスヘッダーを確認します（CORS制約あり）。</p>
+            <ul>
+                <li>ステータスコード解説</li>
+                <li>セキュリティヘッダー確認</li>
+                <li>リダイレクト追跡</li>
+            </ul>
+            <a href="./http-checker/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="security-network">
+            <h2>ポート・プロトコル参照ツール</h2>
+            <p>よく使うポート番号とプロトコルを検索・参照します。</p>
+            <ul>
+                <li>ポート / サービス名検索</li>
+                <li>カテゴリ別フィルタ</li>
+                <li>主要プロトコルの概要</li>
+            </ul>
+            <a href="./port-protocol-reference/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="security-network">
             <h2>User-Agent分析ツール</h2>
-            <p>
-                User-Agent文字列の詳細情報を分析・解析するツールです。<br />
-                ブラウザ、OS、デバイス情報を詳細に解析し、構成要素まで分解表示します。
-            </p>
-            <p>特徴：</p>
+            <p>User-Agent 文字列から OS・ブラウザ等を解析します。</p>
             <ul>
-                <li>ブラウザ情報の詳細解析（名前・バージョン・タイプ）</li>
-                <li>OS・プラットフォーム情報の特定</li>
-                <li>デバイス種別・ブランド・モデルの判定</li>
-                <li>レンダリングエンジンの特定</li>
-                <li>User-Agent構成要素の分解表示</li>
-                <li>よく使われるUAサンプル集</li>
+                <li>現在のUAをワンクリック分析</li>
+                <li>任意UAの解析</li>
+                <li>サンプルUA付き</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>User-Agent文字列を入力または現在のUAを使用</li>
-                <li>「分析実行」ボタンで詳細解析</li>
-                <li>ブラウザ、OS、デバイス、エンジン情報を確認</li>
-                <li>サンプルUAからクイック分析も可能</li>
-            </ol>
             <a href="./user-agent-analyzer/index.html">ツールを使用する</a>
         </div>
+
+        <!-- デザイン・その他 -->
         <div class="tool-card" data-category="design-others">
-            <h2>Lorem Ipsum ジェネレーター</h2>
-            <p>
-                日本語・英語・ラテン語のダミーテキストを生成するツールです。<br />
-                Webサイトやアプリのデザイン時に必要なプレースホルダーテキストを簡単に作成できます。
-            </p>
-            <p>特徴：</p>
+            <h2>QRコード作成ツール</h2>
+            <p>URL / テキスト、Wi-Fi、連絡先からQRコードを生成・印刷します。</p>
             <ul>
-                <li>3言語対応（ラテン語・日本語・英語）</li>
-                <li>段落・文・単語での生成選択</li>
-                <li>生成数の自由設定（1〜50）</li>
-                <li>HTML・Markdown・プレーンテキスト出力</li>
-                <li>クラシックLorem ipsum開始オプション</li>
-                <li>ファイルダウンロード機能</li>
+                <li>URL・Wi-Fi・連絡先対応</li>
+                <li>ロゴ重ね合わせ（任意）</li>
+                <li>印刷設定付き</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>言語と生成タイプを選択</li>
-                <li>生成数を指定</li>
-                <li>「生成」ボタンでダミーテキスト作成</li>
-                <li>出力形式を選択してコピーまたはダウンロード</li>
-            </ol>
-            <a href="./lorem-ipsum-generator/index.html">ツールを使用する</a>
+            <a href="./qr-code/index.html">ツールを使用する</a>
         </div>
         <div class="tool-card" data-category="design-others">
-            <h2>容量計算ツール</h2>
-            <p>
-                テキストをファイルとして保存した場合のファイルサイズを計算するツールです。
-                UTF-8エンコーディングでの正確なバイト数計算とファイルサイズ予測が可能です。
-            </p>
-            <p>特徴：</p>
+            <h2>カラーパレット・カラーコード変換ツール</h2>
+            <p>カラーコード変換とパレット生成を行います。</p>
             <ul>
-                <li>UTF-8エンコーディングでの正確なバイト数計算</li>
-                <li>バイト、KB、MB単位での表示</li>
-                <li>文字数・行数の同時表示</li>
-                <li>リアルタイム計算対応</li>
-                <li>エンコーディング情報の詳細表示</li>
-                <li>シンプルで使いやすいインターフェース</li>
+                <li>HEX / RGB / HSL 変換</li>
+                <li>パレット生成</li>
+                <li>コピー機能</li>
             </ul>
-            <p>使用方法：</p>
-            <ol>
-                <li>テキストエリアに計算したい文字列を入力</li>
-                <li>「サイズを計算」ボタンをクリック</li>
-                <li>バイト数、文字数、行数を確認</li>
-                <li>「テキストをクリア」ボタンで入力内容をリセット</li>
-            </ol>
-            <a href="./file-size-calculator/index.html">ツールを使用する</a>
+            <a href="./color-tool/index.html">ツールを使用する</a>
         </div>
-        <!-- mini-gameへの説明文を追加 -->
+
+        <!-- 開発ツール -->
+        <div class="tool-card" data-category="dev-tools">
+            <h2>正規表現テスター</h2>
+            <p>正規表現のマッチ結果をその場で確認します。</p>
+            <ul>
+                <li>リアルタイムマッチ</li>
+                <li>フラグ指定</li>
+                <li>マッチ箇所ハイライト</li>
+            </ul>
+            <a href="./regex-tester/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="dev-tools">
+            <h2>ログパーサー・フィルタリングツール</h2>
+            <p>ログをパースしてフィルタ・抽出します。</p>
+            <ul>
+                <li>パターン抽出</li>
+                <li>フィルタリング</li>
+                <li>結果コピー</li>
+            </ul>
+            <a href="./log-parser/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="dev-tools">
+            <h2>テキストケース変換ツール</h2>
+            <p>camelCase / snake_case など命名規則を相互変換します。</p>
+            <ul>
+                <li>主要ケース一括変換</li>
+                <li>クイック例文</li>
+                <li>個別コピー</li>
+            </ul>
+            <a href="./case-converter/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="dev-tools">
+            <h2>Path加工ツール</h2>
+            <p>Windows / Unix / アプリ形式のパスを相互変換します。</p>
+            <ul>
+                <li>自動判定 / 手動選択</li>
+                <li>複数形式へ同時変換</li>
+                <li>バッチ処理向け</li>
+            </ul>
+            <a href="./path-converter/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="dev-tools">
+            <h2>Cron式生成・検証ツール</h2>
+            <p>Cron式を対話的に作成・検証し、次回実行を確認します。</p>
+            <ul>
+                <li>式の生成と検証</li>
+                <li>人間可読な説明</li>
+                <li>次回実行時刻の確認</li>
+            </ul>
+            <a href="./cron-generator/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="dev-tools">
+            <h2>環境変数管理ツール</h2>
+            <p>.env 形式の環境変数を整理・変換します。</p>
+            <ul>
+                <li>キー/値の編集</li>
+                <li>形式変換</li>
+                <li>コピー機能</li>
+            </ul>
+            <a href="./env-manager/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="dev-tools">
+            <h2>SSH Config ジェネレーター</h2>
+            <p>~/.ssh/config のホスト設定を対話的に生成します。</p>
+            <ul>
+                <li>複数ホスト一括生成</li>
+                <li>GitHub用鍵設定</li>
+                <li>コピーしやすい出力</li>
+            </ul>
+            <a href="./ssh-config-generator/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="dev-tools">
+            <h2>Docker コマンドビルダー</h2>
+            <p>docker run / Compose 向けのコマンドと設定を組み立てます。</p>
+            <ul>
+                <li>ポート・ボリューム・環境変数</li>
+                <li>Compose YAML 生成</li>
+                <li>コマンドコピー</li>
+            </ul>
+            <a href="./docker-builder/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="dev-tools">
+            <h2>Kubernetes Resource Generator</h2>
+            <p>Deployment / Service / ConfigMap の基本マニフェストを生成します。</p>
+            <ul>
+                <li>主要リソース対応</li>
+                <li>フォーム入力からYAML生成</li>
+                <li>コピー機能</li>
+            </ul>
+            <a href="./kubernetes-generator/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="dev-tools">
+            <h2>New Relic NPM設定作成ツール</h2>
+            <p>New Relic NPM（ktranslate）向け設定を作成する外部ツールです。</p>
+            <a href="https://m-shiono.github.io/ktranslate/">ツールを使用する</a>
+        </div>
+
+        <!-- 時間・日付（用途差を明確化） -->
+        <div class="tool-card" data-category="time-date">
+            <h2>Unixタイムスタンプ変換ツール</h2>
+            <p>Unixタイムスタンプ（エポック秒）と日時文字列を相互変換します。ログやAPIの epoch 値向けです。</p>
+            <ul>
+                <li>タイムスタンプ ⇔ 日時</li>
+                <li>UTC / ローカル / ISO など</li>
+                <li>一括変換</li>
+            </ul>
+            <a href="./timestamp-converter/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="time-date">
+            <h2>タイムゾーン変換ツール</h2>
+            <p>同じ瞬間を複数タイムゾーンの壁時計時刻で比べます。国・地域の時差変換向けです。</p>
+            <ul>
+                <li>主要タイムゾーン対応</li>
+                <li>東京 / UTC 優先表示</li>
+                <li>ゾーン入れ替え</li>
+            </ul>
+            <a href="./timezone-converter/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="time-date">
+            <h2>時間差計算ツール</h2>
+            <p>「基準時刻＋経過時間」や「基準時刻と到達時刻の差」を計算します。タイムスタンプ変換とは別用途です。</p>
+            <ul>
+                <li>経過時間 → 到達時刻</li>
+                <li>2時刻 → 経過時間</li>
+                <li>日跨ぎ表示</li>
+            </ul>
+            <a href="./time-duration-calculator/index.html">ツールを使用する</a>
+        </div>
+        <div class="tool-card" data-category="time-date">
+            <h2>sysUpTime変換ツール</h2>
+            <p>SNMP の sysUpTime（TimeTicks）だけを起動経過時間に変換します。一般的な時刻変換には使いません。</p>
+            <ul>
+                <li>OID 1.3.6.1.2.1.1.3 向け</li>
+                <li>日・時・分・秒の内訳</li>
+                <li>サンプル値で確認可</li>
+            </ul>
+            <a href="./sysuptime-converter/index.html">ツールを使用する</a>
+        </div>
+
+        <!-- ミニゲーム -->
         <div class="tool-card" data-category="mini-games">
             <h2>ミニゲーム</h2>
-            <p>
-              このセクションでは、さまざまなミニゲームを楽しむことができます。
-              シンプルながらも楽しいゲームを集めてみましたので、ぜひお楽しみください。
-            </p>
+            <p>休憩用のミニゲーム集です。</p>
             <a href="./mini-game/index.html">ミニゲームをプレイする</a>
         </div>
     </main>
     <footer>
-        <p>&copy; 2026 m-shiono personal project</p>
+        <p>&copy; 2026 personal project for m-shiono</p>
     </footer>
     <script src="common.js"></script>
     <script src="search.js" defer></script>
     <script>
-        // ダークモード初期化
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof initializeThemeSwitcher === 'function') {
                 initializeThemeSwitcher();
