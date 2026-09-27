@@ -14,6 +14,8 @@ const MAJOR_TIMEZONES = [
     { value: 'Europe/Berlin', display: 'ベルリン (CET/CEST)' }
 ];
 
+
+document.addEventListener('DOMContentLoaded', () => {
 // DOM要素
 const currentTimeElement = document.getElementById('current-time');
 const inputDatetime = document.getElementById('input-datetime');
@@ -215,19 +217,17 @@ async function copyResult() {
     }
 }
 
-// イベントリスナー
-inputDatetime.addEventListener('input', convert);
-inputTimezone.addEventListener('change', convert);
-targetTimezone.addEventListener('change', convert);
-swapBtn.addEventListener('click', swapTimezones);
-currentTimeBtn.addEventListener('click', setCurrentTime);
-copyBtn.addEventListener('click', copyResult);
 
-// 初期化
-document.addEventListener('DOMContentLoaded', () => {
+    // イベントリスナー
+    inputDatetime.addEventListener('input', convert);
+    inputTimezone.addEventListener('change', convert);
+    targetTimezone.addEventListener('change', convert);
+    swapBtn.addEventListener('click', swapTimezones);
+    currentTimeBtn.addEventListener('click', setCurrentTime);
+    copyBtn.addEventListener('click', copyResult);
+
     initTimezoneSelects();
     updateCurrentTimeDisplay();
     setCurrentTime();
-    
     setInterval(updateCurrentTimeDisplay, 1000);
 });

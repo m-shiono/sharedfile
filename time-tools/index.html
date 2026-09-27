@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>時間・日付ツール - Web開発者向けユーティリティ</title>
+    <link rel="stylesheet" href="../common.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>時間・日付ツール</h1>
+        <p>Unixタイムスタンプ・タイムゾーン・時間差・sysUpTime をひとつの画面で切り替えます。</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="../index.html">ホームに戻る</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="tool-card tab-card">
+            <div class="tab-bar" role="tablist" aria-label="時間・日付ツールの機能切替">
+                <button type="button" class="tab-btn" role="tab" id="tab-timestamp"
+                        aria-selected="false" aria-controls="panel-timestamp" data-tab="timestamp">
+                    <span class="tab-label">Unixタイムスタンプ</span>
+                    <span class="tab-desc">エポック秒と日時の相互変換</span>
+                </button>
+                <button type="button" class="tab-btn" role="tab" id="tab-timezone"
+                        aria-selected="false" aria-controls="panel-timezone" data-tab="timezone">
+                    <span class="tab-label">タイムゾーン</span>
+                    <span class="tab-desc">複数タイムゾーンの壁時計変換</span>
+                </button>
+                <button type="button" class="tab-btn" role="tab" id="tab-duration"
+                        aria-selected="false" aria-controls="panel-duration" data-tab="duration">
+                    <span class="tab-label">時間差計算</span>
+                    <span class="tab-desc">基準時刻と経過時間の相互計算</span>
+                </button>
+                <button type="button" class="tab-btn" role="tab" id="tab-sysuptime"
+                        aria-selected="false" aria-controls="panel-sysuptime" data-tab="sysuptime">
+                    <span class="tab-label">sysUpTime</span>
+                    <span class="tab-desc">SNMP TimeTicks → 稼働時間</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="tab-panel" id="panel-timestamp" role="tabpanel" aria-labelledby="tab-timestamp" hidden data-tab="timestamp">
+<div class="tool-card">
+            <h2>現在時刻</h2>
+            <div id="statusBar" class="status-bar"></div>
+            <div class="current-time-display">
+                <div class="time-card">
+                    <div class="time-label">現在のUnixタイムスタンプ</div>
+                    <div class="time-value" id="currentTimestamp">0</div>
+                    <button class="copy-btn" id="copyCurrentTimestamp">コピー</button>
+                </div>
+                <div class="time-card">
+                    <div class="time-label">現在の日時 (ローカル)</div>
+                    <div class="time-value" id="currentDateTime">-</div>
+                    <button class="copy-btn" id="copyCurrentDateTime">コピー</button>
+                </div>
+                <div class="time-card">
+                    <div class="time-label">現在の日時 (UTC)</div>
+                    <div class="time-value" id="currentDateTimeUTC">-</div>
+                    <button class="copy-btn" id="copyCurrentDateTimeUTC">コピー</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tool-card">
+            <div class="converter-container">
+                <div class="timestamp-to-date-section">
+                    <h2>Unixタイムスタンプ → 日時</h2>
+                    <div class="converter-input">
+                        <div class="input-group">
+                            <label>Unixタイムスタンプ:</label>
+                            <input type="text" id="timestampInput" placeholder="例: 1640995200">
+                            <div class="unit-selector">
+                                <label class="radio-label"><input type="radio" name="timestampUnit" value="seconds" checked><span>秒</span></label>
+                                <label class="radio-label"><input type="radio" name="timestampUnit" value="milliseconds"><span>ミリ秒</span></label>
+                            </div>
+                        </div>
+                        <button id="convertTimestampBtn">変換</button>
+                    </div>
+                    
+                    <div class="conversion-results" id="timestampResults">
+                        <div class="result-group">
+                            <label>ローカル時間:</label>
+                            <input type="text" id="localDateTime" readonly>
+                            <button class="copy-btn" data-target="localDateTime">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>UTC時間:</label>
+                            <input type="text" id="utcDateTime" readonly>
+                            <button class="copy-btn" data-target="utcDateTime">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>ISO形式:</label>
+                            <input type="text" id="isoDateTime" readonly>
+                            <button class="copy-btn" data-target="isoDateTime">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>RFC形式:</label>
+                            <input type="text" id="rfcDateTime" readonly>
+                            <button class="copy-btn" data-target="rfcDateTime">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>カスタムフォーマット:</label>
+                            <input type="text" id="customFormat" placeholder="yyyy-MM-dd HH:mm:ss" value="yyyy-MM-dd HH:mm:ss">
+                            <input type="text" id="customDateTime" readonly>
+                            <button class="copy-btn" data-target="customDateTime">コピー</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="date-to-timestamp-section">
+                    <h2>日時 → Unixタイムスタンプ</h2>
+                    <div class="date-input-mode">
+                        <label class="radio-label"><input type="radio" name="dateInputMode" value="picker" checked><span>日時選択</span></label>
+                        <label class="radio-label"><input type="radio" name="dateInputMode" value="text"><span>テキスト入力</span></label>
+                    </div>
+                    
+                    <div id="datePickerInputs">
+                        <div class="datetime-inputs">
+                            <div class="input-group"><label>日付:</label><input type="date" id="dateInput"></div>
+                            <div class="input-group"><label>時刻:</label><input type="time" id="timeInput" step="1"></div>
+                            <div class="input-group"><label>タイムゾーン:</label><select id="timezoneSelect">
+                                <option value="local">ローカル時間</option>
+                                <option value="UTC">UTC</option>
+                            </select></div>
+                        </div>
+                    </div>
+                    
+                    <div id="dateTextInputs" style="display: none;">
+                        <div class="input-group"><label>日時文字列:</label><input type="text" id="dateTextInput" placeholder="例: 2024-01-01 12:00:00"></div>
+                    </div>
+                    
+                    <button id="convertDateBtn">変換</button>
+                    
+                    <div class="conversion-results" id="dateResults">
+                        <div class="result-group">
+                            <label>タイムスタンプ (秒):</label>
+                            <input type="text" id="resultTimestampSeconds" readonly>
+                            <button class="copy-btn" data-target="resultTimestampSeconds">コピー</button>
+                        </div>
+                        <div class="result-group">
+                            <label>タイムスタンプ (ミリ秒):</label>
+                            <input type="text" id="resultTimestampMilliseconds" readonly>
+                            <button class="copy-btn" data-target="resultTimestampMilliseconds">コピー</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tool-card">
+            <h2>一括変換</h2>
+            <div class="batch-input">
+                <textarea id="batchInput" placeholder="複数のタイムスタンプまたは日時を改行区切りで入力..."></textarea>
+                <div class="batch-controls">
+                    <div class="batch-mode">
+                        <label class="radio-label"><input type="radio" name="batchMode" value="timestamp" checked><span>タイムスタンプ → 日時</span></label>
+                        <label class="radio-label"><input type="radio" name="batchMode" value="datetime"><span>日時 → タイムスタンプ</span></label>
+                    </div>
+                    <button id="batchConvertBtn">一括変換</button>
+                </div>
+            </div>
+            <div class="batch-output">
+                <textarea id="batchOutput" readonly placeholder="変換結果がここに表示されます..."></textarea>
+                <button class="copy-btn" data-target="batchOutput">コピー</button>
+            </div>
+        </div>
+        
+        <div class="tool-card">
+            <h2>クイックタイムスタンプ</h2>
+            <div class="quick-buttons">
+                <button class="quick-btn" data-offset="0">現在</button>
+                <button class="quick-btn" data-offset="-3600">1時間前</button>
+                <button class="quick-btn" data-offset="-86400">1日前</button>
+                <button class="quick-btn" data-offset="-604800">1週間前</button>
+            </div>
+            <div class="quick-results">
+                <div class="result-group">
+                    <label>タイムスタンプ:</label>
+                    <input type="text" id="quickTimestampResult" readonly>
+                    <button class="copy-btn" data-target="quickTimestampResult">コピー</button>
+                </div>
+                <div class="result-group">
+                    <label>日時:</label>
+                    <input type="text" id="quickDateTimeResult" readonly>
+                    <button class="copy-btn" data-target="quickDateTimeResult">コピー</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tool-card">
+            <h3>Unixタイムスタンプについて</h3>
+            <div class="info-grid">
+                <div class="info-card"><h4>基本概念</h4><ul><li><strong>定義:</strong> 1970年1月1日 00:00:00 UTC からの経過秒数</li></ul></div>
+                <div class="info-card"><h4>使用場面</h4><ul><li><strong>データベース:</strong> 日時の保存形式</li></ul></div>
+                <div class="info-card"><h4>注意点</h4><ul><li><strong>タイムゾーン:</strong> UTCベースのため変換が必要</li></ul></div>
+                <div class="info-card"><h4>形式例</h4><ul><li><strong>秒:</strong> 1640995200</li></ul></div>
+            </div>
+        </div>
+        </div>
+        <div class="tab-panel" id="panel-timezone" role="tabpanel" aria-labelledby="tab-timezone" hidden data-tab="timezone">
+<div class="tool-card">
+            <h2>現在の時刻</h2>
+            <div id="current-time" class="current-time"></div>
+            
+            <div class="converter-container">
+                <div class="conversion-group">
+                    <h3>詳細変換</h3>
+                    <div class="input-row">
+                        <div class="field">
+                            <label for="input-datetime">日時指定：</label>
+                            <input type="datetime-local" id="input-datetime">
+                        </div>
+                        <div class="field">
+                            <button id="current-time-btn">現在時刻に設定</button>
+                        </div>
+                    </div>
+
+                    <div class="timezone-selection-row">
+                        <div class="field">
+                            <label for="input-timezone">変換元：</label>
+                            <select id="input-timezone" class="tz-select"></select>
+                        </div>
+                        <div class="swap-action">
+                            <button id="swap-btn" title="入れ替え">⇄</button>
+                        </div>
+                        <div class="field">
+                            <label for="target-timezone">変換先：</label>
+                            <select id="target-timezone" class="tz-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="result-display">
+                        <div id="specific-result" class="result-text">---</div>
+                        <button id="copy-btn">結果をコピー</button>
+                    </div>
+                </div>
+
+                <div class="global-overview">
+                    <h3>主要都市の時刻一覧</h3>
+                    <div id="conversion-results" class="results-grid"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="tab-panel" id="panel-duration" role="tabpanel" aria-labelledby="tab-duration" hidden data-tab="duration">
+<div class="converter-container">
+            <!-- 基準時刻 + 経過時間 → 到達時刻 -->
+            <div class="tool-card">
+                <h2>経過時間 → 到達時刻</h2>
+                <p class="panel-desc">基準時刻に経過時間を加算し、到達する日時を求めます。</p>
+
+                <div class="input-group">
+                    <label for="forwardBase">基準時刻:</label>
+                    <div class="input-with-action">
+                        <input type="datetime-local" id="forwardBase">
+                        <button type="button" class="secondary-btn" id="forwardNowBtn">現在時刻</button>
+                    </div>
+                </div>
+
+                <div class="duration-inputs">
+                    <div class="input-group">
+                        <label for="forwardDays">日:</label>
+                        <input type="number" id="forwardDays" min="0" value="0" step="1">
+                    </div>
+                    <div class="input-group">
+                        <label for="forwardHours">時間:</label>
+                        <input type="number" id="forwardHours" min="0" value="0" step="1">
+                    </div>
+                    <div class="input-group">
+                        <label for="forwardMinutes">分:</label>
+                        <input type="number" id="forwardMinutes" min="0" value="0" step="1">
+                    </div>
+                </div>
+
+                <button type="button" id="forwardCalcBtn">計算</button>
+                <div id="forwardError" class="error-container" style="display: none;"></div>
+
+                <div class="result-section" id="forwardResultSection" style="display: none;">
+                    <h3>計算結果</h3>
+                    <div class="result-display">
+                        <div class="result-item">
+                            <label>到達時刻:</label>
+                            <span id="forwardResultDatetime"></span>
+                        </div>
+                        <div class="result-item">
+                            <label>相対表示:</label>
+                            <span id="forwardResultRelative"></span>
+                        </div>
+                    </div>
+                    <button type="button" class="copy-btn" id="forwardCopyBtn">結果をコピー</button>
+                </div>
+            </div>
+
+            <!-- 基準時刻 + 到達時刻 → 経過時間 -->
+            <div class="tool-card">
+                <h2>到達時刻 → 経過時間</h2>
+                <p class="panel-desc">基準時刻から到達時刻までの経過時間を求めます。</p>
+
+                <div class="input-group">
+                    <label for="reverseBase">基準時刻:</label>
+                    <div class="input-with-action">
+                        <input type="datetime-local" id="reverseBase">
+                        <button type="button" class="secondary-btn" id="reverseNowBtn">現在時刻</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="reverseTarget">到達時刻:</label>
+                    <input type="datetime-local" id="reverseTarget">
+                </div>
+
+                <button type="button" id="reverseCalcBtn">計算</button>
+                <div id="reverseError" class="error-container" style="display: none;"></div>
+
+                <div class="result-section" id="reverseResultSection" style="display: none;">
+                    <h3>計算結果</h3>
+                    <div class="result-display">
+                        <div class="result-item">
+                            <label>経過時間:</label>
+                            <span id="reverseResultDuration"></span>
+                        </div>
+                        <div class="result-item">
+                            <label>総時間:</label>
+                            <span id="reverseResultTotalHours"></span>
+                        </div>
+                        <div class="result-item">
+                            <label>総分:</label>
+                            <span id="reverseResultTotalMinutes"></span>
+                        </div>
+                    </div>
+                    <button type="button" class="copy-btn" id="reverseCopyBtn">結果をコピー</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-card">
+            <h2>使用例</h2>
+            <ul class="usage-list">
+                <li>監視の静観: 「今から18:00まで」を何時間何分後に換算する</li>
+                <li>勤務時間: 「09:00から17:30まで」の経過時間を求める</li>
+                <li>メンテ計画: 「14:30から3時間45分後」が何時何分かを確認する</li>
+            </ul>
+            <h3>使い方</h3>
+            <ol>
+                <li>左側で基準時刻と経過時間（日・時・分）を入力し「計算」で到達時刻を確認</li>
+                <li>右側で基準時刻と到達時刻を入力し「計算」で経過時間を確認</li>
+                <li>必要に応じて結果をコピーして利用</li>
+            </ol>
+        </div>
+        </div>
+        <div class="tab-panel" id="panel-sysuptime" role="tabpanel" aria-labelledby="tab-sysuptime" hidden data-tab="sysuptime">
+<div class="tool-card">
+            <h2>sysUpTime値変換</h2>
+            <p>SNMP OID 1.3.6.1.2.1.1.3 (sysUpTime) で取得したTimeTicks値を起動経過時間に変換します。</p>
+            
+            <div class="input-section">
+                <h3>sysUpTime値を入力</h3>
+                <input type="number" id="sysuptimeInput" placeholder="例: 123456789" min="0">
+                <p class="help-text">※ sysUpTimeはTimeTicks（1/100秒単位）の値です</p>
+                <button id="convertBtn">変換</button>
+                <div id="errorContainer" class="error-container"></div>
+            </div>
+            
+            <div class="result-section" id="resultSection" style="display: none;">
+                <h3>変換結果</h3>
+                <div class="result-display">
+                    <div class="result-item">
+                        <label>総時間:</label>
+                        <span id="totalResult"></span>
+                    </div>
+                    <div class="result-item">
+                        <label>日数:</label>
+                        <span id="daysResult"></span>
+                    </div>
+                    <div class="result-item">
+                        <label>時間:</label>
+                        <span id="hoursResult"></span>
+                    </div>
+                    <div class="result-item">
+                        <label>分:</label>
+                        <span id="minutesResult"></span>
+                    </div>
+                    <div class="result-item">
+                        <label>秒:</label>
+                        <span id="secondsResult"></span>
+                    </div>
+                    <div class="result-item">
+                        <label>総秒数:</label>
+                        <span id="totalSecondsResult"></span>
+                    </div>
+                    <div class="result-item">
+                        <label>元の値:</label>
+                        <span id="originalValueResult"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="examples-section">
+                <h3>使用例</h3>
+                <div class="example-buttons">
+                    <button class="example-btn" data-value="8640000">1日 (8,640,000)</button>
+                    <button class="example-btn" data-value="259200000">30日 (259,200,000)</button>
+                    <button class="example-btn" data-value="3153600000">365日 (3,153,600,000)</button>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <h3>sysUpTimeについて</h3>
+                <ul>
+                    <li>sysUpTime (OID: 1.3.6.1.2.1.1.3) はSNMPで取得できるシステム起動時間</li>
+                    <li>TimeTicks形式で取得され、単位は1/100秒（センチ秒）</li>
+                    <li>最大値は2^32-1 (4,294,967,295) で、約497日後にリセットされます</li>
+                    <li>ネットワーク機器の稼働時間を確認する際に使用されます</li>
+                </ul>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 personal project for m-shiono</p>
+    </footer>
+
+    <script src="tabs.js"></script>
+    <script src="timestamp.js"></script>
+    <script src="timezone.js"></script>
+    <script src="duration.js"></script>
+    <script src="sysuptime.js"></script>
+</body>
+</html>

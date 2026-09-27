@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const secondsResult = document.getElementById('secondsResult');
     const totalSecondsResult = document.getElementById('totalSecondsResult');
     const originalValueResult = document.getElementById('originalValueResult');
-    const exampleButtons = document.querySelectorAll('.example-btn');
+    const exampleButtons = document.querySelectorAll('#panel-sysuptime .example-btn');
     const errorContainer = document.getElementById('errorContainer');
     
     // 変換関数

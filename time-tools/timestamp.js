@@ -28,11 +28,11 @@ class TimestampConverter {
         this.quickTimestampResult = document.getElementById('quickTimestampResult');
         this.quickDateTimeResult = document.getElementById('quickDateTimeResult');
         
-        this.copyButtons = document.querySelectorAll('.copy-btn');
-        this.timestampUnitRadios = document.querySelectorAll('input[name="timestampUnit"]');
-        this.dateInputModeRadios = document.querySelectorAll('input[name="dateInputMode"]');
-        this.batchModeRadios = document.querySelectorAll('input[name="batchMode"]');
-        this.quickButtons = document.querySelectorAll('.quick-btn');
+        this.copyButtons = document.querySelectorAll('#panel-timestamp .copy-btn');
+        this.timestampUnitRadios = document.querySelectorAll('#panel-timestamp input[name="timestampUnit"]');
+        this.dateInputModeRadios = document.querySelectorAll('#panel-timestamp input[name="dateInputMode"]');
+        this.batchModeRadios = document.querySelectorAll('#panel-timestamp input[name="batchMode"]');
+        this.quickButtons = document.querySelectorAll('#panel-timestamp .quick-btn');
         
         this.initializeEventListeners();
         this.startCurrentTimeUpdate();
