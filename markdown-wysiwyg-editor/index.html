@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown WYSIWYG Editor - 便利ツール＆ユーティリティ</title>
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+<<<<<<< HEAD
+=======
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.css">
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css">
+>>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -22,7 +27,99 @@
     <main>
         <div class="tool-card">
             <h2>編集</h2>
+<<<<<<< HEAD
             <p class="hint">上の画面で見た目を確認しながら編集できます。反映ボタンで下部にテキストを出力します。</p>
+=======
+            <p class="hint">装飾ボタンはもう一度押すと解除できます。下段は Backlog 向け機能です（標準 Markdown では色・サイズ・下線などは制限があります）。</p>
+
+            <div class="custom-toolbar" aria-label="編集ツールバー">
+                <div class="toolbar-row">
+                    <span class="toolbar-row-label">汎用</span>
+                    <div class="toolbar-row-buttons" id="general-toolbar">
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn" data-cmd="undo" title="元に戻す">↶</button>
+                            <button type="button" class="tb-btn" data-cmd="redo" title="やり直し">↷</button>
+                            <button type="button" class="tb-btn tb-btn-wide" data-cmd="clearFormat" title="選択範囲の書式をクリア">書式クリア</button>
+                        </div>
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn" data-cmd="heading" data-level="1" title="見出し1（再押下で解除）">H1</button>
+                            <button type="button" class="tb-btn" data-cmd="heading" data-level="2" title="見出し2（再押下で解除）">H2</button>
+                            <button type="button" class="tb-btn" data-cmd="heading" data-level="3" title="見出し3（再押下で解除）">H3</button>
+                            <button type="button" class="tb-btn" data-cmd="heading" data-level="4" title="見出し4（再押下で解除）">H4</button>
+                            <button type="button" class="tb-btn" data-cmd="heading" data-level="5" title="見出し5（再押下で解除）">H5</button>
+                            <button type="button" class="tb-btn" data-cmd="heading" data-level="6" title="見出し6（再押下で解除）">H6</button>
+                        </div>
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn" data-cmd="bold" title="太字（再押下で解除）"><b>B</b></button>
+                            <button type="button" class="tb-btn" data-cmd="italic" title="斜体（再押下で解除）"><i>I</i></button>
+                            <button type="button" class="tb-btn" data-cmd="strike" title="打消し（再押下で解除）"><s>S</s></button>
+                        </div>
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn" data-cmd="hr" title="水平線">―</button>
+                            <button type="button" class="tb-btn" data-cmd="quote" title="引用（再押下で解除）">“”</button>
+                            <button type="button" class="tb-btn tb-btn-wide" data-cmd="br" title="強制改行">改行</button>
+                        </div>
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn" data-cmd="ul" title="箇条書き（再押下で解除）">• リスト</button>
+                            <button type="button" class="tb-btn" data-cmd="ol" title="番号リスト（再押下で解除）">1. リスト</button>
+                            <button type="button" class="tb-btn" data-cmd="task" title="チェックリスト（再押下で解除）">☑</button>
+                            <button type="button" class="tb-btn" data-cmd="indent" title="インデント増">→</button>
+                            <button type="button" class="tb-btn" data-cmd="outdent" title="インデント減">←</button>
+                        </div>
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn" data-cmd="table" title="表">表</button>
+                            <button type="button" class="tb-btn" data-cmd="link" title="リンク">リンク</button>
+                        </div>
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn" data-cmd="code" title="インラインコード（再押下で解除）">&lt;/&gt;</button>
+                            <button type="button" class="tb-btn tb-btn-wide" data-cmd="codeblock" title="コードブロック（再押下で解除）">コードブロック</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toolbar-row backlog-row">
+                    <span class="toolbar-row-label">Backlog専用</span>
+                    <div class="toolbar-row-buttons" id="backlog-toolbar">
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn" data-bl-cmd="underline" title="下線（再押下で解除）"><u>U</u></button>
+                        </div>
+                        <div class="tb-group">
+                            <span class="tb-hint">文字色:</span>
+                            <button type="button" class="tb-color" data-color="#e53935" title="赤" style="--swatch:#e53935" aria-label="赤"></button>
+                            <button type="button" class="tb-color" data-color="#fb8c00" title="オレンジ" style="--swatch:#fb8c00" aria-label="オレンジ"></button>
+                            <button type="button" class="tb-color" data-color="#fdd835" title="黄" style="--swatch:#fdd835" aria-label="黄"></button>
+                            <button type="button" class="tb-color" data-color="#43a047" title="緑" style="--swatch:#43a047" aria-label="緑"></button>
+                            <button type="button" class="tb-color" data-color="#1e88e5" title="青" style="--swatch:#1e88e5" aria-label="青"></button>
+                            <button type="button" class="tb-color" data-color="#8e24aa" title="紫" style="--swatch:#8e24aa" aria-label="紫"></button>
+                            <button type="button" class="tb-color" data-color="#546e7a" title="グレー" style="--swatch:#546e7a" aria-label="グレー"></button>
+                            <label class="tb-color-picker-wrap" title="任意の色">
+                                <input type="color" id="custom-color" value="#e53935" aria-label="任意の色を選択">
+                                <span>任意</span>
+                            </label>
+                            <button type="button" class="tb-btn" id="remove-color-btn" title="文字色を解除">色解除</button>
+                        </div>
+                        <div class="tb-group">
+                            <span class="tb-hint">サイズ:</span>
+                            <button type="button" class="tb-btn" data-bl-cmd="size" data-size="12" title="12px">12</button>
+                            <button type="button" class="tb-btn" data-bl-cmd="size" data-size="14" title="14px">14</button>
+                            <button type="button" class="tb-btn" data-bl-cmd="size" data-size="16" title="16px">16</button>
+                            <button type="button" class="tb-btn" data-bl-cmd="size" data-size="18" title="18px">18</button>
+                            <button type="button" class="tb-btn" data-bl-cmd="size" data-size="20" title="20px">20</button>
+                            <button type="button" class="tb-btn" data-bl-cmd="size" data-size="24" title="24px">24</button>
+                            <button type="button" class="tb-btn" data-bl-cmd="size" data-size="28" title="28px">28</button>
+                            <button type="button" class="tb-btn" data-bl-cmd="removeSize" title="サイズ解除">サイズ解除</button>
+                        </div>
+                        <div class="tb-group">
+                            <button type="button" class="tb-btn tb-btn-wide" data-bl-cmd="contents" title="目次を挿入">目次</button>
+                            <button type="button" class="tb-btn tb-btn-wide" data-bl-cmd="wikiLink" title="Wikiページリンク">Wikiリンク</button>
+                            <button type="button" class="tb-btn tb-btn-wide" data-bl-cmd="include" title="他ページを読込">include</button>
+                            <button type="button" class="tb-btn tb-btn-wide" data-bl-cmd="rev" title="改訂表示">rev</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+>>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
             <div id="editor"></div>
 
             <div class="controls">
@@ -54,7 +151,11 @@
 
             <div class="tab-panel active" id="panel-output" role="tabpanel" aria-labelledby="tab-output">
                 <h3>出力テキスト</h3>
+<<<<<<< HEAD
                 <p class="hint">「反映」で選択中の形式（Markdown / Backlog）のテキストがここに出力されます。</p>
+=======
+                <p class="hint">「反映」で選択中の形式のテキストがここに出力されます。Markdown出力時、色・サイズ・下線などは HTML タグとして残る場合があります。</p>
+>>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
                 <textarea id="output-text" readonly placeholder="反映ボタンを押すと、ここに出力されます..."></textarea>
                 <div class="button-group">
                     <button type="button" id="copy-btn">コピー</button>
@@ -74,10 +175,17 @@
         <div class="tool-card">
             <h2>対応記法（概要）</h2>
             <ul class="feature-list">
+<<<<<<< HEAD
                 <li>見出し・太字・斜体・打消し・リンク</li>
                 <li>箇条書き・番号リスト・引用・水平線</li>
                 <li>コードブロック・インラインコード・表</li>
                 <li>Backlog変換は Wiki 記法の主要部分を対象（色指定などは未対応）</li>
+=======
+                <li>汎用: 見出しH1〜H6・太字・斜体・打消し・引用・リスト・表・リンク・コード・改行・Undo/Redo・書式クリア</li>
+                <li>Backlog専用: 下線（<code>___文字___</code>）・文字色・文字サイズ（<code>&amp;size(n) { }</code>）</li>
+                <li>Backlog専用マクロ: 目次（<code>#contents</code>）・Wikiリンク（<code>[[ページ名]]</code>）・include・rev</li>
+                <li>画像・添付ファイル系は対象外です</li>
+>>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
             </ul>
         </div>
     </main>
@@ -86,7 +194,13 @@
         <p>&copy; 2026 m-shiono personal project</p>
     </footer>
 
+<<<<<<< HEAD
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+=======
+    <script src="https://uicdn.toast.com/tui-color-picker/latest/tui-color-picker.min.js"></script>
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <script src="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.js"></script>
+>>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
     <script src="converter.js"></script>
     <script src="script.js"></script>
 </body>
