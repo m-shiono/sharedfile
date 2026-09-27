@@ -97,11 +97,7 @@ nav ul li a:hover {
 
 #editor {
     margin-bottom: 1.25rem;
-<<<<<<< HEAD
-    border-radius: 8px;
-=======
     border-radius: 0 0 8px 8px;
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
     overflow: hidden;
 }
 
@@ -109,8 +105,6 @@ nav ul li a:hover {
     border-color: #81c784 !important;
 }
 
-<<<<<<< HEAD
-=======
 /* 標準ツールバーを隠す（カスタム2段を使う） */
 #editor .toastui-editor-toolbar {
     display: none !important;
@@ -253,7 +247,6 @@ nav ul li a:hover {
     cursor: pointer;
 }
 
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
 .controls {
     display: flex;
     flex-wrap: wrap;
@@ -261,10 +254,7 @@ nav ul li a:hover {
     justify-content: space-between;
     gap: 1rem;
     margin-bottom: 0.5rem;
-<<<<<<< HEAD
-=======
     margin-top: 1rem;
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
 }
 
 .radio-group {
@@ -428,8 +418,6 @@ footer {
         flex-direction: column;
         align-items: flex-start;
     }
-<<<<<<< HEAD
-=======
 
     .toolbar-row {
         flex-direction: column;
@@ -443,5 +431,4 @@ footer {
         border-bottom: 1px solid #a5d6a7;
         padding: 0.35rem 0.75rem;
     }
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
 }

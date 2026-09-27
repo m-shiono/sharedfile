@@ -1,13 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const Editor = window.toastui && window.toastui.Editor;
     const converter = window.BacklogMarkdownConverter;
-<<<<<<< HEAD
-=======
     const colorSyntax = window.toastui
         && window.toastui.Editor
         && window.toastui.Editor.plugin
         && window.toastui.Editor.plugin.colorSyntax;
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
 
     if (!Editor) {
         showStatus('エディタの読み込みに失敗しました。', 'error');
@@ -18,8 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-<<<<<<< HEAD
-=======
     const plugins = [];
     if (typeof colorSyntax === 'function') {
         plugins.push([colorSyntax, {
@@ -27,26 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }]);
     }
 
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
     const editor = new Editor({
         el: document.getElementById('editor'),
         height: '420px',
         initialEditType: 'wysiwyg',
         previewStyle: 'vertical',
-<<<<<<< HEAD
-        usageStatistics: false,
-        placeholder: 'ここに文章を入力・編集してください...',
-        toolbarItems: [
-            ['heading', 'bold', 'italic', 'strike'],
-            ['hr', 'quote'],
-            ['ul', 'ol', 'task', 'indent', 'outdent'],
-            ['table', 'image', 'link'],
-            ['code', 'codeblock'],
-            ['scrollSync']
-        ]
-    });
-
-=======
         hideModeSwitch: false,
         usageStatistics: false,
         placeholder: 'ここに文章を入力・編集してください...',
@@ -59,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
         nativeToolbar.style.display = 'none';
     }
 
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
     const outputText = document.getElementById('output-text');
     const importText = document.getElementById('import-text');
     const applyBtn = document.getElementById('apply-btn');
@@ -69,14 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabButtons = document.querySelectorAll('.tab-btn');
     const panelOutput = document.getElementById('panel-output');
     const panelImport = document.getElementById('panel-import');
-<<<<<<< HEAD
-=======
     const customColorInput = document.getElementById('custom-color');
     const removeColorBtn = document.getElementById('remove-color-btn');
 
     let lastAppliedColor = null;
     let lastAppliedSize = null;
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
 
     function getSelectedFormat() {
         const checked = document.querySelector('input[name="output-format"]:checked');
@@ -111,14 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
         panelImport.classList.toggle('active', !showOutput);
     }
 
-<<<<<<< HEAD
-    function applyToOutput() {
-        const markdown = editor.getMarkdown();
-        const format = getSelectedFormat();
-        const text = format === 'backlog'
-            ? converter.markdownToBacklog(markdown)
-            : markdown;
-=======
     function getEditorRoot() {
         return document.querySelector('#editor .toastui-editor-contents')
             || document.querySelector('#editor .ProseMirror');
@@ -488,7 +456,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             text = converter.normalizeMarkdownExtras(markdown);
         }
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
 
         outputText.value = text;
         switchTab('output');
@@ -541,11 +508,6 @@ document.addEventListener('DOMContentLoaded', () => {
         editor.setMarkdown('');
         outputText.value = '';
         importText.value = '';
-<<<<<<< HEAD
-        showStatus('クリアしました。', 'success');
-    }
-
-=======
         lastAppliedColor = null;
         lastAppliedSize = null;
         showStatus('クリアしました。', 'success');
@@ -575,7 +537,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     removeColorBtn.addEventListener('click', () => removeColor());
 
->>>>>>> 7578a45 (Enhance Markdown WYSIWYG Editor with custom toolbar and color/size features. Integrate color picker and size options for text formatting, and update editor initialization to support new plugins. Revise HTML structure for improved usability and styling consistency.)
     tabButtons.forEach((btn) => {
         btn.addEventListener('click', () => switchTab(btn.dataset.tab));
     });
