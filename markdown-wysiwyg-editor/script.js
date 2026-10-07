@@ -150,6 +150,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function getSelectedImportFormat() {
+        const checked = document.querySelector('input[name="import-format"]:checked');
+        return checked ? checked.value : 'markdown';
+    }
+
     function getSelectedFormat() {
         const checked = document.querySelector('input[name="output-format"]:checked');
         return checked ? checked.value : 'markdown';
@@ -874,10 +879,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const format = getSelectedFormat();
+        const format = getSelectedImportFormat();
         if (format === 'backlog') {
             editor.setMarkdown(converter.backlogToMarkdown(raw));
-            showStatus('Backlog形式を読み込み、編集画面に反映しました。', 'success');
+            showStatus('Backlog形式をMarkdownに変換し、編集画面に反映しました。', 'success');
         } else if (format === 'html') {
             if (typeof editor.setHTML === 'function') {
                 editor.setHTML(raw);
