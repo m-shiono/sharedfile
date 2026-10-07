@@ -159,8 +159,23 @@
 
             <div class="tab-panel" id="panel-import" role="tabpanel" aria-labelledby="tab-import" hidden>
                 <h3>既存文面のインポート</h3>
-                <p class="hint">テキストを貼り付け、上で選択中の形式として解釈し、編集画面へ読み込みます。HTML形式選択時は Markdown として読み込みます。</p>
-                <textarea id="import-text" placeholder="Markdown / HTML / Backlog 形式のテキストを貼り付けてください..."></textarea>
+                <p class="hint">取り込み形式を選び、テキストを貼り付けて編集画面へ読み込みます。Backlog は Markdown に変換してから取り込みます。出力・表示形式とは独立です。</p>
+                <div class="radio-group" role="radiogroup" aria-label="取り込み形式">
+                    <span class="control-label">取り込み形式:</span>
+                    <label>
+                        <input type="radio" name="import-format" value="markdown" checked>
+                        Markdown
+                    </label>
+                    <label>
+                        <input type="radio" name="import-format" value="html">
+                        HTML
+                    </label>
+                    <label>
+                        <input type="radio" name="import-format" value="backlog">
+                        Backlog
+                    </label>
+                </div>
+                <textarea id="import-text" placeholder="選択した形式のテキストを貼り付けてください..."></textarea>
                 <div class="button-group">
                     <button type="button" id="load-btn">編集画面へ読み込む</button>
                 </div>

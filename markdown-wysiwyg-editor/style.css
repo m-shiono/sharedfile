@@ -396,6 +396,7 @@ nav ul li a:hover {
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .control-label {
