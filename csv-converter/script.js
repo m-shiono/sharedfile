@@ -193,12 +193,55 @@ function parseJSON(text) {
     }
 }
 
-// パイプ区切り行をセル配列に変換
-function parsePipeRow(line) {
+// Markdown区切り行判定（--- のみのセルで構成される行）
+function isMarkdownSeparator(line) {
     let body = line.trim();
     if (body.startsWith('|')) body = body.slice(1);
     if (body.endsWith('|')) body = body.slice(0, -1);
-    return body.split('|').map(cell => cell.trim());
+    const cells = body.split('|').map(c => c.trim());
+    return cells.length > 0 && cells.every(c => /^:?-{3,}:?$/.test(c));
+}
+
+// Markdownセルのエスケープ解除
+function decodeMarkdownCell(cell) {
+    return cell
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/\\([\\|])/g, '$1');
+}
+
+// Markdown行をセル配列に変換（エスケープ済み | は分割しない）
+function parseMarkdownRow(line) {
+    let body = line.trim();
+    if (body.startsWith('|')) body = body.slice(1);
+    if (body.endsWith('|')) body = body.slice(0, -1);
+
+    const cells = [];
+    let current = '';
+    for (let i = 0; i < body.length; i++) {
+        if (body[i] === '\\' && i + 1 < body.length) {
+            current += body[i] + body[i + 1];
+            i++;
+            continue;
+        }
+        if (body[i] === '|') {
+            cells.push(decodeMarkdownCell(current.trim()));
+            current = '';
+            continue;
+        }
+        current += body[i];
+    }
+    cells.push(decodeMarkdownCell(current.trim()));
+    return cells;
+}
+
+// Backlog行をセル配列に変換
+function parseBacklogRow(line) {
+    let body = line.trim().replace(/\|h\s*$/, '|');
+    if (body.startsWith('|')) body = body.slice(1);
+    if (body.endsWith('|')) body = body.slice(0, -1);
+    return body.split('|').map(cell =>
+        cell.trim().replace(/&br;/g, '\n').replace(/｜/g, '|')
+    );
 }
 
 // Markdown表をパース
@@ -207,11 +250,9 @@ function parseMarkdown(text) {
     const tableRows = [];
 
     for (const line of lines) {
-        if (/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line) || /^[\s|:-]+$/.test(line) && line.includes('-')) {
-            continue;
-        }
+        if (isMarkdownSeparator(line)) continue;
         if (!line.includes('|')) continue;
-        const cells = parsePipeRow(line);
+        const cells = parseMarkdownRow(line);
         if (cells.some(c => c !== '')) tableRows.push(cells);
     }
 
@@ -229,7 +270,7 @@ function parseBacklog(text) {
 
     for (const line of lines) {
         if (!line.includes('|')) continue;
-        const cells = parsePipeRow(line.replace(/\|h\s*$/, '|'));
+        const cells = parseBacklogRow(line);
         if (cells.some(c => c !== '')) tableRows.push(cells);
     }
 
@@ -244,7 +285,10 @@ function parseBacklog(text) {
 function toMarkdown(data) {
     if (!data.headers || !data.headers.length) return '';
 
-    const escapeCell = (value) => String(value ?? '').replace(/\|/g, '\\|').replace(/\n/g, '<br>');
+    const escapeCell = (value) => String(value ?? '')
+        .replace(/\\/g, '\\\\')
+        .replace(/\|/g, '\\|')
+        .replace(/\n/g, '<br>');
     const numCols = Math.max(data.headers.length, ...data.rows.map(r => r.length));
 
     const buildRow = (cells) => {
@@ -265,7 +309,9 @@ function toMarkdown(data) {
 function toBacklog(data) {
     if (!data.headers || !data.headers.length) return '';
 
-    const escapeCell = (value) => String(value ?? '').replace(/\|/g, '｜').replace(/\n/g, '&br;');
+    const escapeCell = (value) => String(value ?? '')
+        .replace(/\|/g, '｜')
+        .replace(/\n/g, '&br;');
     const numCols = Math.max(data.headers.length, ...data.rows.map(r => r.length));
 
     const buildRow = (cells, isHeader = false) => {
