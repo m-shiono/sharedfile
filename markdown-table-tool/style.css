@@ -314,10 +314,43 @@ footer {
     margin-bottom: 0.5rem;
 }
 
-#import-data {
+.import-section .hint {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #388e3c;
+}
+
+.import-section label[for] {
+    display: block;
+    margin: 0.75rem 0 0.35rem;
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.format-select {
+    border: 1px solid #a5d6a7;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.format-select legend {
+    padding: 0 0.35rem;
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+#import-data,
+#convert-output {
     height: 150px;
     font-family: 'Courier New', monospace;
     font-size: 0.9rem;
+}
+
+#convert-output {
+    background: #f8f9fa;
+    border: 1px solid #c8e6c9;
 }
 
 /* 出力セクション */

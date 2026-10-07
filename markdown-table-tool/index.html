@@ -12,7 +12,7 @@
 <body>
     <header>
         <h1>Markdown/Backlog表作成ツール</h1>
-        <p>Excel風の入力画面でMarkdownやBacklog形式の表を簡単作成</p>
+        <p>Excel風グリッドで表を作成し、Markdown / Backlog / CSV / TSV を相互変換</p>
     </header>
 
     <nav>
@@ -88,7 +88,7 @@
                 <input type="radio" id="tab-output" name="io-tabs" checked>
                 <label for="tab-output" class="tab-label">出力</label>
                 <input type="radio" id="tab-import" name="io-tabs">
-                <label for="tab-import" class="tab-label">データインポート</label>
+                <label for="tab-import" class="tab-label">変換 / インポート</label>
 
                 <div class="tabs-content">
                     <section id="panel-output" class="tab-panel">
@@ -118,23 +118,60 @@
 
                     <section id="panel-import" class="tab-panel">
                         <div class="import-section">
-                            <h3>Markdown表またはCSVデータを貼り付け</h3>
-                            <textarea id="import-data" placeholder="Markdown表またはCSVデータを貼り付けてください...
+                            <h3>形式変換 / グリッド取り込み</h3>
+                            <p class="hint">変換元・変換先を選び、データを貼り付けて変換できます。グリッドに反映すると編集画面へ取り込めます。</p>
+
+                            <fieldset class="format-select">
+                                <legend>変換元:</legend>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="from-format" value="markdown" checked> Markdown</label>
+                                    <label><input type="radio" name="from-format" value="backlog"> Backlog</label>
+                                    <label><input type="radio" name="from-format" value="csv"> CSV</label>
+                                    <label><input type="radio" name="from-format" value="tsv"> TSV</label>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="format-select">
+                                <legend>変換先:</legend>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="to-format" value="markdown" checked> Markdown</label>
+                                    <label><input type="radio" name="to-format" value="backlog"> Backlog</label>
+                                    <label><input type="radio" name="to-format" value="csv"> CSV</label>
+                                    <label><input type="radio" name="to-format" value="tsv"> TSV</label>
+                                </div>
+                            </fieldset>
+
+                            <label for="import-data">入力データ</label>
+                            <textarea id="import-data" placeholder="変換元形式の表データを貼り付けてください...
 
 Markdown例:
 | 名前 | 年齢 | 職業 |
 |------|------|------|
 | 田中 | 30 | エンジニア |
-| 佐藤 | 25 | デザイナー |
+
+Backlog例:
+|名前|年齢|職業|h
+|田中|30|エンジニア|
 
 CSV例:
 名前,年齢,職業
 田中,30,エンジニア
-佐藤,25,デザイナー"></textarea>
+
+TSV例（Excelから貼り付け可）:
+名前	年齢	職業
+田中	30	エンジニア"></textarea>
 
                             <div class="button-group">
-                                <button id="import-btn">データインポート</button>
-                                <button id="clear-import-btn">インポートエリアクリア</button>
+                                <button id="convert-btn" type="button">変換</button>
+                                <button id="import-btn" type="button">グリッドに反映</button>
+                                <button id="clear-import-btn" type="button">クリア</button>
+                            </div>
+
+                            <label for="convert-output">変換結果</label>
+                            <textarea id="convert-output" readonly placeholder="変換結果がここに表示されます..."></textarea>
+
+                            <div class="button-group">
+                                <button id="copy-convert-btn" type="button">変換結果をコピー</button>
                             </div>
                         </div>
                     </section>
