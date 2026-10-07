@@ -10,10 +10,12 @@ class MarkdownTableTool {
         this.colsInput = document.getElementById('cols');
         this.fullHeightToggle = document.getElementById('full-height-toggle');
         this.importDataElement = document.getElementById('import-data');
+        this.convertOutput = document.getElementById('convert-output');
         this.markdownOutput = document.getElementById('markdown-output');
         this.backlogOutput = document.getElementById('backlog-output');
         this.csvOutput = document.getElementById('csv-output');
         this.messageContainer = document.getElementById('message-container');
+        this.formatNames = { markdown: 'Markdown', backlog: 'Backlog', csv: 'CSV', tsv: 'TSV' };
 
         this.currentRows = 5;
         this.currentCols = 3;
@@ -34,9 +36,11 @@ class MarkdownTableTool {
         document.getElementById('remove-row-btn').addEventListener('click', () => this.removeRow());
         document.getElementById('remove-col-btn').addEventListener('click', () => this.removeColumn());
 
-        // インポート
+        // 変換 / インポート
+        document.getElementById('convert-btn').addEventListener('click', () => this.convertTableData());
         document.getElementById('import-btn').addEventListener('click', () => this.importTableData());
         document.getElementById('clear-import-btn').addEventListener('click', () => this.clearImport());
+        document.getElementById('copy-convert-btn').addEventListener('click', () => this.copyConvertResult());
 
         // 出力生成
         document.getElementById('generate-all-btn').addEventListener('click', () => this.generateAll());
@@ -214,39 +218,93 @@ class MarkdownTableTool {
         this.resizeGrid();
     }
 
+    getSelectedFormat(name) {
+        const el = document.querySelector(`input[name="${name}"]:checked`);
+        return el ? el.value : null;
+    }
+
+    parseByFormat(text, format) {
+        switch (format) {
+            case 'markdown': return this.parseMarkdownTable(text);
+            case 'backlog': return this.parseBacklogTable(text);
+            case 'csv': return this.parseDelimited(text, ',');
+            case 'tsv': return this.parseDelimited(text, '\t');
+            default: throw new Error('不明な形式です: ' + format);
+        }
+    }
+
+    formatByFormat(data, format) {
+        const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
+        switch (format) {
+            case 'markdown': return this.buildMarkdown(data, lineBreakOption);
+            case 'backlog': return this.buildBacklog(data, lineBreakOption);
+            case 'csv': return this.buildDelimited(data, ',', lineBreakOption);
+            case 'tsv': return this.buildDelimited(data, '\t', lineBreakOption);
+            default: throw new Error('不明な形式です: ' + format);
+        }
+    }
+
+    convertTableData() {
+        const text = this.importDataElement.value.trim();
+        if (!text) {
+            this.showMessage('変換するデータがありません。', 'error');
+            return;
+        }
+
+        const fromFormat = this.getSelectedFormat('from-format');
+        const toFormat = this.getSelectedFormat('to-format');
+
+        try {
+            const parsedData = this.parseByFormat(text, fromFormat);
+            if (!parsedData.length) {
+                throw new Error('表データとして解析できませんでした。');
+            }
+            this.convertOutput.value = this.formatByFormat(parsedData, toFormat);
+            this.showMessage(`${this.formatNames[fromFormat]} → ${this.formatNames[toFormat]} に変換しました。`, 'success');
+        } catch (error) {
+            this.showMessage('変換に失敗しました: ' + error.message, 'error');
+        }
+    }
+
     importTableData() {
-        const data = this.importDataElement.value.trim();
-        if (!data) {
+        const text = this.importDataElement.value.trim();
+        if (!text) {
             this.showMessage('インポートするデータがありません。', 'error');
             return;
         }
 
+        const fromFormat = this.getSelectedFormat('from-format');
+
         try {
-            let parsedData;
-            if (this.isMarkdownTable(data)) {
-                parsedData = this.parseMarkdownTable(data);
-                this.showMessage('Markdownテーブルをインポートしました。', 'success');
-            } else {
-                parsedData = this.parseCSV(data);
-                this.showMessage('CSVデータをインポートしました。', 'success');
+            const parsedData = this.parseByFormat(text, fromFormat);
+            if (!parsedData.length) {
+                throw new Error('表データとして解析できませんでした。');
             }
 
-            // グリッドサイズを調整
-            this.currentRows = parsedData.length;
-            this.currentCols = Math.max(...parsedData.map(row => row.length));
+            const rows = parsedData.length;
+            const cols = Math.max(...parsedData.map(row => row.length));
+            if (rows > MarkdownTableTool.MAX_ROWS || cols > MarkdownTableTool.MAX_COLS) {
+                throw new Error(`グリッド上限は行${MarkdownTableTool.MAX_ROWS}・列${MarkdownTableTool.MAX_COLS}です。`);
+            }
+
+            this.currentRows = rows;
+            this.currentCols = cols;
             this.rowsInput.value = this.currentRows;
             this.colsInput.value = this.currentCols;
 
             this.createGrid();
             this.setGridData(parsedData);
             this.applyHalfHeight();
+            this.showMessage(`${this.formatNames[fromFormat]}をグリッドに反映しました。`, 'success');
         } catch (error) {
             this.showMessage('データの解析に失敗しました: ' + error.message, 'error');
         }
     }
 
-    isMarkdownTable(data) {
-        return data.includes('|') && data.includes('---');
+    decodeCellValue(cellValue) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = DOMPurify.sanitize(cellValue);
+        return tempDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n');
     }
 
     parseMarkdownTable(data) {
@@ -255,34 +313,43 @@ class MarkdownTableTool {
 
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
-            if (line.includes('---')) continue; // セパレーター行をスキップ
+            if (/^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line) || line.includes('---')) {
+                continue;
+            }
 
-            if (line.startsWith('|') && line.endsWith('|')) {
-                const cells = line.slice(1, -1).split('|').map(cell => {
-                    let cellValue = cell.trim();
-                    const originalValue = cellValue;
-
-                    // HTMLエンティティをデコード（&lt;br /&gt; → <br />）
-                    const tempDiv = document.createElement('div');
-                    // XSS対策: DOMPurifyでサニタイズしてからinnerHTMLに設定
-                    tempDiv.innerHTML = DOMPurify.sanitize(cellValue);
-                    // innerHTMLを使ってHTMLタグを保持したままデコード
-
-                    cellValue = tempDiv.innerHTML;
-
-                    // HTMLの<br />タグを改行コードに変換
-                    cellValue = cellValue.replace(/<br\s*\/?>/gi, '\n');
-
-                    return cellValue;
-                });
-                result.push(cells);
+            if (line.includes('|')) {
+                let body = line;
+                if (body.startsWith('|')) body = body.slice(1);
+                if (body.endsWith('|')) body = body.slice(0, -1);
+                const cells = body.split('|').map(cell => this.decodeCellValue(cell.trim()));
+                if (cells.some(c => c !== '')) result.push(cells);
             }
         }
 
+        if (!result.length) throw new Error('Markdown表を検出できませんでした。');
         return result;
     }
 
-    parseCSV(data) {
+    parseBacklogTable(data) {
+        const lines = data.split('\n').filter(line => line.trim());
+        const result = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line.includes('|')) continue;
+
+            let body = line.replace(/\|h\s*$/, '');
+            if (body.startsWith('|')) body = body.slice(1);
+            if (body.endsWith('|')) body = body.slice(0, -1);
+            const cells = body.split('|').map(cell => this.decodeCellValue(cell.trim()));
+            if (cells.some(c => c !== '')) result.push(cells);
+        }
+
+        if (!result.length) throw new Error('Backlog表を検出できませんでした。');
+        return result;
+    }
+
+    parseDelimited(data, delimiter) {
         const result = [];
         let current = '';
         let inQuotes = false;
@@ -295,7 +362,7 @@ class MarkdownTableTool {
                 if (char === '"') {
                     if (i + 1 < data.length && data[i + 1] === '"') {
                         current += '"';
-                        i++; 
+                        i++;
                     } else {
                         inQuotes = false;
                     }
@@ -311,12 +378,12 @@ class MarkdownTableTool {
                             break;
                         }
                     }
-                    if (i === 0 || (prevNonWs >= 0 && data[prevNonWs] === ',')) {
+                    if (i === 0 || (prevNonWs >= 0 && (data[prevNonWs] === delimiter || data[prevNonWs] === '\n' || data[prevNonWs] === '\r'))) {
                         inQuotes = true;
                     } else {
                         current += char;
                     }
-                } else if (char === ',' && !inQuotes) {
+                } else if (char === delimiter && !inQuotes) {
                     currentRow.push(current.trim());
                     current = '';
                 } else if ((char === '\n' || char === '\r') && !inQuotes) {
@@ -344,12 +411,91 @@ class MarkdownTableTool {
             }
         }
 
+        if (!result.length) throw new Error('区切り形式のデータを検出できませんでした。');
         return result;
+    }
+
+    buildMarkdown(data, lineBreakOption) {
+        if (!data.length) return '';
+        const numCols = Math.max(...data.map(row => row.length));
+        let markdown = '';
+
+        for (let row = 0; row < data.length; row++) {
+            let line = '|';
+            for (let col = 0; col < numCols; col++) {
+                let cellValue = data[row][col] || '';
+                cellValue = this.processLineBreaks(cellValue, lineBreakOption);
+                line += ' ' + cellValue + ' |';
+            }
+            markdown += line + '\n';
+
+            if (row === 0) {
+                let separator = '|';
+                for (let col = 0; col < numCols; col++) {
+                    separator += ' ------ |';
+                }
+                markdown += separator + '\n';
+            }
+        }
+        return markdown;
+    }
+
+    buildBacklog(data, lineBreakOption) {
+        if (!data.length) return '';
+        const numCols = Math.max(...data.map(row => row.length));
+        let backlog = '';
+
+        for (let row = 0; row < data.length; row++) {
+            let line = '|';
+            for (let col = 0; col < numCols; col++) {
+                let cellValue = data[row][col] || '';
+                cellValue = this.processLineBreaks(cellValue, lineBreakOption);
+                line += cellValue + '|';
+            }
+            if (row === 0) line += 'h';
+            backlog += line + '\n';
+        }
+        return backlog;
+    }
+
+    buildDelimited(data, delimiter, lineBreakOption) {
+        if (!data.length) return '';
+        const numCols = Math.max(...data.map(row => row.length));
+        let output = '';
+
+        for (let row = 0; row < data.length; row++) {
+            const cells = [];
+            for (let col = 0; col < numCols; col++) {
+                let cellValue = data[row][col] || '';
+                cellValue = this.processLineBreaks(cellValue, lineBreakOption);
+                if (cellValue.includes(delimiter) || cellValue.includes('\n') || cellValue.includes('"')) {
+                    cellValue = '"' + cellValue.replace(/"/g, '""') + '"';
+                }
+                cells.push(cellValue);
+            }
+            output += cells.join(delimiter) + '\n';
+        }
+        return output;
     }
 
     clearImport() {
         this.importDataElement.value = '';
-        this.showMessage('インポートエリアをクリアしました。', 'success');
+        this.convertOutput.value = '';
+        this.showMessage('変換エリアをクリアしました。', 'success');
+    }
+
+    async copyConvertResult() {
+        const text = this.convertOutput.value;
+        if (!text) {
+            this.showMessage('コピーする変換結果がありません。', 'error');
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(text);
+            this.showMessage('変換結果をクリップボードにコピーしました。', 'success');
+        } catch (error) {
+            this.showMessage('コピーに失敗しました。', 'error');
+        }
     }
 
     handleKeyDown(e) {
@@ -489,85 +635,20 @@ class MarkdownTableTool {
 
     generateMarkdown() {
         const data = this.getTrimmedData();
-        if (data.length === 0) {
-            this.markdownOutput.value = '';
-            return;
-        }
-
         const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
-        let markdown = '';
-        const numCols = data[0].length;
-
-        for (let row = 0; row < data.length; row++) {
-            let line = '|';
-            for (let col = 0; col < numCols; col++) {
-                let cellValue = data[row][col] || '';
-                cellValue = this.processLineBreaks(cellValue, lineBreakOption);
-                line += ' ' + cellValue + ' |';
-            }
-            markdown += line + '\n';
-
-            if (row === 0) {
-                let separator = '|';
-                for (let col = 0; col < numCols; col++) {
-                    separator += ' ------ |';
-                }
-                markdown += separator + '\n';
-            }
-        }
-
-        this.markdownOutput.value = markdown;
+        this.markdownOutput.value = this.buildMarkdown(data, lineBreakOption);
     }
 
     generateBacklog() {
         const data = this.getTrimmedData();
-        if (data.length === 0) {
-            this.backlogOutput.value = '';
-            return;
-        }
-
         const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
-        let backlog = '';
-
-        for (let row = 0; row < data.length; row++) {
-            let line = '|';
-            for (let col = 0; col < data[row].length; col++) {
-                let cellValue = data[row][col] || '';
-                cellValue = this.processLineBreaks(cellValue, lineBreakOption);
-                line += cellValue + '|';
-            }
-            if (row === 0) line += 'h';
-            backlog += line + '\n';
-        }
-
-        this.backlogOutput.value = backlog;
+        this.backlogOutput.value = this.buildBacklog(data, lineBreakOption);
     }
 
     generateCSV() {
         const data = this.getTrimmedData();
-        if (data.length === 0) {
-            this.csvOutput.value = '';
-            return;
-        }
-
         const lineBreakOption = document.querySelector('input[name="line-break"]:checked').value;
-        let csv = '';
-
-        for (let row = 0; row < data.length; row++) {
-            const csvRow = [];
-            for (let col = 0; col < data[row].length; col++) {
-                let cellValue = data[row][col] || '';
-                cellValue = this.processLineBreaks(cellValue, lineBreakOption);
-
-                if (cellValue.includes(',') || cellValue.includes('\n') || cellValue.includes('"')) {
-                    cellValue = '"' + cellValue.replace(/"/g, '""') + '"';
-                }
-                csvRow.push(cellValue);
-            }
-            csv += csvRow.join(',') + '\n';
-        }
-
-        this.csvOutput.value = csv;
+        this.csvOutput.value = this.buildDelimited(data, ',', lineBreakOption);
     }
 
     async copyToClipboard(type) {
