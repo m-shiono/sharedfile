@@ -31,7 +31,20 @@ const sampleData = {
   {"名前": "佐藤花子", "年齢": 25, "職業": "デザイナー", "都市": "大阪"},
   {"名前": "鈴木一郎", "年齢": 35, "職業": "営業", "都市": "名古屋"},
   {"名前": "山田美咲", "年齢": 28, "職業": "教師", "都市": "福岡"}
-]`
+]`,
+
+    markdown: `| 名前 | 年齢 | 職業 | 都市 |
+|------|------|------|------|
+| 田中太郎 | 30 | エンジニア | 東京 |
+| 佐藤花子 | 25 | デザイナー | 大阪 |
+| 鈴木一郎 | 35 | 営業 | 名古屋 |
+| 山田美咲 | 28 | 教師 | 福岡 |`,
+
+    backlog: `|名前|年齢|職業|都市|h
+|田中太郎|30|エンジニア|東京|
+|佐藤花子|25|デザイナー|大阪|
+|鈴木一郎|35|営業|名古屋|
+|山田美咲|28|教師|福岡|`
 };
 
 // 現在の入力・出力形式を取得
@@ -180,6 +193,141 @@ function parseJSON(text) {
     }
 }
 
+// Markdown区切り行判定（--- のみのセルで構成される行）
+function isMarkdownSeparator(line) {
+    let body = line.trim();
+    if (body.startsWith('|')) body = body.slice(1);
+    if (body.endsWith('|')) body = body.slice(0, -1);
+    const cells = body.split('|').map(c => c.trim());
+    return cells.length > 0 && cells.every(c => /^:?-{3,}:?$/.test(c));
+}
+
+// Markdownセルのエスケープ解除
+function decodeMarkdownCell(cell) {
+    return cell
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/\\([\\|])/g, '$1');
+}
+
+// Markdown行をセル配列に変換（エスケープ済み | は分割しない）
+function parseMarkdownRow(line) {
+    let body = line.trim();
+    if (body.startsWith('|')) body = body.slice(1);
+    if (body.endsWith('|')) body = body.slice(0, -1);
+
+    const cells = [];
+    let current = '';
+    for (let i = 0; i < body.length; i++) {
+        if (body[i] === '\\' && i + 1 < body.length) {
+            current += body[i] + body[i + 1];
+            i++;
+            continue;
+        }
+        if (body[i] === '|') {
+            cells.push(decodeMarkdownCell(current.trim()));
+            current = '';
+            continue;
+        }
+        current += body[i];
+    }
+    cells.push(decodeMarkdownCell(current.trim()));
+    return cells;
+}
+
+// Backlog行をセル配列に変換
+function parseBacklogRow(line) {
+    let body = line.trim().replace(/\|h\s*$/, '|');
+    if (body.startsWith('|')) body = body.slice(1);
+    if (body.endsWith('|')) body = body.slice(0, -1);
+    return body.split('|').map(cell =>
+        cell.trim().replace(/&br;/g, '\n').replace(/｜/g, '|')
+    );
+}
+
+// Markdown表をパース
+function parseMarkdown(text) {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+    const tableRows = [];
+
+    for (const line of lines) {
+        if (isMarkdownSeparator(line)) continue;
+        if (!line.includes('|')) continue;
+        const cells = parseMarkdownRow(line);
+        if (cells.some(c => c !== '')) tableRows.push(cells);
+    }
+
+    if (!tableRows.length) {
+        throw new Error('Markdown表を検出できませんでした');
+    }
+
+    return { headers: tableRows[0], rows: tableRows.slice(1) };
+}
+
+// Backlog表をパース
+function parseBacklog(text) {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+    const tableRows = [];
+
+    for (const line of lines) {
+        if (!line.includes('|')) continue;
+        const cells = parseBacklogRow(line);
+        if (cells.some(c => c !== '')) tableRows.push(cells);
+    }
+
+    if (!tableRows.length) {
+        throw new Error('Backlog表を検出できませんでした');
+    }
+
+    return { headers: tableRows[0], rows: tableRows.slice(1) };
+}
+
+// Markdown形式に変換
+function toMarkdown(data) {
+    if (!data.headers || !data.headers.length) return '';
+
+    const escapeCell = (value) => String(value ?? '')
+        .replace(/\\/g, '\\\\')
+        .replace(/\|/g, '\\|')
+        .replace(/\n/g, '<br>');
+    const numCols = Math.max(data.headers.length, ...data.rows.map(r => r.length));
+
+    const buildRow = (cells) => {
+        let line = '|';
+        for (let i = 0; i < numCols; i++) {
+            line += ` ${escapeCell(cells[i] ?? '')} |`;
+        }
+        return line;
+    };
+
+    const lines = [buildRow(data.headers)];
+    lines.push('|' + ' ------ |'.repeat(numCols));
+    data.rows.forEach(row => lines.push(buildRow(row)));
+    return lines.join('\n');
+}
+
+// Backlog形式に変換
+function toBacklog(data) {
+    if (!data.headers || !data.headers.length) return '';
+
+    const escapeCell = (value) => String(value ?? '')
+        .replace(/\|/g, '｜')
+        .replace(/\n/g, '&br;');
+    const numCols = Math.max(data.headers.length, ...data.rows.map(r => r.length));
+
+    const buildRow = (cells, isHeader = false) => {
+        let line = '|';
+        for (let i = 0; i < numCols; i++) {
+            line += `${escapeCell(cells[i] ?? '')}|`;
+        }
+        if (isHeader) line += 'h';
+        return line;
+    };
+
+    const lines = [buildRow(data.headers, true)];
+    data.rows.forEach(row => lines.push(buildRow(row)));
+    return lines.join('\n');
+}
+
 // データ変換メイン処理
 function convertData() {
     const inputText = inputData.value.trim();
@@ -207,6 +355,12 @@ function convertData() {
             case 'json':
                 parsedData = parseJSON(inputText);
                 break;
+            case 'markdown':
+                parsedData = parseMarkdown(inputText);
+                break;
+            case 'backlog':
+                parsedData = parseBacklog(inputText);
+                break;
             default:
                 throw new Error('不明な入力形式です');
         }
@@ -222,6 +376,12 @@ function convertData() {
                 break;
             case 'json':
                 output = toJSON(parsedData);
+                break;
+            case 'markdown':
+                output = toMarkdown(parsedData);
+                break;
+            case 'backlog':
+                output = toBacklog(parsedData);
                 break;
             default:
                 throw new Error('不明な出力形式です');
@@ -315,11 +475,13 @@ function downloadFile() {
     }
     
     const outputFormat = getOutputFormat();
-    const extensions = { csv: 'csv', tsv: 'tsv', json: 'json' };
+    const extensions = { csv: 'csv', tsv: 'tsv', json: 'json', markdown: 'md', backlog: 'txt' };
     const mimeTypes = {
         csv: 'text/csv',
         tsv: 'text/tab-separated-values',
-        json: 'application/json'
+        json: 'application/json',
+        markdown: 'text/markdown',
+        backlog: 'text/plain'
     };
     
     const blob = new Blob([outputData.value], { 
@@ -360,12 +522,9 @@ sampleDataBtn.addEventListener('click', setSampleData);
 document.querySelectorAll('input[name="input-format"]').forEach(radio => {
     radio.addEventListener('change', () => {
         const format = getInputFormat();
-        if (format === 'json') {
-            // JSONの場合は区切り文字オプションを無効化
-            delimiterSelect.disabled = true;
-        } else {
-            delimiterSelect.disabled = false;
-        }
+        // CSV/TSV以外は区切り文字オプションを無効化
+        delimiterSelect.disabled = !['csv', 'tsv'].includes(format);
+        hasHeaderCheckbox.disabled = !['csv', 'tsv'].includes(format);
     });
 });
 
