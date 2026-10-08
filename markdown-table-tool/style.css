@@ -214,16 +214,16 @@ footer {
 
 /* データグリッド */
 .data-grid {
-    width: 100%;
+    width: max-content;
     border-collapse: collapse;
-    min-width: 40px;
+    table-layout: fixed;
 }
 
 .data-grid th,
 .data-grid td {
     border: 1px solid #c8e6c9;
     padding: 0; /* セル高さをtextareaに合わせる（th側で後から上書き） */
-    min-width: var(--cell-min-width-desktop);
+    min-width: 0;
     position: relative;
     line-height: 1.2;
 }
@@ -247,14 +247,18 @@ footer {
     border: none;
     background: transparent;
     padding: 6px 4px;
+    margin: 0;
     font-size: 0.85rem;
     line-height: 1.2;
     min-height: 30px;
+    height: 30px;
     resize: none;
     outline: none;
     font-family: inherit;
     overflow: hidden;
     display: block;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .data-grid textarea:focus {
@@ -273,8 +277,84 @@ footer {
     background: #f1f8e9;
 }
 
-.data-grid th.active-header {
+.data-grid th.active-header,
+.data-grid th.active-row {
     background: #2e7d32 !important;
+}
+
+.col-resize-handle,
+.row-resize-handle {
+    position: absolute;
+    z-index: 3;
+    touch-action: none;
+}
+
+.col-resize-handle {
+    top: 0;
+    right: -4px;
+    width: 8px;
+    height: 100%;
+    cursor: col-resize;
+}
+
+.row-resize-handle {
+    left: 0;
+    bottom: -4px;
+    width: 100%;
+    height: 8px;
+    cursor: row-resize;
+}
+
+.col-resize-handle::after,
+.row-resize-handle::after {
+    content: '';
+    position: absolute;
+    background: transparent;
+}
+
+.col-resize-handle::after {
+    top: 0;
+    bottom: 0;
+    left: 3px;
+    width: 2px;
+}
+
+.row-resize-handle::after {
+    left: 0;
+    right: 0;
+    top: 3px;
+    height: 2px;
+}
+
+.col-header:hover .col-resize-handle::after,
+.col-resize-handle:focus::after,
+.row-header:hover .row-resize-handle::after,
+.row-resize-handle:focus::after {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.col-resize-handle:focus,
+.row-resize-handle:focus {
+    outline: 2px solid #1b5e20;
+    outline-offset: -2px;
+}
+
+body.is-resizing-col,
+body.is-resizing-col * {
+    cursor: col-resize !important;
+    user-select: none;
+}
+
+body.is-resizing-row,
+body.is-resizing-row * {
+    cursor: row-resize !important;
+    user-select: none;
+}
+
+.grid-hint {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: #388e3c;
 }
 
 /* 行・列のヘッダー */
@@ -283,8 +363,8 @@ footer {
     color: white;
     text-align: center;
     font-weight: bold;
-    width: 40px;
-    min-width: 40px;
+    width: 48px;
+    min-width: 48px;
     padding: 3px 2px;
     line-height: 1.2;
     font-size: 0.85rem;
@@ -416,11 +496,14 @@ footer {
     }
     
     .data-grid th {
-        min-width: var(--cell-min-width-mobile);
+        min-width: 0;
         padding: var(--cell-padding-mobile);
     }
+    .data-grid .row-header {
+        min-width: 48px;
+    }
     .data-grid td {
-        min-width: var(--cell-min-width-mobile);
+        min-width: 0;
         padding: 0; /* モバイルでもセル高さをtextareaに合わせる */
     }
     

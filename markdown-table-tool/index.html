@@ -68,17 +68,27 @@
         <div class="tool-card">
             <h2>データ入力</h2>
 
+            <p id="selection-hint" class="grid-hint">セルを選ぶと、その位置に行や列を挿入・削除できます。列見出しの右端、行見出しの下端をドラッグすると幅と高さを変えられます（編集用で、Markdownには出ません）。セル内の改行は Shift+Enter です。</p>
+
             <div class="grid-container">
                 <table id="data-grid" class="data-grid">
                 </table>
             </div>
 
             <div class="button-group">
-                <button id="clear-grid-btn">グリッドクリア</button>
-                <button id="add-row-btn">行追加</button>
-                <button id="add-col-btn">列追加</button>
-                <button id="remove-row-btn">行削除</button>
-                <button id="remove-col-btn">列削除</button>
+                <button id="clear-grid-btn" type="button">グリッドクリア</button>
+            </div>
+            <div class="button-group">
+                <button id="insert-row-above-btn" type="button">上に行挿入</button>
+                <button id="insert-row-below-btn" type="button">下に行挿入</button>
+                <button id="delete-row-btn" type="button">この行を削除</button>
+                <button id="add-row-btn" type="button">末尾に行追加</button>
+            </div>
+            <div class="button-group">
+                <button id="insert-col-left-btn" type="button">左に列挿入</button>
+                <button id="insert-col-right-btn" type="button">右に列挿入</button>
+                <button id="delete-col-btn" type="button">この列を削除</button>
+                <button id="add-col-btn" type="button">末尾に列追加</button>
             </div>
         </div>
 
