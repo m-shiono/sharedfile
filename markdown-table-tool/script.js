@@ -182,9 +182,13 @@ class MarkdownTableTool {
         handle.setAttribute('aria-orientation', kind === 'col' ? 'vertical' : 'horizontal');
         if (kind === 'col') {
             handle.setAttribute('aria-label', `${this.getColumnLetter(index)}列の幅`);
+            handle.setAttribute('aria-valuemin', String(MarkdownTableTool.MIN_COL_WIDTH));
+            handle.setAttribute('aria-valuenow', String(this.colWidths[index] || MarkdownTableTool.DEFAULT_COL_WIDTH));
             handle.title = 'ドラッグで列幅を変更';
         } else {
             handle.setAttribute('aria-label', `${index + 1}行の高さ`);
+            handle.setAttribute('aria-valuemin', String(MarkdownTableTool.MIN_ROW_HEIGHT));
+            handle.setAttribute('aria-valuenow', String(this.rowHeights[index] || MarkdownTableTool.MIN_ROW_HEIGHT));
             handle.title = 'ドラッグで行の高さを変更';
         }
         return handle;
@@ -880,28 +884,37 @@ class MarkdownTableTool {
     handlePointerDown(e) {
         const colHandle = e.target.closest('.col-resize-handle');
         if (colHandle) {
-            this.startColResize(e, parseInt(colHandle.dataset.col, 10));
+            this.startColResize(e, parseInt(colHandle.dataset.col, 10), colHandle);
             return;
         }
         const rowHandle = e.target.closest('.row-resize-handle');
         if (rowHandle) {
-            this.startRowResize(e, parseInt(rowHandle.dataset.row, 10));
+            this.startRowResize(e, parseInt(rowHandle.dataset.row, 10), rowHandle);
         }
     }
 
-    trackPointerDrag(move, end) {
-        const stop = () => {
-            document.removeEventListener('pointermove', move);
+    trackPointerDrag(e, handle, move, end) {
+        const onMove = (ev) => {
+            if (ev.pointerId === e.pointerId) move(ev);
+        };
+        const stop = (ev) => {
+            if (ev.pointerId !== e.pointerId) return;
+            document.removeEventListener('pointermove', onMove);
             document.removeEventListener('pointerup', stop);
             document.removeEventListener('pointercancel', stop);
             end();
         };
-        document.addEventListener('pointermove', move);
+        document.addEventListener('pointermove', onMove);
         document.addEventListener('pointerup', stop);
         document.addEventListener('pointercancel', stop);
+        if (handle.setPointerCapture) {
+            try {
+                handle.setPointerCapture(e.pointerId);
+            } catch {}
+        }
     }
 
-    startColResize(e, col) {
+    startColResize(e, col, handle) {
         if (!Number.isInteger(col) || col < 0 || col >= this.currentCols) return;
         if (document.body.classList.contains('is-resizing-col') || document.body.classList.contains('is-resizing-row')) return;
         e.preventDefault();
@@ -914,27 +927,26 @@ class MarkdownTableTool {
             this.applyColWidth(col);
         };
         document.body.classList.add('is-resizing-col');
-        this.trackPointerDrag(move, () => {
+        this.trackPointerDrag(e, handle, move, () => {
             document.body.classList.remove('is-resizing-col');
             this.applyHalfHeight();
         });
     }
 
-    startRowResize(e, row) {
+    startRowResize(e, row, handle) {
         if (!Number.isInteger(row) || row < 0 || row >= this.currentRows) return;
         if (document.body.classList.contains('is-resizing-col') || document.body.classList.contains('is-resizing-row')) return;
         e.preventDefault();
         e.stopPropagation();
         const startY = e.clientY;
-        const sample = this.grid.querySelector(`textarea[data-row="${row}"]`);
-        const startHeight = sample ? sample.offsetHeight : (this.rowHeights[row] || MarkdownTableTool.MIN_ROW_HEIGHT);
+        const startHeight = this.getRowHeight(row);
         const move = (ev) => {
             const next = Math.max(MarkdownTableTool.MIN_ROW_HEIGHT, Math.round(startHeight + ev.clientY - startY));
             this.rowHeights[row] = next;
             this.autosizeRow(row);
         };
         document.body.classList.add('is-resizing-row');
-        this.trackPointerDrag(move, () => {
+        this.trackPointerDrag(e, handle, move, () => {
             document.body.classList.remove('is-resizing-row');
             this.applyHalfHeight();
         });
@@ -953,8 +965,7 @@ class MarkdownTableTool {
     nudgeRowHeight(row, e) {
         if (!Number.isInteger(row) || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
         const delta = e.key === 'ArrowDown' ? 8 : -8;
-        const sample = this.grid.querySelector(`textarea[data-row="${row}"]`);
-        const current = sample ? sample.offsetHeight : (this.rowHeights[row] || MarkdownTableTool.MIN_ROW_HEIGHT);
+        const current = this.getRowHeight(row);
         this.rowHeights[row] = Math.max(MarkdownTableTool.MIN_ROW_HEIGHT, current + delta);
         this.autosizeRow(row);
         this.applyHalfHeight();
@@ -962,9 +973,21 @@ class MarkdownTableTool {
         e.stopPropagation();
     }
 
+    getRowHeight(row) {
+        const textareas = this.grid.querySelectorAll(`textarea[data-row="${row}"]`);
+        return Array.from(textareas).reduce((height, textarea) => Math.max(height, textarea.offsetHeight), this.rowHeights[row] || MarkdownTableTool.MIN_ROW_HEIGHT);
+    }
+
+    updateResizeHandleValue(kind, index, value) {
+        const className = kind === 'col' ? 'col-resize-handle' : 'row-resize-handle';
+        const handle = this.grid.querySelector(`.${className}[data-${kind}="${index}"]`);
+        if (handle) handle.setAttribute('aria-valuenow', String(value));
+    }
+
     applyColWidth(col) {
         const colEl = this.grid.querySelector(`col[data-col="${col}"]`);
         if (colEl) colEl.style.width = this.colWidths[col] + 'px';
+        this.updateResizeHandleValue('col', col, this.colWidths[col]);
         this.autosizeAll();
     }
 
@@ -975,12 +998,14 @@ class MarkdownTableTool {
             textarea.style.minHeight = specified + 'px';
             textarea.style.height = specified + 'px';
             textarea.style.overflowY = textarea.scrollHeight > textarea.clientHeight + 1 ? 'auto' : 'hidden';
+            this.updateResizeHandleValue('row', row, this.getRowHeight(row));
             return;
         }
         textarea.style.overflowY = 'hidden';
         textarea.style.minHeight = MarkdownTableTool.MIN_ROW_HEIGHT + 'px';
         textarea.style.height = 'auto';
         textarea.style.height = Math.max(MarkdownTableTool.MIN_ROW_HEIGHT, textarea.scrollHeight) + 'px';
+        this.updateResizeHandleValue('row', row, this.getRowHeight(row));
     }
 
     autosizeRow(row) {
